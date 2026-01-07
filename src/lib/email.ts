@@ -44,9 +44,9 @@ export async function sendEmail({ to, subject, html, from }: SendEmailOptions): 
     const { Resend } = await import('resend');
     const resend = new Resend(process.env.RESEND_API_KEY);
     
-    resend.domains.create({ name: 'quote.tianmagame.net' });
-    resend.domains.get('8f849149-26e1-492d-a7b1-9b13aea71c53');
-    resend.domains.verify('8f849149-26e1-492d-a7b1-9b13aea71c53');
+    resend.domains.create({ name: process.env.EMAIL_DOMAIN || "" });
+    resend.domains.get(process.env.EMAIL_VERIFY || "");
+    resend.domains.verify(process.env.EMAIL_VERIFY || "");
 
     const { data, error } = await resend.emails.send({
       from: from || process.env.EMAIL_FROM || 'Bestar Logistics <noreply@bestarca.com>',
