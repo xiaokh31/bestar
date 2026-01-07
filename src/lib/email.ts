@@ -83,42 +83,42 @@ export async function sendEmail({ to, subject, html, from }: SendEmailOptions): 
  * 1. 安装依赖：npm install @sendgrid/mail
  * 2. 在 .env 中配置 SENDGRID_API_KEY
  */
-export async function sendEmailWithSendGrid({ to, subject, html, from }: SendEmailOptions): Promise<EmailResult> {
-  if (!process.env.SENDGRID_API_KEY) {
-    console.warn('SendGrid not configured. Please set SENDGRID_API_KEY in .env');
-    console.warn('To enable email, run: npm install @sendgrid/mail');
-    return { success: false, error: 'SendGrid not configured' };
-  }
+// export async function sendEmailWithSendGrid({ to, subject, html, from }: SendEmailOptions): Promise<EmailResult> {
+//   if (!process.env.SENDGRID_API_KEY) {
+//     console.warn('SendGrid not configured. Please set SENDGRID_API_KEY in .env');
+//     console.warn('To enable email, run: npm install @sendgrid/mail');
+//     return { success: false, error: 'SendGrid not configured' };
+//   }
 
-  try {
-    // 动态导入 SendGrid
-    // @ts-expect-error - @sendgrid/mail 是可选依赖，需要单独安装
-    const sgMail = await import('@sendgrid/mail');
-    sgMail.default.setApiKey(process.env.SENDGRID_API_KEY);
+//   try {
+//     // 动态导入 SendGrid
+//     // @ts-expect-error - @sendgrid/mail 是可选依赖，需要单独安装
+//     const sgMail = await import('@sendgrid/mail');
+//     sgMail.default.setApiKey(process.env.SENDGRID_API_KEY);
     
-    const msg = {
-      to: Array.isArray(to) ? to : [to],
-      from: from || process.env.EMAIL_FROM || 'noreply@bestarca.com',
-      subject,
-      html,
-    };
+//     const msg = {
+//       to: Array.isArray(to) ? to : [to],
+//       from: from || process.env.EMAIL_FROM || 'noreply@bestarca.com',
+//       subject,
+//       html,
+//     };
     
-    await sgMail.default.send(msg);
-    console.log('Email sent successfully via SendGrid');
-    return { success: true };
-  } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
+//     await sgMail.default.send(msg);
+//     console.log('Email sent successfully via SendGrid');
+//     return { success: true };
+//   } catch (error: unknown) {
+//     const errorMessage = error instanceof Error ? error.message : String(error);
     
-    // 检查是否是模块未安装错误
-    if (errorMessage.includes("Cannot find module '@sendgrid/mail'")) {
-      console.warn('SendGrid package not installed. Run: npm install @sendgrid/mail');
-      return { success: false, error: 'SendGrid package not installed. Run: npm install @sendgrid/mail' };
-    }
+//     // 检查是否是模块未安装错误
+//     if (errorMessage.includes("Cannot find module '@sendgrid/mail'")) {
+//       console.warn('SendGrid package not installed. Run: npm install @sendgrid/mail');
+//       return { success: false, error: 'SendGrid package not installed. Run: npm install @sendgrid/mail' };
+//     }
     
-    console.error('Error sending email with SendGrid:', error);
-    return { success: false, error: errorMessage };
-  }
-}
+//     console.error('Error sending email with SendGrid:', error);
+//     return { success: false, error: errorMessage };
+//   }
+// }
 
 // 邮件模板
 export const emailTemplates = {
