@@ -124,8 +124,8 @@
     "title": "À propos de Bestar Logistics",
     "badge": "À propos de nous",
     "description": "Nous sommes un fournisseur de services logistiques transfrontaliers professionnels engagés à fournir des solutions logistiques efficaces, fiables et rentables pour les vendeurs e-commerce mondiaux.",
-    "intro": "Bestar Logistics a été fondée en 2014, basée à Toronto, Canada, et est un fournisseur de services complets axé sur la logistique e-commerce transfrontalière.",
-    "introDetail": "Nous nous consacrons à fournir aux vendeurs e-commerce transfrontaliers du monde entier des solutions logistiques complètes, de l'entreposage au transport et à la livraison, y compris des services de base tels que FBA premier mile, dropshipping et traitement des retours. Grâce à une équipe professionnelle, des installations avancées et un excellent service, nous sommes devenus le choix de confiance de nombreux vendeurs e-commerce.",
+    "intro": "Bestar SERVICE CCA a été fondée en 2024, basée à Calgary, Canada, et est un fournisseur de services complets axé sur la logistique e-commerce transfrontalière.",
+    "introDetail": "Nous nous consacrons à fournir aux vendeurs e-commerce transfrontaliers du monde entier des solutions logistiques complètes, de l'entreposage au transport et à la livraison, y compris des services de base tels que FBA premier mile, dropshipping, traitement des retours et gestion des stocks. Grâce à une équipe professionnelle, des installations avancées et un excellent service, nous sommes devenus le choix de confiance de nombreux vendeurs e-commerce.",
     "valuesTitle": "Notre Mission et Vision",
     "mission": {
       "title": "Mission",
@@ -151,12 +151,12 @@
     ],
     "historyTitle": "Notre Parcours",
     "milestones": [
-      { "year": "2014", "event": "Entreprise fondée à Toronto" },
-      { "year": "2016", "event": "Lancement du service FBA Premier Mile" },
-      { "year": "2018", "event": "Espace d'entrepôt dépassant 50 000 m²" },
-      { "year": "2020", "event": "Commandes quotidiennes dépassant 30 000" },
-      { "year": "2022", "event": "Base de clients dépassant 1 500" },
-      { "year": "2024", "event": "Espace d'entrepôt atteignant 100 000 m²" }
+      { "year": "2024", "event": "Entreprise fondée à Calgary" },
+      { "year": "2024", "event": "Lancement du service FBA Premier Mile" },
+      { "year": "2024", "event": "Espace d'entrepôt dépassant 20 000 m²" },
+      { "year": "2024", "event": "Commandes quotidiennes dépassant 30 000" },
+      { "year": "2024", "event": "Base de clients dépassant 1 500" },
+      { "year": "2025", "event": "Espace d'entrepôt atteignant 100 000 m²" }
     ]
   },
   "contact": {
@@ -168,7 +168,7 @@
     "phone": "Téléphone",
     "address": "Adresse",
     "workHours": "Heures d'ouverture",
-    "workHoursValue": "Lundi au Vendredi 9h00 - 18h00 (EST)",
+    "workHoursValue": "Lundi au Vendredi 8h00 - 17h00 (EST)",
     "form": {
       "name": "Votre nom",
       "email": "Adresse e-mail",
@@ -234,7 +234,7 @@
   },
   "admin": {
     "title": "Panneau d'administration",
-    "description": "Panneau d'administration Bestar Logistics",
+    "description": "Panneau d'administration Bestar SERVICE CCA",
     "welcome": "Bienvenue, Administrateur",
     "overview": "Aperçu",
     "articles": "Gestion des articles",

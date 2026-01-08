@@ -121,11 +121,11 @@
     "call": "Or call us at"
   },
   "about": {
-    "title": "About Bestar Logistics",
+    "title": "About Bestar SERVICE CCA",
     "badge": "About Us",
     "description": "We are a professional cross-border logistics service provider committed to providing efficient, reliable, and cost-effective logistics solutions for global e-commerce sellers.",
-    "intro": "Bestar Logistics was founded in 2014, headquartered in Toronto, Canada, and is a comprehensive service provider focused on cross-border e-commerce logistics.",
-    "introDetail": "We are dedicated to providing global cross-border e-commerce sellers with one-stop logistics solutions from warehousing, transportation to delivery, including core services such as FBA first-mile, dropshipping, and return processing. With a professional team, advanced facilities, and excellent service, we have become the trusted choice for many cross-border e-commerce sellers.",
+    "intro": "Bestar SERVICE CCA was founded in 2024, headquartered in Calgary, Canada, and is a comprehensive service provider focused on cross-border e-commerce logistics.",
+    "introDetail": "We are dedicated to providing global cross-border e-commerce sellers with one-stop logistics solutions from warehousing, transportation to delivery, including core services such as FBA first-mile, dropshipping, return processing and warehouse management. With a professional team, advanced facilities, and excellent service, we have become the trusted choice for many cross-border e-commerce sellers.",
     "valuesTitle": "Our Mission & Vision",
     "mission": {
       "title": "Mission",
@@ -151,12 +151,12 @@
     ],
     "historyTitle": "Our Journey",
     "milestones": [
-      { "year": "2014", "event": "Company founded in Toronto" },
-      { "year": "2016", "event": "Launched FBA First-Mile service" },
-      { "year": "2018", "event": "Warehouse space exceeded 50,000 sqm" },
-      { "year": "2020", "event": "Daily orders exceeded 30,000" },
-      { "year": "2022", "event": "Customer base exceeded 1,500" },
-      { "year": "2024", "event": "Warehouse space reached 100,000 sqm" }
+      { "year": "2024", "event": "Company founded in Calgary" },
+      { "year": "2024", "event": "Launched FBA First-Mile service" },
+      { "year": "2024", "event": "Warehouse space exceeded 20,000 sqm" },
+      { "year": "2024", "event": "Daily orders exceeded 30,000" },
+      { "year": "2024", "event": "Customer base exceeded 1,500" },
+      { "year": "2025", "event": "Warehouse space reached 100,000 sqm" }
     ]
   },
   "contact": {
@@ -168,7 +168,7 @@
     "phone": "Phone",
     "address": "Address",
     "workHours": "Working Hours",
-    "workHoursValue": "Monday to Friday 9:00 AM - 6:00 PM (EST)",
+    "workHoursValue": "Monday to Friday 8:30 AM - 5:00 PM (EST)",
     "form": {
       "name": "Your Name",
       "email": "Email Address",
@@ -234,7 +234,7 @@
   },
   "admin": {
     "title": "Admin Panel",
-    "description": "Bestar Logistics Admin Panel",
+    "description": "Bestar SERVICE CAA Admin Panel",
     "welcome": "Welcome back, Admin",
     "overview": "Overview",
     "articles": "Article Management",
