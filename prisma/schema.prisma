@@ -236,3 +236,28 @@ model LoginHistory {
   @@index([userId])
   @@index([createdAt])
 }
+
+// ==================== 页面内容管理 ====================
+
+model Page {
+  id          String      @id @default(cuid())
+  slug        String      @unique  // 如 "privacy", "terms"
+  title       String               // 页面标题
+  titleEn     String?              // 英文标题
+  titleFr     String?              // 法文标题
+  content     String      @db.Text // 内容 (HTML/Markdown)
+  contentEn   String?     @db.Text // 英文内容
+  contentFr   String?     @db.Text // 法文内容
+  status      PageStatus  @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([slug])
+  @@index([status])
+}
+
+enum PageStatus {
+  DRAFT       // 草稿
+  PUBLISHED   // 已发布
+}

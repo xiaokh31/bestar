@@ -46,20 +46,41 @@ export function Header() {
       href: "/",
     },
     {
-      title: t.nav.services,
-      href: "/services",
+      title: t.nav.solutions || t.nav.services,
+      href: "/solutions",
       children: [
         {
+          title: t.nav.allSolutions || "全部解决方案",
+          href: "/solutions",
+          isHighlight: true,
+        },
+        {
           title: t.nav.fba,
-          href: "/services/fba",
+          href: "/solutions/fba-last-mile",
+        },
+        {
+          title: t.nav.truckFreight || "卡派服务",
+          href: "/solutions/truck-freight",
+        },
+        {
+          title: t.nav.crossBorder || "跨境物流",
+          href: "/solutions/cross-border",
+        },
+        {
+          title: t.nav.amazonFba || "Amazon FBA",
+          href: "/solutions/amazon-fba",
+        },
+        {
+          title: t.nav.warehouse,
+          href: "/solutions/warehouse",
         },
         {
           title: t.nav.dropshipping,
-          href: "/services/dropshipping",
+          href: "/solutions/dropshipping",
         },
         {
           title: t.nav.returns,
-          href: "/services/returns",
+          href: "/solutions/returns",
         },
       ],
     },
@@ -182,10 +203,10 @@ export function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
           <Image 
-            src="/images/logo/logo-white.png"
+            src="/images/logo/logo.png"
             alt={siteConfig.name}
-            width={160}
-            height={40}
+            width={228}
+            height={50}
             priority
             className="h-10 w-auto"
           />

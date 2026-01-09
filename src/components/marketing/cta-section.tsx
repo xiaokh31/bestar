@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Phone } from "lucide-react";
-import { siteConfig } from "@/config/site";
+import { siteLinks } from "@/config/site-config";
 import { useLocale } from "@/i18n/locale-context";
 
 export function CTASection() {
@@ -27,9 +27,9 @@ export function CTASection() {
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="bg-transparent border-primary-foreground hover:bg-primary-foreground hover:text-primary" asChild>
-              <a href={`tel:${siteConfig.links.phone}`}>
+              <a href={`tel:${siteLinks.phone}`}>
                 <Phone className="mr-2 h-4 w-4" />
-                {siteConfig.links.phone}
+                {siteLinks.phone}
               </a>
             </Button>
           </div>

@@ -73,8 +73,8 @@ export default function AdminPage() {
     const diffMs = now.getTime() - date.getTime();
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    const hoursAgoText = (t.admin as Record<string, string>)?.hoursAgo || "小时前";
-    const daysAgoText = (t.admin as Record<string, string>)?.daysAgo || "天前";
+    const hoursAgoText = t.admin?.hoursAgo || "小时前";
+    const daysAgoText = t.admin?.daysAgo || "天前";
     
     if (diffHours < 1) {
       return "刚刚";

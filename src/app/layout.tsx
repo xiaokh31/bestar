@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header, Footer } from "@/components/layout";
+import { CookieConsent } from "@/components/cookie-consent";
 import { getSiteConfig } from "@/config/site-config";
 import { LocaleProvider } from "@/i18n/locale-context";
 
@@ -11,6 +12,7 @@ import { getServerSession } from "next-auth";
 import Providers from './providers'
 
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { OrganizationSchema, WebsiteSchema, LocalBusinessSchema } from "@/components/seo/structured-data";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,30 +24,118 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bestarcca.com";
+
+// SEO优化的Viewport配置
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+  ],
+};
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "Bestar Service CCA",
+    default: "Bestar Service CCA | 加拿大专业跨境物流服务",
     template: `%s | Bestar Service CCA`,
   },
-  description: "专业的跨境物流解决方案提供商 - FBA头程、一件代发、退货换标服务",
+  description: "Bestar Service CCA是加拿大卡尔加里专业跨境物流服务商，提供FBA尾程、卡派服务、北美跨境物流、Amazon FBA、仓储管理、一件代发、退货换标等全方位物流解决方案。",
   keywords: [
-    "跨境物流",
-    "FBA头程",
-    "一件代发",
-    "退货换标",
-    "仓储物流",
-    "跨境电商",
+    "Bestar Service CCA",
     "加拿大物流",
+    "卡尔加里物流",
+    "跨境物流",
+    "FBA尾程",
+    "FBA Last Mile",
+    "卡派服务",
+    "Truck Freight",
+    "北美跨境物流",
+    "Cross-border logistics",
+    "Amazon FBA",
+    "仓储管理",
+    "Warehouse Management",
+    "一件代发",
+    "Dropshipping",
+    "退货换标",
+    "Returns and Relabeling",
+    "跨境电商物流",
+    "e-commerce logistics",
+    "Canada logistics",
+    "Calgary warehouse",
+    "bestarcca"
   ],
-  authors: [{ name: "Bestar Service CCA" }],
+  authors: [{ name: "Bestar Service CCA", url: siteUrl }],
+  creator: "Bestar Service CCA",
+  publisher: "Bestar Service CCA",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
     type: "website",
     locale: "zh_CN",
-    url: "https://bestarca.com",
-    title: "Bestar Service CCA",
-    description: "专业的跨境物流解决方案提供商 - FBA头程、一件代发、退货换标服务",
+    alternateLocale: ["en_US", "fr_CA"],
+    url: siteUrl,
+    title: "Bestar Service CCA | 加拿大专业跨境物流服务",
+    description: "Bestar Service CCA是加拿大卡尔加里专业跨境物流服务商，提供FBA尾程、卡派服务、北美跨境物流、Amazon FBA、仓储管理、一件代发、退货换标等全方位物流解决方案。",
     siteName: "Bestar Service CCA",
+    images: [
+      {
+        url: "/images/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Bestar Service CCA - 加拿大专业跨境物流服务",
+      },
+    ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Bestar Service CCA | 加拿大专业跨境物流服务",
+    description: "Bestar Service CCA是加拿大卡尔加里专业跨境物流服务商，提供FBA尾程、卡派服务、北美跨境物流、Amazon FBA、仓储管理、一件代发、退货换标等全方位物流解决方案。",
+    images: ["/images/og-image.jpg"],
+    creator: "@BestarCCA",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+    // yandex: 'xxxxxx',
+    // bing: 'xxxxxx',
+  },
+  alternates: {
+    canonical: siteUrl,
+    languages: {
+      "zh-CN": `${siteUrl}/zh`,
+      "en-US": `${siteUrl}/en`,
+      "fr-CA": `${siteUrl}/fr`,
+    },
+  },
+  icons: {
+    icon: [
+      { url: "/images/logo/favicon.ico" },
+      { url: "/images/logo/favicon-16.ico", sizes: "16x16", type: "image/png" },
+      { url: "/images/logo/favicon-32.ico", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [
+      { url: "/images/logo/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  manifest: "/manifest.json",
+  category: "logistics",
 };
 
 export default async function RootLayout({
@@ -61,10 +151,15 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <Providers session={session}>
+          {/* SEO结构化数据 */}
+          <OrganizationSchema />
+          <WebsiteSchema />
+          <LocalBusinessSchema />
           <LocaleProvider>
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />
+            <CookieConsent />
           </LocaleProvider>
         </Providers>
       </body>

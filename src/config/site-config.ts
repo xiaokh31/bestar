@@ -1,102 +1,93 @@
-import { useLocale } from "@/i18n/locale-context";
+// ==========================================
+// 站点静态配置 (不依赖翻译)
+// ==========================================
+
+// 站点联系信息
+export const siteLinks = {
+  email: "manage.bestar@gmail.com",
+  phone: "+1(587)437 2088",
+  address: "7405 108 Ave SE Unit150, Calgary, AB T2C 4N7",
+};
+
+// 站点基本信息
+export const siteInfo = {
+  name: "Bestar Service CCA",
+  url: process.env.NEXT_PUBLIC_APP_URL || "https://bestarcca.com",
+  ogImage: "/og-image.jpg",
+};
+
+// ==========================================
+// 解决方案配置 (统一配置，避免重复定义)
+// ==========================================
+export const solutionConfigs = [
+  { key: "fbaLastMile", icon: "Package", slug: "fba-last-mile", image: "/images/services/Express Delivery.jpg" },
+  { key: "truckFreight", icon: "Truck", slug: "truck-freight", image: "/images/services/Truck Delivery.jpg" },
+  { key: "crossBorder", icon: "Globe", slug: "cross-border", image: "/images/services/Cross-border Logistics.jpg" },
+  { key: "amazonFba", icon: "ShoppingCart", slug: "amazon-fba", image: "/images/services/Amazon FBA.jpg" },
+  { key: "warehouse", icon: "Warehouse", slug: "warehouse", image: "/images/services/Warehouse.jpg" },
+  { key: "dropshipping", icon: "Ship", slug: "dropshipping", image: "/images/services/Dropshipping.jpg" },
+  { key: "returns", icon: "RefreshCw", slug: "returns", image: "/images/services/Returns.jpg" },
+] as const;
+
+export type SolutionKey = typeof solutionConfigs[number]["key"];
+export type SolutionSlug = typeof solutionConfigs[number]["slug"];
+
+// ==========================================
+// 动态配置函数 (依赖翻译)
+// ==========================================
 
 // 根据当前语言返回站点配置
 export function getSiteConfig(t: any) {
   return {
-    name: "Bestar Service CCA",
-    description: t.about.description || "专业的跨境物流解决方案提供商 - FBA头程、一件代发、退货换标服务",
-    url: process.env.NEXT_PUBLIC_APP_URL || "https://bestarca.com",
-    ogImage: "/og-image.jpg",
-    links: {
-      email: "manage.bestar@gmail.com",
-      phone: "+1(587)437 2088",
-      address: "7405 108 Ave SE Unit150, Calgary, AB T2C 4N7",
-    },
+    name: siteInfo.name,
+    description: t.about?.description || "专业的跨境物流解决方案提供商",
+    url: siteInfo.url,
+    ogImage: siteInfo.ogImage,
+    links: siteLinks,
     mainNav: [
+      { title: t.nav?.home || "首页", href: "/" },
       {
-        title: t.nav.home,
-        href: "/",
+        title: t.nav?.solutions || "解决方案",
+        href: "/solutions",
+        children: solutionConfigs.map(({ key, slug }) => ({
+          title: (t.solutions?.[key] as { title: string } | undefined)?.title || key,
+          href: `/solutions/${slug}`,
+        })),
       },
-      {
-        title: t.nav.services,
-        href: "/services",
-        children: [
-          {
-            title: t.nav.fba,
-            href: "/services/fba",
-          },
-          {
-            title: t.nav.dropshipping,
-            href: "/services/dropshipping",
-          },
-          {
-            title: t.nav.returns,
-            href: "/services/returns",
-          },
-        ],
-      },
-      {
-        title: t.nav.about,
-        href: "/about",
-      },
-      {
-        title: t.nav.news,
-        href: "/news",
-      },
-      {
-        title: t.nav.contact,
-        href: "/contact",
-      },
+      { title: t.nav?.about || "关于我们", href: "/about" },
+      { title: t.nav?.news || "新闻动态", href: "/news" },
+      { title: t.nav?.contact || "联系我们", href: "/contact" },
     ],
     footerNav: [
-      {
-        title: t.nav.services,
-        href: "/services",
-      },
-      {
-        title: t.nav.about,
-        href: "/about",
-      },
-      {
-        title: t.nav.privacy || "隐私政策",
-        href: "/privacy",
-      },
-      {
-        title: t.nav.terms || "服务条款",
-        href: "/terms",
-      },
+      { title: t.nav?.solutions || "解决方案", href: "/solutions" },
+      { title: t.nav?.about || "关于我们", href: "/about" },
+      { title: t.nav?.privacy || "隐私政策", href: "/privacy" },
+      { title: t.nav?.terms || "服务条款", href: "/terms" },
     ],
   };
 }
 
-// 核心服务配置
-export function getServicesConfig(t: any) {
-  return [
-    {
-      id: "fba",
-      title: t.services.fba.title,
-      description: t.services.fba.description,
-      icon: "Package",
-      href: "/services/fba",
-      features: t.services.fba.features,
-    },
-    {
-      id: "dropshipping",
-      title: t.services.dropshipping.title,
-      description: t.services.dropshipping.description,
-      icon: "Truck",
-      href: "/services/dropshipping",
-      features: t.services.dropshipping.features,
-    },
-    {
-      id: "returns",
-      title: t.services.returns.title,
-      description: t.services.returns.description,
-      icon: "RefreshCw",
-      href: "/services/returns",
-      features: t.services.returns.features,
-    },
-  ];
+// 获取解决方案列表配置（带翻译）
+export function getSolutionsConfig(t: any) {
+  return solutionConfigs.map(({ key, icon, slug, image }) => {
+    const solutionData = t.solutions?.[key] as { title: string; description: string; features?: string[] } | undefined;
+    return {
+      id: key,
+      key,
+      title: solutionData?.title || key,
+      description: solutionData?.description || "",
+      features: solutionData?.features || [],
+      icon,
+      slug,
+      image,
+      href: `/solutions/${slug}`,
+    };
+  });
+}
+
+// 根据slug获取单个解决方案配置
+export function getSolutionBySlug(slug: string) {
+  return solutionConfigs.find(s => s.slug === slug);
 }
 
 // 统计数据配置

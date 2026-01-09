@@ -15,13 +15,19 @@
   },
   "nav": {
     "home": "首页",
-    "services": "服务",
+    "services": "解决方案",
+    "solutions": "解决方案",
+    "allSolutions": "全部解决方案",
     "about": "关于我们",
     "news": "新闻动态",
     "contact": "联系我们",
-    "fba": "FBA头程",
+    "fba": "FBA尾程",
+    "truckFreight": "卡派服务",
+    "crossBorder": "北美跨境物流",
+    "amazonFba": "Amazon FBA",
     "dropshipping": "一件代发",
-    "returns": "退货换标"
+    "returns": "退货换标",
+    "warehouse": "仓储管理"
   },
   "hero": {
     "badge": "专业跨境物流服务商",
@@ -83,6 +89,18 @@
         "二次销售处理",
         "报废销毁服务",
         "数据报告分析"
+      ]
+    },
+    "warehouse":{
+      "title": "仓储管理",
+      "description": "专业的仓储管理服务，提供24小时库存监控，智能库存管理，货物安全无忧。",
+      "features": [
+        "24小时库存监控",
+        "智能库存管理",
+        "货物安全无忧",
+        "订单处理",
+        "包装定制服务",
+        "仓储定制服务"
       ]
     }
   },
@@ -320,7 +338,20 @@
     "sessionTimeout": "会话超时（分钟）",
     "maxLoginAttempts": "最大登录尝试次数",
     "saveSettings": "保存设置",
-    "save": "保存"
+    "save": "保存",
+    "pages": {
+      "title": "页面管理",
+      "description": "管理隐私政策、服务条款等静态页面",
+      "addNew": "新建页面",
+      "list": "页面列表",
+      "listDesc": "管理网站的静态页面内容",
+      "noPages": "暂无页面，点击上方按钮创建",
+      "slug": "标识",
+      "pageTitle": "标题",
+      "status": "状态",
+      "updatedAt": "更新时间",
+      "actions": "操作"
+    }
   },
   "user": {
     "center": "用户中心",
@@ -460,7 +491,10 @@
     "loginNow": "立即登录",
     "enterEmailPassword": "请输入邮箱和密码",
     "userNotExist": "用户不存在",
-    "wrongPassword": "密码错误"
+    "wrongPassword": "密码错误",
+    "captchaRequired": "请先完成人机验证",
+    "verifyHuman": "请验证您是人类",
+    "captchaHint": "请完成验证以启用登录/注册"
   },
   "form": {
     "nameRequired": "姓名至少2个字符",
@@ -538,7 +572,7 @@
       "CLOSED": "已关闭"
     }
   },
-  "dashboard": {
+ "dashboard": {
     "title": "控制台",
     "description": "欢迎使用 Bestar Logistics 客户控制台",
     "pendingOrders": "待处理订单",
@@ -554,5 +588,119 @@
     "newQuote": "新建询价",
     "viewQuotes": "查看询价",
     "editProfile": "编辑资料"
+  },
+  "cookie": {
+    "title": "Cookie 设置",
+    "description": "我们使用Cookie来增强您的浏览体验、分析网站流量并提供个性化内容。点击'全部接受'，即表示您同意我们使用Cookie。",
+    "acceptAll": "全部接受",
+    "rejectAll": "全部拒绝",
+    "customize": "自定义",
+    "settingsTitle": "Cookie 偏好设置",
+    "settingsDescription": "管理您的Cookie偏好设置。您可以在下方启用或禁用不同类型的Cookie。",
+    "necessary": "必要Cookie",
+    "necessaryDesc": "网站正常运行所必需的Cookie。",
+    "analytics": "分析Cookie",
+    "analyticsDesc": "帮助我们了解访客如何与网站互动。",
+    "marketing": "营销Cookie",
+    "marketingDesc": "用于跨网站跟踪访客以进行广告投放。",
+    "preferences": "偏好Cookie",
+    "preferencesDesc": "记住您的设置和偏好以获得更好的体验。",
+    "cancel": "取消",
+    "savePreferences": "保存偏好设置"
+  },
+  "solutions": {
+    "title": "我们的解决方案",
+    "subtitle": "全方位的跨境物流解决方案，助力您的全球业务拓展",
+    "viewAll": "查看全部解决方案",
+    "pageTitle": "物流解决方案",
+    "pageSubtitle": "全方位的跨境物流解决方案，助力您的全球业务拓展。我们提供从仓储、运输到配送的一站式服务。",
+    "aboutService": "服务介绍",
+    "keyFeatures": "核心特点",
+    "contactHint": "有任何问题？我们的专业团队随时为您服务",
+    "otherSolutions": "其他解决方案",
+    "fbaLastMile": {
+      "title": "FBA尾程",
+      "description": "利用我们北美广泛运输网络以及预先谈判的运输折扣，为您提供最具性价比的小包裹运输费率，节约运输成本的同时，丰富您的小包裹运输选择。",
+      "features": [
+        "优惠的小包裹运费",
+        "广泛的北美运输网络",
+        "多种运输选择",
+        "成本节约优化",
+        "实时货物追踪",
+        "专业物流支持"
+      ]
+    },
+    "truckFreight": {
+      "title": "卡派服务",
+      "description": "将多家北美知名卡派承运商整合到Bestar'一站式'物流平台，提供实时询价、下单、预约、跟踪以及关务税务等问题，让您对整个流程的每一个环节都具备完全的控制和可见性。",
+      "features": [
+        "多承运商整合",
+        "实时询价下单",
+        "在线预约管理",
+        "全程货物跟踪",
+        "关务税务支持",
+        "一站式物流服务"
+      ]
+    },
+    "crossBorder": {
+      "title": "北美跨境物流",
+      "description": "Bestar为您提供完整的加拿大和美国之间的跨境物流运输服务，为卡派运输和快递包裹服务提供最优惠的价格。无论是从温哥华到洛杉矶的几个托盘，还是从多伦多到西雅图的一个包裹，或者任何介于两者之间的货物，我们都能为您提供卓越且经济的运输解决方案。",
+      "features": [
+        "加美跨境运输",
+        "卡派运输服务",
+        "快递包裹服务",
+        "优惠运费价格",
+        "灵活运输方案",
+        "专业清关服务"
+      ]
+    },
+    "amazonFba": {
+      "title": "Amazon FBA",
+      "description": "提供具有竞争力的FBA运费，助力您轻松将产品送达加拿大的仓储中心。通过Bestar，您可以流畅地管理亚马逊FBA物流，确保无缝交付至亚马逊仓库，并妥善处理所有FBA相关的前置要求。",
+      "features": [
+        "竞争力FBA运费",
+        "加拿大仓储配送",
+        "FBA物流管理",
+        "无缝仓库交付",
+        "FBA前置处理",
+        "专业亚马逊支持"
+      ]
+    },
+    "warehouse": {
+      "title": "仓储管理",
+      "description": "提供专业的仓储管理服务，配备现代化仓储设施和智能库存管理系统，为您的货物提供安全、高效的存储解决方案。",
+      "features": [
+        "现代化仓储设施",
+        "智能库存管理",
+        "7x24小时监控",
+        "货物保险保障",
+        "订单快速处理",
+        "定制仓储方案"
+      ]
+    },
+    "dropshipping": {
+      "title": "一件代发",
+      "description": "高效的一件代发仓储物流服务，支持多平台对接，订单自动同步，快速出库，助力您的电商业务腾飞。",
+      "features": [
+        "多平台API对接",
+        "自动订单同步",
+        "智能库存管理",
+        "次日达配送",
+        "退换货处理",
+        "包装定制服务"
+      ]
+    },
+    "returns": {
+      "title": "退货换标",
+      "description": "专业的退货处理和换标服务，帮助您降低退货成本，提高商品周转率，实现二次销售价值最大化。",
+      "features": [
+        "退货接收处理",
+        "商品质检分类",
+        "重新包装换标",
+        "二次销售处理",
+        "报废销毁服务",
+        "数据报告分析"
+      ]
+    }
   }
 }

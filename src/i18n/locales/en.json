@@ -15,13 +15,19 @@
   },
   "nav": {
     "home": "Home",
-    "services": "Services",
+    "services": "Solutions",
+    "solutions": "Solutions",
+    "allSolutions": "All Solutions",
     "about": "About Us",
     "news": "News",
     "contact": "Contact",
-    "fba": "FBA First-Mile",
+    "fba": "FBA Last Mile",
+    "truckFreight": "Truck Freight",
+    "crossBorder": "Cross-Border Logistics",
+    "amazonFba": "Amazon FBA",
     "dropshipping": "Dropshipping",
-    "returns": "Returns & Relabeling"
+    "returns": "Returns & Relabeling",
+    "warehouse": "Warehouse Management"
   },
   "hero": {
     "badge": "Professional Cross-Border Logistics",
@@ -83,6 +89,18 @@
         "Secondary Sales Processing",
         "Disposal Service",
         "Data Report Analysis"
+      ]
+    },
+    "warehouse":{
+      "title": "Warehouse Management",
+      "description": "Professional warehouse management services with modern warehouse space and intelligent inventory management.",
+      "features": [
+        "Modern Warehouse Space",
+        "Intelligent Inventory Management",
+        "24/7 Access",
+        "24/7 Customer Support",
+        "Cargo Insurance",
+        "Fast Delivery"
       ]
     }
   },
@@ -320,7 +338,20 @@
     "sessionTimeout": "Session Timeout (minutes)",
     "maxLoginAttempts": "Max Login Attempts",
     "saveSettings": "Save Settings",
-    "save": "Save"
+    "save": "Save",
+    "pages": {
+      "title": "Page Management",
+      "description": "Manage privacy policy, terms of service and other static pages",
+      "addNew": "New Page",
+      "list": "Page List",
+      "listDesc": "Manage static page content",
+      "noPages": "No pages yet, click the button above to create",
+      "slug": "Slug",
+      "pageTitle": "Title",
+      "status": "Status",
+      "updatedAt": "Updated",
+      "actions": "Actions"
+    }
   },
   "user": {
     "center": "User Center",
@@ -460,7 +491,10 @@
     "loginNow": "Login Now",
     "enterEmailPassword": "Please enter email and password",
     "userNotExist": "User does not exist",
-    "wrongPassword": "Wrong password"
+    "wrongPassword": "Wrong password",
+    "captchaRequired": "Please complete the verification first",
+    "verifyHuman": "Verify you are human",
+    "captchaHint": "Please complete verification to enable login/register"
   },
   "form": {
     "nameRequired": "Name must be at least 2 characters",
@@ -554,5 +588,119 @@
     "newQuote": "New Quote",
     "viewQuotes": "View Quotes",
     "editProfile": "Edit Profile"
+  },
+  "cookie": {
+    "title": "Cookie Settings",
+    "description": "We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. By clicking 'Accept All', you consent to our use of cookies.",
+    "acceptAll": "Accept All",
+    "rejectAll": "Reject All",
+    "customize": "Customize",
+    "settingsTitle": "Cookie Preferences",
+    "settingsDescription": "Manage your cookie preferences. You can enable or disable different types of cookies below.",
+    "necessary": "Necessary Cookies",
+    "necessaryDesc": "Essential for the website to function properly.",
+    "analytics": "Analytics Cookies",
+    "analyticsDesc": "Help us understand how visitors interact with our website.",
+    "marketing": "Marketing Cookies",
+    "marketingDesc": "Used to track visitors across websites for advertising purposes.",
+    "preferences": "Preference Cookies",
+    "preferencesDesc": "Remember your settings and preferences for a better experience.",
+    "cancel": "Cancel",
+    "savePreferences": "Save Preferences"
+  },
+  "solutions": {
+    "title": "Our Solutions",
+    "subtitle": "Comprehensive cross-border logistics solutions to support your global business expansion",
+    "viewAll": "View All Solutions",
+    "pageTitle": "Logistics Solutions",
+    "pageSubtitle": "Comprehensive cross-border logistics solutions to support your global business expansion. We provide one-stop services from warehousing, transportation to delivery.",
+    "aboutService": "Service Introduction",
+    "keyFeatures": "Key Features",
+    "contactHint": "Any questions? Our professional team is ready to serve you",
+    "otherSolutions": "Other Solutions",
+    "fbaLastMile": {
+      "title": "FBA Last Mile",
+      "description": "Leveraging our extensive North American transportation network and pre-negotiated shipping discounts, we provide you with the most cost-effective small parcel shipping rates, saving transportation costs while enriching your small parcel shipping options.",
+      "features": [
+        "Discounted Parcel Rates",
+        "Extensive NA Network",
+        "Multiple Shipping Options",
+        "Cost Optimization",
+        "Real-time Tracking",
+        "Professional Support"
+      ]
+    },
+    "truckFreight": {
+      "title": "Truck Freight Service",
+      "description": "Integrating multiple renowned North American truck freight carriers into Bestar's one-stop logistics platform, providing real-time quoting, ordering, booking, tracking, and customs/tax handling, giving you complete control and visibility over every step of the process.",
+      "features": [
+        "Multi-Carrier Integration",
+        "Real-time Quoting",
+        "Online Booking",
+        "Full Shipment Tracking",
+        "Customs & Tax Support",
+        "One-Stop Service"
+      ]
+    },
+    "crossBorder": {
+      "title": "North America Cross-Border",
+      "description": "Bestar provides complete cross-border logistics services between Canada and the US, offering the best prices for truck freight and parcel services. Whether it's a few pallets from Vancouver to Los Angeles, a package from Toronto to Seattle, or anything in between, we can provide you with excellent and economical shipping solutions.",
+      "features": [
+        "Canada-US Shipping",
+        "Truck Freight Service",
+        "Parcel Service",
+        "Competitive Pricing",
+        "Flexible Solutions",
+        "Professional Clearance"
+      ]
+    },
+    "amazonFba": {
+      "title": "Amazon FBA",
+      "description": "Providing competitive FBA shipping rates to help you easily deliver products to Canadian fulfillment centers. Through Bestar, you can smoothly manage Amazon FBA logistics, ensuring seamless delivery to Amazon warehouses and properly handling all FBA-related prep requirements.",
+      "features": [
+        "Competitive FBA Rates",
+        "Canada FC Delivery",
+        "FBA Logistics Management",
+        "Seamless Warehouse Delivery",
+        "FBA Prep Handling",
+        "Amazon Expert Support"
+      ]
+    },
+    "warehouse": {
+      "title": "Warehouse Management",
+      "description": "Professional warehouse management services with modern facilities and intelligent inventory management systems, providing safe and efficient storage solutions for your goods.",
+      "features": [
+        "Modern Facilities",
+        "Smart Inventory System",
+        "24/7 Monitoring",
+        "Cargo Insurance",
+        "Fast Order Processing",
+        "Custom Solutions"
+      ]
+    },
+    "dropshipping": {
+      "title": "Dropshipping",
+      "description": "Efficient dropshipping warehouse logistics services with multi-platform integration, automatic order synchronization, and fast dispatch to boost your e-commerce business.",
+      "features": [
+        "Multi-Platform API",
+        "Auto Order Sync",
+        "Smart Inventory",
+        "Next-Day Delivery",
+        "Return Processing",
+        "Custom Packaging"
+      ]
+    },
+    "returns": {
+      "title": "Returns & Relabeling",
+      "description": "Professional return processing and relabeling services to help you reduce return costs, improve product turnover rate, and maximize secondary sales value.",
+      "features": [
+        "Return Receiving",
+        "Quality Inspection",
+        "Repackaging & Relabeling",
+        "Secondary Sales",
+        "Disposal Service",
+        "Data Analytics"
+      ]
+    }
   }
 }

@@ -49,7 +49,7 @@ export async function sendEmail({ to, subject, html, from }: SendEmailOptions): 
     resend.domains.verify(process.env.EMAIL_VERIFY || "");
 
     const { data, error } = await resend.emails.send({
-      from: from || process.env.EMAIL_FROM || 'Bestar Logistics <noreply@bestarca.com>',
+      from: from || process.env.EMAIL_FROM || 'Bestar Logistics <noreply@bestarcca.com>',
       to: Array.isArray(to) ? to : [to],
       subject,
       html,
@@ -98,7 +98,7 @@ export async function sendEmail({ to, subject, html, from }: SendEmailOptions): 
     
 //     const msg = {
 //       to: Array.isArray(to) ? to : [to],
-//       from: from || process.env.EMAIL_FROM || 'noreply@bestarca.com',
+//       from: from || process.env.EMAIL_FROM || 'noreply@bestarcca.com',
 //       subject,
 //       html,
 //     };

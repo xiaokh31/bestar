@@ -3,7 +3,7 @@
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { QuoteForm } from "@/components/forms";
-import { siteConfig } from "@/config/site";
+import { siteLinks } from "@/config/site-config";
 import { useLocale } from "@/i18n/locale-context";
 
 export default function ContactPage() {
@@ -13,19 +13,21 @@ export default function ContactPage() {
     {
       icon: Mail,
       title: t.contact?.email || "邮箱",
-      content: siteConfig.links.email,
-      href: `mailto:${siteConfig.links.email}`,
+      content: siteLinks.email,
+      href: `mailto:${siteLinks.email}`,
     },
     {
       icon: Phone,
       title: t.contact?.phone || "电话",
-      content: siteConfig.links.phone,
-      href: `tel:${siteConfig.links.phone}`,
+      content: siteLinks.phone,
+      href: `tel:${siteLinks.phone}`,
     },
     {
       icon: MapPin,
       title: t.contact?.address || "地址",
-      content: siteConfig.links.address,
+      content: siteLinks.address,
+      href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteLinks.address)}`,
+      isExternal: true,
     },
     {
       icon: Clock,
@@ -68,7 +70,9 @@ export default function ContactPage() {
                       {info.href ? (
                         <a
                           href={info.href}
-                          className="text-muted-foreground hover:text-primary"
+                          className="text-muted-foreground hover:text-primary hover:underline"
+                          target={info.isExternal ? "_blank" : undefined}
+                          rel={info.isExternal ? "noopener noreferrer" : undefined}
                         >
                           {info.content}
                         </a>

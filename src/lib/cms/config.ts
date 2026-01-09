@@ -5,7 +5,7 @@ export type CMSProvider = 'sanity' | 'contentful' | 'local';
 
 // 当前使用的CMS提供商，可通过环境变量配置
 export const CMS_PROVIDER: CMSProvider = 
-  (process.env.NEXT_PUBLIC_CMS_PROVIDER as CMSProvider) || 'local';
+  (process.env.CMS_PROVIDER as CMSProvider) || 'local';
 
 // Sanity配置
 export const sanityConfig = {

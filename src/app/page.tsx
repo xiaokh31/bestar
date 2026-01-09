@@ -1,7 +1,7 @@
 import {
   HeroSection,
   StatsSection,
-  ServicesSection,
+  SolutionsSection,
   FeaturesSection,
   CTASection,
 } from "@/components/marketing";
@@ -11,7 +11,7 @@ export default function HomePage() {
     <>
       <HeroSection />
       <StatsSection />
-      <ServicesSection />
+      <SolutionsSection />
       <FeaturesSection />
       <CTASection />
     </>

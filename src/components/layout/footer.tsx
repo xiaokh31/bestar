@@ -13,7 +13,7 @@ export function Footer() {
   // 从翻译文件动态获取快速链接
   const quickLinks = [
     { title: t.nav.home, href: "/" },
-    { title: t.nav.services, href: "/services" },
+    { title: t.nav.solutions || t.nav.services, href: "/solutions" },
     { title: t.nav.about, href: "/about" },
     { title: t.nav.news, href: "/news" },
     { title: t.nav.contact, href: "/contact" },
@@ -47,27 +47,51 @@ export function Footer() {
             </nav>
           </div>
 
-          {/* Services */}
+          {/* Services - 更新为解决方案 */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold">{t.footer.ourServices}</h4>
+            <h4 className="text-lg font-semibold">{t.solutions?.title || t.footer.ourServices}</h4>
             <nav className="flex flex-col space-y-2">
               <Link
-                href="/services/fba"
+                href="/solutions/fba-last-mile"
                 className="text-sm opacity-80 hover:opacity-100 hover:underline"
               >
-                {t.nav.fba}
+                {t.solutions?.fbaLastMile?.title || "FBA尾程"}
               </Link>
               <Link
-                href="/services/dropshipping"
+                href="/solutions/truck-freight"
                 className="text-sm opacity-80 hover:opacity-100 hover:underline"
               >
-                {t.nav.dropshipping}
+                {t.solutions?.truckFreight?.title || "卡派服务"}
               </Link>
               <Link
-                href="/services/returns"
+                href="/solutions/cross-border"
                 className="text-sm opacity-80 hover:opacity-100 hover:underline"
               >
-                {t.nav.returns}
+                {t.solutions?.crossBorder?.title || "北美跨境物流"}
+              </Link>
+              <Link
+                href="/solutions/amazon-fba"
+                className="text-sm opacity-80 hover:opacity-100 hover:underline"
+              >
+                {t.solutions?.amazonFba?.title || "Amazon FBA"}
+              </Link>
+              <Link
+                href="/solutions/warehouse"
+                className="text-sm opacity-80 hover:opacity-100 hover:underline"
+              >
+                {t.solutions?.warehouse?.title || "仓储管理"}
+              </Link>
+              <Link
+                href="/solutions/dropshipping"
+                className="text-sm opacity-80 hover:opacity-100 hover:underline"
+              >
+                {t.solutions?.dropshipping?.title || "一件代发"}
+              </Link>
+              <Link
+                href="/solutions/returns"
+                className="text-sm opacity-80 hover:opacity-100 hover:underline"
+              >
+                {t.solutions?.returns?.title || "退货换标"}
               </Link>
             </nav>
           </div>
@@ -90,10 +114,15 @@ export function Footer() {
                 <Phone className="h-4 w-4" />
                 {siteConfig.links.phone}
               </a>
-              <div className="flex items-start gap-2 text-sm opacity-80">
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteConfig.links.address)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-2 text-sm opacity-80 hover:opacity-100 hover:underline"
+              >
                 <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
                 <span>{siteConfig.links.address}</span>
-              </div>
+              </a>
             </div>
           </div>
         </div>

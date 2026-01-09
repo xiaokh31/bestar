@@ -18,12 +18,17 @@ import {
 import { loginFormSchema, LoginFormValues } from "@/lib/validations";
 import { Loader2 } from "lucide-react";
 import { useLocale } from "@/i18n/locale-context";
+import { SimpleMathCaptcha, CaptchaV2Checkbox } from "@/components/captcha";
 
 export function LoginForm() {
   const router = useRouter();
   const { t } = useLocale();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
+
+  // Check if external reCAPTCHA is configured
+  const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -34,6 +39,11 @@ export function LoginForm() {
   });
 
   async function onSubmit(data: LoginFormValues) {
+    if (!isCaptchaVerified) {
+      setError(t.auth?.captchaRequired || "Please complete the verification first");
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -56,6 +66,15 @@ export function LoginForm() {
       setIsLoading(false);
     }
   }
+
+  const handleCaptchaVerify = (verified: boolean | string) => {
+    // SimpleMathCaptcha passes boolean, CaptchaV2Checkbox passes token string
+    setIsCaptchaVerified(typeof verified === "string" ? true : verified);
+  };
+
+  const handleCaptchaExpire = () => {
+    setIsCaptchaVerified(false);
+  };
 
   return (
     <Form {...form}>
@@ -94,7 +113,27 @@ export function LoginForm() {
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        {/* CAPTCHA Verification */}
+        <div className="py-2">
+          {recaptchaSiteKey ? (
+            <CaptchaV2Checkbox
+              siteKey={recaptchaSiteKey}
+              onVerify={handleCaptchaVerify}
+              onExpire={handleCaptchaExpire}
+            />
+          ) : (
+            <SimpleMathCaptcha
+              onVerify={handleCaptchaVerify}
+              label={t.auth?.verifyHuman || "Verify you are human"}
+            />
+          )}
+        </div>
+
+        <Button 
+          type="submit" 
+          className="w-full" 
+          disabled={isLoading || !isCaptchaVerified}
+        >
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -104,6 +143,12 @@ export function LoginForm() {
             t.auth.login
           )}
         </Button>
+
+        {!isCaptchaVerified && (
+          <p className="text-xs text-center text-muted-foreground">
+            {t.auth?.captchaHint || "Please complete verification to enable login"}
+          </p>
+        )}
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">

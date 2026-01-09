@@ -15,13 +15,19 @@
   },
   "nav": {
     "home": "Accueil",
-    "services": "Services",
+    "services": "Solutions",
+    "solutions": "Solutions",
+    "allSolutions": "Toutes les solutions",
     "about": "À propos",
     "news": "Actualités",
     "contact": "Contact",
-    "fba": "FBA Premier Mile",
+    "fba": "FBA Dernier Kilomètre",
+    "truckFreight": "Fret Routier",
+    "crossBorder": "Logistique Transfrontalière",
+    "amazonFba": "Amazon FBA",
     "dropshipping": "Dropshipping",
-    "returns": "Retours et Réétiquetage"
+    "returns": "Retours et Réétiquetage",
+    "warehouse": "Gestion de l'entrepôt"
   },
   "hero": {
     "badge": "Logistique transfrontalière professionnelle",
@@ -83,6 +89,18 @@
         "Traitement des ventes secondaires",
         "Service d'élimination",
         "Analyse des rapports de données"
+      ]
+    },
+    "warehouse":{
+      "title": "Entrepôt",
+      "description": "Services d'entrepôt professionnels avec espace d'entrepôt moderne et gestion intelligente des stocks.",
+      "features": [
+        "Espace d'entrepôt moderne",
+        "Gestion intelligente des stocks",
+        "Accès 24/7",
+        "Service client 24/7",
+        "Assurance des marchandises",
+        "Livraison rapide"
       ]
     }
   },
@@ -320,7 +338,20 @@
     "sessionTimeout": "Délai d'expiration de session (minutes)",
     "maxLoginAttempts": "Tentatives de connexion max",
     "saveSettings": "Enregistrer les paramètres",
-    "save": "Enregistrer"
+    "save": "Enregistrer",
+    "pages": {
+      "title": "Gestion des pages",
+      "description": "Gérer la politique de confidentialité, les conditions d'utilisation et autres pages statiques",
+      "addNew": "Nouvelle page",
+      "list": "Liste des pages",
+      "listDesc": "Gérer le contenu des pages statiques",
+      "noPages": "Aucune page pour le moment, cliquez sur le bouton ci-dessus pour créer",
+      "slug": "Identifiant",
+      "pageTitle": "Titre",
+      "status": "État",
+      "updatedAt": "Mis à jour",
+      "actions": "Actions"
+    }
   },
   "user": {
     "center": "Centre utilisateur",
@@ -460,7 +491,10 @@
     "loginNow": "Connectez-vous",
     "enterEmailPassword": "Veuillez entrer l'e-mail et le mot de passe",
     "userNotExist": "L'utilisateur n'existe pas",
-    "wrongPassword": "Mot de passe incorrect"
+    "wrongPassword": "Mot de passe incorrect",
+    "captchaRequired": "Veuillez d'abord compléter la vérification",
+    "verifyHuman": "Vérifiez que vous êtes humain",
+    "captchaHint": "Veuillez compléter la vérification pour activer la connexion/inscription"
   },
   "form": {
     "nameRequired": "Le nom doit contenir au moins 2 caractères",
@@ -554,5 +588,119 @@
     "newQuote": "Nouveau devis",
     "viewQuotes": "Voir les devis",
     "editProfile": "Modifier le profil"
+  },
+  "cookie": {
+    "title": "Paramètres des cookies",
+    "description": "Nous utilisons des cookies pour améliorer votre expérience de navigation, analyser le trafic et personnaliser le contenu. En cliquant sur 'Tout accepter', vous consentez à notre utilisation des cookies.",
+    "acceptAll": "Tout accepter",
+    "rejectAll": "Tout refuser",
+    "customize": "Personnaliser",
+    "settingsTitle": "Préférences de cookies",
+    "settingsDescription": "Gérez vos préférences de cookies. Vous pouvez activer ou désactiver différents types de cookies ci-dessous.",
+    "necessary": "Cookies nécessaires",
+    "necessaryDesc": "Essentiels au bon fonctionnement du site web.",
+    "analytics": "Cookies analytiques",
+    "analyticsDesc": "Nous aident à comprendre comment les visiteurs interagissent avec notre site.",
+    "marketing": "Cookies marketing",
+    "marketingDesc": "Utilisés pour suivre les visiteurs à des fins publicitaires.",
+    "preferences": "Cookies de préférences",
+    "preferencesDesc": "Mémorisent vos paramètres pour une meilleure expérience.",
+    "cancel": "Annuler",
+    "savePreferences": "Enregistrer les préférences"
+  },
+  "solutions": {
+    "title": "Nos solutions",
+    "subtitle": "Solutions logistiques transfrontalières complètes pour soutenir l'expansion de votre entreprise mondiale",
+    "viewAll": "Voir toutes les solutions",
+    "pageTitle": "Solutions logistiques",
+    "pageSubtitle": "Solutions logistiques transfrontalières complètes pour soutenir l'expansion de votre entreprise mondiale. Nous fournissons des services complets de l'entreposage au transport et à la livraison.",
+    "aboutService": "Présentation du service",
+    "keyFeatures": "Caractéristiques clés",
+    "contactHint": "Des questions ? Notre équipe professionnelle est prête à vous servir",
+    "otherSolutions": "Autres solutions",
+    "fbaLastMile": {
+      "title": "FBA Dernier Kilometre",
+      "description": "En tirant parti de notre vaste réseau de transport nord-américain et de nos remises de transport prénégociées, nous vous offrons les tarifs d'expédition de petits colis les plus rentables.",
+      "features": [
+        "Tarifs colis réduits",
+        "Réseau NA étendu",
+        "Options d'expédition multiples",
+        "Optimisation des coûts",
+        "Suivi en temps réel",
+        "Support professionnel"
+      ]
+    },
+    "truckFreight": {
+      "title": "Service de camionnage",
+      "description": "Intégrant plusieurs transporteurs de fret routier nord-américains renommés dans la plateforme logistique unique de Bestar, offrant devis en temps réel, commande, réservation, suivi et gestion douanière/fiscale.",
+      "features": [
+        "Intégration multi-transporteurs",
+        "Devis en temps réel",
+        "Réservation en ligne",
+        "Suivi complet",
+        "Support douanes et taxes",
+        "Service unique"
+      ]
+    },
+    "crossBorder": {
+      "title": "Logistique transfrontalière NA",
+      "description": "Bestar fournit des services de logistique transfrontalière complets entre le Canada et les États-Unis, offrant les meilleurs prix pour le fret routier et les services de colis.",
+      "features": [
+        "Expédition Canada-USA",
+        "Service de fret routier",
+        "Service de colis",
+        "Prix compétitifs",
+        "Solutions flexibles",
+        "Dédouanement professionnel"
+      ]
+    },
+    "amazonFba": {
+      "title": "Amazon FBA",
+      "description": "Offrant des tarifs d'expédition FBA compétitifs pour vous aider à livrer facilement vos produits aux centres de distribution canadiens. Gérez en douceur la logistique Amazon FBA avec Bestar.",
+      "features": [
+        "Tarifs FBA compétitifs",
+        "Livraison Canada FC",
+        "Gestion logistique FBA",
+        "Livraison entrepôt fluide",
+        "Gestion prép FBA",
+        "Support expert Amazon"
+      ]
+    },
+    "warehouse": {
+      "title": "Gestion d'entrepôt",
+      "description": "Services professionnels de gestion d'entrepôt avec installations modernes et systèmes de gestion des stocks intelligents.",
+      "features": [
+        "Installations modernes",
+        "Système de stock intelligent",
+        "Surveillance 24/7",
+        "Assurance marchandises",
+        "Traitement rapide",
+        "Solutions personnalisées"
+      ]
+    },
+    "dropshipping": {
+      "title": "Dropshipping",
+      "description": "Services de logistique d'entrepôt dropshipping efficaces avec intégration multi-plateforme et synchronisation automatique des commandes.",
+      "features": [
+        "API multi-plateforme",
+        "Sync auto commandes",
+        "Stock intelligent",
+        "Livraison lendemain",
+        "Traitement retours",
+        "Emballage personnalisé"
+      ]
+    },
+    "returns": {
+      "title": "Retours et réétiquetage",
+      "description": "Services professionnels de traitement des retours et de réétiquetage pour réduire les coûts et maximiser la valeur des ventes secondaires.",
+      "features": [
+        "Réception des retours",
+        "Inspection qualité",
+        "Réemballage",
+        "Ventes secondaires",
+        "Service élimination",
+        "Analyses de données"
+      ]
+    }
   }
 }
