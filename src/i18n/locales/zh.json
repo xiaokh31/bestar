@@ -351,7 +351,10 @@
       "status": "状态",
       "updatedAt": "更新时间",
       "actions": "操作"
-    }
+    },
+    "messages": "消息管理",
+    "staffArticlePermission": "员工文章管理权限",
+    "staffArticlePermissionHint": "允许该员工管理文章"
   },
   "user": {
     "center": "用户中心",

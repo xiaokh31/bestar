@@ -29,6 +29,8 @@ model User {
   // 两步验证
   twoFactorEnabled   Boolean @default(false)
   twoFactorSecret    String?
+  // 员工特殊权限
+  canManageArticles  Boolean @default(false)  // 员工管理文章权限
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 

@@ -60,6 +60,7 @@ export async function GET(request: NextRequest) {
           role: true,
           emailVerified: true,
           image: true,
+          canManageArticles: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -103,7 +104,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { id, role, name, phone, company } = body;
+    const { id, role, name, phone, company, canManageArticles } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -125,6 +126,7 @@ export async function PATCH(request: NextRequest) {
     if (name !== undefined) updateData.name = name;
     if (phone !== undefined) updateData.phone = phone;
     if (company !== undefined) updateData.company = company;
+    if (canManageArticles !== undefined) updateData.canManageArticles = canManageArticles;
 
     const user = await prisma.user.update({
       where: { id },
@@ -133,9 +135,12 @@ export async function PATCH(request: NextRequest) {
         id: true,
         name: true,
         email: true,
+        phone: true,
+        company: true,
         role: true,
         emailVerified: true,
         image: true,
+        canManageArticles: true,
         createdAt: true,
         updatedAt: true,
       },

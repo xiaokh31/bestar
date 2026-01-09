@@ -67,23 +67,20 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
     const fetchArticle = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/admin/articles?search=${id}`);
+        // 使用专用的单篇文章详情 API
+        const response = await fetch(`/api/admin/articles/${id}`);
         if (response.ok) {
-          const data = await response.json();
-          const found = data.articles.find((a: Article) => a.id === id);
-          if (found) {
-            setArticle(found);
-            setFormData({
-              title: found.title,
-              content: found.content,
-              category: found.category,
-              status: found.status,
-            });
-          } else {
-            setError('文章不存在');
-          }
+          const article = await response.json();
+          setArticle(article);
+          setFormData({
+            title: article.title,
+            content: article.content,
+            category: article.category,
+            status: article.status,
+          });
         } else {
-          setError('获取文章失败');
+          const errorData = await response.json();
+          setError(errorData.error || '文章不存在');
         }
       } catch (err) {
         setError('获取文章失败');

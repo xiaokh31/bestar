@@ -30,13 +30,14 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Search, MoreHorizontal, UserCog, Ban, Trash2, Loader2, Save } from "lucide-react";
+import { Search, MoreHorizontal, UserCog, Ban, Trash2, Loader2, Save, FileText } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Switch } from "@/components/ui/switch";
 import { useLocale } from "@/i18n/locale-context";
 
 interface User {
@@ -48,6 +49,7 @@ interface User {
   role: string;
   emailVerified: boolean | null;
   image?: string;
+  canManageArticles?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -68,6 +70,7 @@ export default function UsersManagePage() {
     phone: "",
     company: "",
     role: "",
+    canManageArticles: false,
   });
   const { t } = useLocale();
 
@@ -119,8 +122,31 @@ export default function UsersManagePage() {
       phone: user.phone || "",
       company: user.company || "",
       role: user.role,
+      canManageArticles: user.canManageArticles || false,
     });
     setShowEditDialog(true);
+  };
+
+  // 切换员工文章管理权限
+  const toggleArticlePermission = async (user: User) => {
+    const newValue = !user.canManageArticles;
+    try {
+      const response = await fetch("/api/admin/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: user.id, canManageArticles: newValue }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUsers(users.map(u => u.id === user.id ? { ...u, canManageArticles: newValue } : u));
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || "更新权限失败");
+      }
+    } catch (err) {
+      alert("更新权限失败");
+    }
   };
 
   // 保存用户信息
@@ -260,6 +286,7 @@ export default function UsersManagePage() {
                     <TableHead>用户</TableHead>
                     <TableHead>邮箱</TableHead>
                     <TableHead>角色</TableHead>
+                    <TableHead>文章权限</TableHead>
                     <TableHead>注册日期</TableHead>
                     <TableHead className="text-right">操作</TableHead>
                   </TableRow>
@@ -308,6 +335,23 @@ export default function UsersManagePage() {
                               </SelectContent>
                             </Select>
                           </TableCell>
+                          <TableCell>
+                            {user.role === 'STAFF' ? (
+                              <div className="flex items-center gap-2">
+                                <Switch
+                                  checked={user.canManageArticles || false}
+                                  onCheckedChange={() => toggleArticlePermission(user)}
+                                />
+                                <span className="text-xs text-muted-foreground">
+                                  {user.canManageArticles ? '已开启' : '未开启'}
+                                </span>
+                              </div>
+                            ) : (
+                              <span className="text-xs text-muted-foreground">
+                                {user.role === 'ADMIN' ? '管理员默认有权限' : '-'}
+                              </span>
+                            )}
+                          </TableCell>
                           <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
                           <TableCell className="text-right">
                             <DropdownMenu>
@@ -336,7 +380,7 @@ export default function UsersManagePage() {
                     })
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                         暂无用户数据
                       </TableCell>
                     </TableRow>
@@ -416,7 +460,7 @@ export default function UsersManagePage() {
               <Label htmlFor="role">角色</Label>
               <Select 
                 value={editForm.role} 
-                onValueChange={(value) => setEditForm({ ...editForm, role: value })}
+                onValueChange={(value) => setEditForm({ ...editForm, role: value, canManageArticles: value === 'STAFF' ? editForm.canManageArticles : false })}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -431,6 +475,25 @@ export default function UsersManagePage() {
                 </SelectContent>
               </Select>
             </div>
+            {/* 员工文章管理权限开关 */}
+            {editForm.role === 'STAFF' && (
+              <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/30">
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-4 w-4 text-muted-foreground" />
+                    <Label htmlFor="canManageArticles" className="font-medium">文章管理权限</Label>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    允许该员工撰写和管理文章
+                  </p>
+                </div>
+                <Switch
+                  id="canManageArticles"
+                  checked={editForm.canManageArticles}
+                  onCheckedChange={(checked) => setEditForm({ ...editForm, canManageArticles: checked })}
+                />
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowEditDialog(false)}>

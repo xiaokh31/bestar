@@ -84,17 +84,18 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.role = user.role;
         token.id = user.id;
+        token.canManageArticles = user.canManageArticles;
       }
       
-      // 如果是刷新或更新，从数据库重新获取用户角色（确保角色变更能即时生效）
+      // 如果是刷新或更新，从数据库重新获取用户信息（确保角色变更能即时生效）
       if (trigger === 'update' || (token.id && !token.role)) {
         try {
           const dbUser = await prisma.user.findUnique({
             where: { id: token.id as string },
-            select: { role: true },
           });
           if (dbUser) {
             token.role = dbUser.role;
+            token.canManageArticles = (dbUser as any).canManageArticles || false;
           }
         } catch (error) {
           console.error('Error fetching user role:', error);
@@ -107,6 +108,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.role = token.role as string;
         session.user.id = token.id as string;
+        session.user.canManageArticles = token.canManageArticles as boolean;
       }
       return session;
     },
