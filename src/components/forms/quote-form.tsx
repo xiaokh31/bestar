@@ -25,19 +25,18 @@ import {
 import { quoteFormSchema, QuoteFormValues } from "@/lib/validations";
 import { Loader2, CheckCircle } from "lucide-react";
 import { useLocale } from "@/i18n/locale-context";
+import { solutionConfigs } from "@/config/site-config";
 
 export function QuoteForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const { t } = useLocale();
 
-  // 使用翻译文件定义服务选项
-  const serviceOptions = [
-    { value: "FBA", label: t.form.fbaService },
-    { value: "DROPSHIPPING", label: t.form.dropshippingService },
-    { value: "RETURNS", label: t.form.returnsService },
-    { value: "OTHER", label: t.form.otherService },
-  ];
+  // 使用 solutionConfigs 生成服务类型选项，支持 i18n
+  const serviceOptions = solutionConfigs.map(({ key }) => ({
+    value: key.toUpperCase(),
+    label: (t.solutions?.[key] as { title: string } | undefined)?.title || key,
+  }));
 
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteFormSchema),

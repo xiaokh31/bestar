@@ -24,7 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getSiteConfig } from "@/config/site-config";
+import { getSiteConfig, solutionConfigs } from "@/config/site-config";
 import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "./language-switcher";
 import { useLocale } from "@/i18n/locale-context";
@@ -39,6 +39,19 @@ export function Header() {
   const isAdmin = session?.user?.role === "ADMIN" || session?.user?.role === "STAFF";
   const siteConfig = getSiteConfig(t);
 
+  // 使用 solutionConfigs 动态生成解决方案导航菜单
+  const solutionNavItems = [
+    {
+      title: t.nav.allSolutions || "全部解决方案",
+      href: "/solutions",
+      isHighlight: true,
+    },
+    ...solutionConfigs.map(({ key, slug }) => ({
+      title: (t.solutions?.[key] as { title: string } | undefined)?.title || key,
+      href: `/solutions/${slug}`,
+    })),
+  ];
+
   // 从翻译文件动态获取导航项
   const mainNav = [
     {
@@ -48,41 +61,7 @@ export function Header() {
     {
       title: t.nav.solutions || t.nav.services,
       href: "/solutions",
-      children: [
-        {
-          title: t.nav.allSolutions || "全部解决方案",
-          href: "/solutions",
-          isHighlight: true,
-        },
-        {
-          title: t.nav.fba,
-          href: "/solutions/fba-last-mile",
-        },
-        {
-          title: t.nav.truckFreight || "卡派服务",
-          href: "/solutions/truck-freight",
-        },
-        {
-          title: t.nav.crossBorder || "跨境物流",
-          href: "/solutions/cross-border",
-        },
-        {
-          title: t.nav.amazonFba || "Amazon FBA",
-          href: "/solutions/amazon-fba",
-        },
-        {
-          title: t.nav.warehouse,
-          href: "/solutions/warehouse",
-        },
-        {
-          title: t.nav.dropshipping,
-          href: "/solutions/dropshipping",
-        },
-        {
-          title: t.nav.returns,
-          href: "/solutions/returns",
-        },
-      ],
+      children: solutionNavItems,
     },
     {
       title: t.nav.about,

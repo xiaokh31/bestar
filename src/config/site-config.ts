@@ -16,6 +16,28 @@ export const siteInfo = {
   ogImage: "/og-image.jpg",
 };
 
+// 微信链接配置
+export const wechatConfig = {
+  url: "https://work.weixin.qq.com/ca/cawcdef9fd107ef21c", // 替换为实际微信二维码链接
+  qrCodeImage: "/images/wechat-qrcode.png", // 可选：微信二维码图片
+};
+
+// 社交媒体链接配置
+export const socialLinks = {
+  facebook: "https://facebook.com/bestarservicecca",
+  linkedin: "https://linkedin.com/company/bestarservicecca",
+  youtube: "https://youtube.com/@bestarservicecca",
+  twitter: "https://x.com/bestarservicecca", // X (Twitter)
+};
+
+// 友情链接配置
+export const partnerLinks = [
+  { name: "UPS", url: "https://www.ups.com" },
+  // 可以添加更多友情链接
+  // { name: "FedEx", url: "https://www.fedex.com" },
+  // { name: "DHL", url: "https://www.dhl.com" },
+];
+
 // ==========================================
 // 解决方案配置 (统一配置，避免重复定义)
 // ==========================================
@@ -24,6 +46,8 @@ export const solutionConfigs = [
   { key: "truckFreight", icon: "Truck", slug: "truck-freight", image: "/images/services/Truck Delivery.jpg" },
   { key: "crossBorder", icon: "Globe", slug: "cross-border", image: "/images/services/Cross-border Logistics.jpg" },
   { key: "amazonFba", icon: "ShoppingCart", slug: "amazon-fba", image: "/images/services/Amazon FBA.jpg" },
+  { key: "chinaToCanada", icon: "Plane", slug: "china-to-canada", image: "/images/services/China-Canada-Consolidation.jpg" },
+  { key: "express", icon: "Zap", slug: "express", image: "/images/services/Express-Service.jpg" },
   { key: "warehouse", icon: "Warehouse", slug: "warehouse", image: "/images/services/Warehouse.jpg" },
   { key: "dropshipping", icon: "Ship", slug: "dropshipping", image: "/images/services/Dropshipping.jpg" },
   { key: "returns", icon: "RefreshCw", slug: "returns", image: "/images/services/Returns.jpg" },

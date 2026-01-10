@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Package, Truck, RefreshCw, CheckCircle, Warehouse, Ship, Globe, ShoppingCart } from "lucide-react";
+import { ArrowRight, Package, Truck, RefreshCw, CheckCircle, Warehouse, Ship, Globe, ShoppingCart, Plane, Zap } from "lucide-react";
 import { CTASection } from "@/components/marketing";
 import { useLocale } from "@/i18n/locale-context";
 import { getSolutionsConfig, solutionConfigs } from "@/config/site-config";
@@ -16,6 +16,8 @@ const iconMap: Record<string, React.ElementType> = {
   Ship: Ship,
   Globe: Globe,
   ShoppingCart: ShoppingCart,
+  Plane: Plane,
+  Zap: Zap,
 };
 
 export default function SolutionsPage() {

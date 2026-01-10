@@ -203,7 +203,9 @@
     "contactUs": "Contactez-nous",
     "rights": "Tous droits réservés",
     "privacy": "Politique de confidentialité",
-    "terms": "Conditions d'utilisation"
+    "terms": "Conditions d'utilisation",
+    "friendlyLinks": "Liens partenaires",
+    "wechat": "WeChat"
   },
   "news": {
     "title": "Actualités",
@@ -667,6 +669,30 @@
         "Livraison entrepôt fluide",
         "Gestion prép FBA",
         "Support expert Amazon"
+      ]
+    },
+    "chinaToCanada": {
+      "title": "Consolidation Chine-Canada",
+      "description": "Services professionnels de consolidation de la Chine vers le Canada, offrant des solutions d'expédition efficaces, sûres et économiques pour les vendeurs e-commerce transfrontaliers. Nous intégrons plusieurs méthodes d'expédition incluant le fret maritime, aérien et express.",
+      "features": [
+        "Options d'expédition multiples",
+        "Consolidation professionnelle",
+        "Délais de transit fiables",
+        "Prix compétitifs",
+        "Suivi complet des envois",
+        "Dédouanement professionnel"
+      ]
+    },
+    "express": {
+      "title": "Service Express",
+      "description": "Services de livraison express nord-américains rapides et fiables couvrant tout le Canada et les États-Unis. Que ce soit pour des petits colis ou des documents, nous offrons des solutions express efficaces et économiques.",
+      "features": [
+        "Délais de livraison rapides",
+        "Couverture Canada-États-Unis",
+        "Suivi en temps réel",
+        "Tarifs compétitifs",
+        "Options de service multiples",
+        "Service de collecte disponible"
       ]
     },
     "warehouse": {

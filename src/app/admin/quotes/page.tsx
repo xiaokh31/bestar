@@ -80,7 +80,7 @@ export default function QuotesManagePage() {
   };
 
   const serviceTypeMap: Record<string, string> = {
-    FBA: "FBA头程",
+    FBA: "FBA尾程",
     DROPSHIPPING: "一件代发",
     RETURNS: "退货换标",
     OTHER: "其他",

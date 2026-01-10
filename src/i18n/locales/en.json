@@ -203,7 +203,9 @@
     "contactUs": "Contact Us",
     "rights": "All rights reserved",
     "privacy": "Privacy Policy",
-    "terms": "Terms of Service"
+    "terms": "Terms of Service",
+    "friendlyLinks": "Friendly Links",
+    "wechat": "Contact us with WeChat"
   },
   "news": {
     "title": "News & Updates",
@@ -667,6 +669,30 @@
         "Seamless Warehouse Delivery",
         "FBA Prep Handling",
         "Amazon Expert Support"
+      ]
+    },
+    "chinaToCanada": {
+      "title": "China to Canada Consolidation",
+      "description": "Professional China to Canada consolidation services providing efficient, safe, and cost-effective shipping solutions for cross-border e-commerce sellers. We integrate multiple shipping methods including sea freight, air freight, and express delivery to offer the optimal solution based on your needs.",
+      "features": [
+        "Multiple Shipping Options",
+        "Professional Consolidation",
+        "Reliable Transit Times",
+        "Competitive Pricing",
+        "Full Shipment Tracking",
+        "Professional Customs Clearance"
+      ]
+    },
+    "express": {
+      "title": "Express Service",
+      "description": "Fast and reliable North American express delivery services covering all of Canada and the United States. Whether small packages or documents, we provide time-efficient and cost-effective express solutions to keep your business running smoothly.",
+      "features": [
+        "Fast Delivery Times",
+        "Full US-Canada Coverage",
+        "Real-time Package Tracking",
+        "Competitive Rates",
+        "Multiple Service Options",
+        "Pickup Service Available"
       ]
     },
     "warehouse": {
