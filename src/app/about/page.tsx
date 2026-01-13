@@ -28,12 +28,12 @@ export default function AboutPage() {
   ];
 
   const milestones = (t.about.milestones as Array<{ year: string; event: string }>) || [
-    { year: "2014", event: "公司成立于卡尔加里" },
-    { year: "2016", event: "开通FBA头程业务" },
-    { year: "2018", event: "仓储面积突破5万平方米" },
-    { year: "2020", event: "日处理订单突破3万单" },
-    { year: "2022", event: "客户数量突破1500家" },
-    { year: "2024", event: "仓储面积达10万平方米" },
+    { year: "2024", event: "公司成立于卡尔加里" },
+    { year: "2024", event: "开通FBA尾程业务" },
+    { year: "2024", event: "仓储面积突破1万平方米" },
+    { year: "2025", event: "日处理订单突破3万单" },
+    { year: "2025", event: "客户数量突破1500家" },
+    { year: "2025", event: "仓储面积达10万平方米" },
   ];
 
   const advantages = (t.about.advantages as string[]) || [

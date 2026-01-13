@@ -40,8 +40,8 @@ export const socialLinks: {
 export const partnerLinks = [
   { name: "UPS", url: "https://www.ups.com" },
   // 可以添加更多友情链接
-  // { name: "FedEx", url: "https://www.fedex.com" },
-  // { name: "DHL", url: "https://www.dhl.com" },
+  { name: "FedEx", url: "https://www.fedex.com" },
+  { name: "DHL", url: "https://www.dhl.com" },
 ];
 
 // ==========================================
