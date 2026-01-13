@@ -251,6 +251,11 @@ export function Header() {
           </SheetTrigger>
           <SheetContent side="right" className="w-[300px] sm:w-[400px]">
             <nav className="flex flex-col gap-4 mt-8">
+              {/* 移动端语言切换 */}
+              <div className="flex items-center justify-between pb-4 border-b">
+                <span className="text-sm font-medium text-muted-foreground">语言 / Language</span>
+                <LanguageSwitcher />
+              </div>
               {mainNav.map((item) => (
                 <div key={item.title}>
                   {item.children ? (

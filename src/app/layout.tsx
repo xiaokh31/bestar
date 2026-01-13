@@ -113,8 +113,16 @@ export const metadata: Metadata = {
   },
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION,
-    // yandex: 'xxxxxx',
-    // bing: 'xxxxxx',
+    // Bing Webmaster Tools验证
+    // 在Bing Webmaster中添加网站后，获取验证代码并设置环境变量
+    other: {
+      "msvalidate.01": process.env.BING_SITE_VERIFICATION || "",
+      // 百度搜索资源平台验证
+      // 在百度站长平台添加网站后，获取验证代码并设置环境变量
+      "baidu-site-verification": process.env.BAIDU_SITE_VERIFICATION || "",
+      // Yandex (俄罗斯搜索引擎)
+      "yandex-verification": process.env.YANDEX_SITE_VERIFICATION || "",
+    },
   },
   alternates: {
     canonical: siteUrl,

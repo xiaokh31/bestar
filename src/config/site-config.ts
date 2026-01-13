@@ -23,11 +23,17 @@ export const wechatConfig = {
 };
 
 // 社交媒体链接配置
-export const socialLinks = {
-  facebook: "https://facebook.com/bestarservicecca",
-  linkedin: "https://linkedin.com/company/bestarservicecca",
-  youtube: "https://youtube.com/@bestarservicecca",
-  twitter: "https://x.com/bestarservicecca", // X (Twitter)
+// 注意: 所有属性都是可选的，要启用某个社交链接，请取消注释并填入实际URL
+export const socialLinks: {
+  facebook?: string;
+  linkedin?: string;
+  youtube?: string;
+  twitter?: string;
+} = {
+  //facebook: "https://facebook.com/bestarcca",
+  //linkedin: "https://linkedin.com/company/bestarservicecca",
+  youtube: "https://youtube.com/@bestarcca",
+  twitter: "https://x.com/bestarcca", // X (Twitter)
 };
 
 // 友情链接配置
