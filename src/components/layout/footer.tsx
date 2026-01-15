@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
-import { getSiteConfig, solutionConfigs, socialLinks, wechatConfig, partnerLinks } from "@/config/site-config";
+import { getSiteConfig, solutionConfigs, socialLinks, wechatConfig, partnerLinks, chinaToCalgaryWechatConfig } from "@/config/site-config";
 import { useLocale } from "@/i18n/locale-context";
 
 // 社交媒体图标组件
@@ -163,6 +163,16 @@ export function Footer() {
                 {t.footer.wechat}
               </a>
 
+              {/* China to Calgary Consignment - 中国到卡尔加里集运  */}
+              <a
+                href={chinaToCalgaryWechatConfig.qrCodeImage}
+                target="_blank"
+                className="flex items-center gap-2 text-sm opacity-80 hover:opacity-100 hover:underline"
+              >
+                <WeChatIcon className="h-4 w-4" />
+                {t.footer.chinatocalgary}
+              </a>
+
               {/* Social Media Icons */}
               <div className="flex items-center gap-3 pt-2">
                 {socialLinks.facebook && (
@@ -210,6 +220,7 @@ export function Footer() {
                   </a>
                 )}
               </div>
+  
             </div>
           </div>
         </div>

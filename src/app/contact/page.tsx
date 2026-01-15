@@ -1,9 +1,9 @@
 "use client";
 
-import { Mail, Phone, MapPin, Clock } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, Contact } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { QuoteForm } from "@/components/forms";
-import { siteLinks } from "@/config/site-config";
+import { siteLinks, wechatConfig, chinaToCalgaryWechatConfig } from "@/config/site-config";
 import { useLocale } from "@/i18n/locale-context";
 
 export default function ContactPage() {
@@ -34,6 +34,20 @@ export default function ContactPage() {
       title: t.contact?.workHours || "工作时间",
       content: t.contact?.workHoursValue || "周一至周五 9:00 - 18:00 (EST)",
     },
+    {
+      icon:Contact,
+      title: t.contact?.wechat || "微信",
+      href: wechatConfig.url,
+      isExternal: true,
+      content: t.contact?.wechatContent || ""
+    },
+    {
+      icon:Contact,
+      title: t.contact?.chinatocalgary || "集运",
+      href: chinaToCalgaryWechatConfig.qrCodeImage,
+      isExternal: true,
+      content: t.contact?.wechatContent || ""
+    }
   ];
   return (
     <>
@@ -83,6 +97,7 @@ export default function ContactPage() {
                   </div>
                 );
               })}
+
 
               {/* Map Placeholder */}
               <div className="mt-8 aspect-video rounded-xl bg-muted/50 flex items-center justify-center">

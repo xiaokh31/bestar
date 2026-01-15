@@ -187,6 +187,9 @@
     "address": "Address",
     "workHours": "Working Hours",
     "workHoursValue": "Monday to Friday 8:30 AM - 5:00 PM (EST)",
+    "wechat": "Contact us with WeChat",
+    "wechatContent": "Click to view",
+    "chinatocalgary": "China to Calgary Consignment",
     "form": {
       "name": "Your Name",
       "email": "Email Address",
@@ -205,7 +208,8 @@
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
     "friendlyLinks": "Friendly Links",
-    "wechat": "Contact us with WeChat"
+    "wechat": "Contact us with WeChat",
+    "chinatocalgary": "Contact us for China to Calgary Consignment"
   },
   "news": {
     "title": "News & Updates",
@@ -672,8 +676,8 @@
       ]
     },
     "chinaToCanada": {
-      "title": "China to Canada Consolidation",
-      "description": "Professional China to Canada consolidation services providing efficient, safe, and cost-effective shipping solutions for cross-border e-commerce sellers. We integrate multiple shipping methods including sea freight, air freight, and express delivery to offer the optimal solution based on your needs.",
+      "title": "China to Calgary Consolidation",
+      "description": "Professional China to Calgary consolidation services providing efficient, safe, and cost-effective shipping solutions for cross-border e-commerce sellers. We integrate multiple shipping methods including sea freight, air freight, and express delivery to offer the optimal solution based on your needs. Calgary's local store, you can buy and receive with more confidence! Domestically, we will help you receive the goods, pack them together, take photos for confirmation, and then send them to Calgary. The route is stable, the price is transparent, and there are no arbitrary charges. The entire package can be checked. You can buy both personal and commercial goods, save money and worry~ Relying on the 10 years of container shipping experience and reputation of the Vancouver headquarters, you can see the reliability.",
       "features": [
         "Multiple Shipping Options",
         "Professional Consolidation",

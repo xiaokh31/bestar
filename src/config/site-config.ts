@@ -22,6 +22,12 @@ export const wechatConfig = {
   qrCodeImage: "/images/wechat-qrcode.png", // 可选：微信二维码图片
 };
 
+// 集运微信链接配置
+export const chinaToCalgaryWechatConfig = {
+  url: "https://work.weixin.qq.com/ca/cawcdef9fd107ef21c", // 替换为实际微信二维码链接
+  qrCodeImage: "/images/chinatocalgary-qrcode.jpg", // 可选：微信二维码图片
+};
+
 // 社交媒体链接配置
 // 注意: 所有属性都是可选的，要启用某个社交链接，请取消注释并填入实际URL
 export const socialLinks: {
