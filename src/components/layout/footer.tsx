@@ -68,7 +68,7 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="text-xl font-bold">{siteConfig.name}</h3>
             <p className="text-sm opacity-80">
-              {t.about.description || "专业的跨境物流解决方案提供商 - FBA头程、一件代发、退货换标服务"}
+              {t.about.description || "专业的跨境物流解决方案提供商 - FBA、一件代发、退货换标服务"}
             </p>
           </div>
 

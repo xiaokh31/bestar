@@ -131,13 +131,13 @@ export function getStatsConfig(t: any) {
   return [
     {
       label: t.stats.customers,
-      value: "2000",
+      value: "50",
       suffix: "+",
       description: t.hero.customers,
     },
     {
       label: t.stats.orders,
-      value: "50000",
+      value: "2000",
       suffix: "+",
       description: t.features.efficient.description,
     },
@@ -149,7 +149,7 @@ export function getStatsConfig(t: any) {
     },
     {
       label: t.stats.years,
-      value: "10",
+      value: "5",
       suffix: "+",
       description: t.hero.experience,
     },

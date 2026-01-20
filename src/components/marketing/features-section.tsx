@@ -45,7 +45,7 @@ export function FeaturesSection() {
     {
       icon: Zap,
       title: t.features.efficient?.title || "高效处理",
-      description: t.features.efficient?.description || "日处理订单5万+，快速出库",
+      description: t.features.efficient?.description || "日处理订单2千+，快速出库",
     },
   ];
 

@@ -22,7 +22,7 @@ export function OrganizationSchema({
   name = "Bestar Service CCA",
   url = "https://bestarcca.com",
   logo = "https://bestarcca.com/images/logo/logo.png",
-  description = "加拿大专业跨境物流服务商，提供FBA尾程、卡派服务、北美跨境物流、Amazon FBA、仓储管理、一件代发、退货换标等全方位物流解决方案。",
+  description = "加拿大专业跨境物流服务商，提供FBA、卡派服务、北美跨境物流、Amazon FBA、仓储管理、一件代发、退货换标等全方位物流解决方案。",
   email = "manage.bestar@gmail.com",
   phone = "+1-587-437-2088",
   address = {

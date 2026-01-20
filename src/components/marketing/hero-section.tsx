@@ -69,12 +69,12 @@ export function HeroSection() {
             {/* Trust Badges - 半透明背景卡片样式 */}
             <div className="flex flex-wrap items-center gap-4 md:gap-8 pt-4">
               <div className="text-center bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20">
-                <div className="text-2xl font-bold text-white drop-shadow-md">2000+</div>
+                <div className="text-2xl font-bold text-white drop-shadow-md">50+</div>
                 <div className="text-sm text-gray-300">{t.hero.customers}</div>
               </div>
               <div className="hidden md:block h-12 w-px bg-white/30" />
               <div className="text-center bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20">
-                <div className="text-2xl font-bold text-white drop-shadow-md">10+</div>
+                <div className="text-2xl font-bold text-white drop-shadow-md">5+</div>
                 <div className="text-sm text-gray-300">{t.hero.experience}</div>
               </div>
               <div className="hidden md:block h-12 w-px bg-white/30" />

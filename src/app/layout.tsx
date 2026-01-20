@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     default: "Bestar Service CCA | 加拿大专业跨境物流服务",
     template: `%s | Bestar Service CCA`,
   },
-  description: "Bestar Service CCA是加拿大卡尔加里专业跨境物流服务商，提供FBA尾程、卡派服务、北美跨境物流、Amazon FBA、仓储管理、一件代发、退货换标等全方位物流解决方案。",
+  description: "Bestar Service CCA是加拿大卡尔加里专业跨境物流服务商，提供FBA、卡派服务、北美跨境物流、Amazon FBA、仓储管理、一件代发、退货换标等全方位物流解决方案。",
   keywords: [
     "Bestar Service CCA",
     "加拿大物流",
@@ -82,7 +82,7 @@ export const metadata: Metadata = {
     alternateLocale: ["en_US", "fr_CA"],
     url: siteUrl,
     title: "Bestar Service CCA | 加拿大专业跨境物流服务",
-    description: "Bestar Service CCA是加拿大卡尔加里专业跨境物流服务商，提供FBA尾程、卡派服务、北美跨境物流、Amazon FBA、仓储管理、一件代发、退货换标等全方位物流解决方案。",
+    description: "Bestar Service CCA是加拿大卡尔加里专业跨境物流服务商，提供FBA、卡派服务、北美跨境物流、Amazon FBA、仓储管理、一件代发、退货换标等全方位物流解决方案。",
     siteName: "Bestar Service CCA",
     images: [
       {
@@ -96,7 +96,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Bestar Service CCA | 加拿大专业跨境物流服务",
-    description: "Bestar Service CCA是加拿大卡尔加里专业跨境物流服务商，提供FBA尾程、卡派服务、北美跨境物流、Amazon FBA、仓储管理、一件代发、退货换标等全方位物流解决方案。",
+    description: "Bestar Service CCA是加拿大卡尔加里专业跨境物流服务商，提供FBA、卡派服务、北美跨境物流、Amazon FBA、仓储管理、一件代发、退货换标等全方位物流解决方案。",
     images: ["/images/og-image.jpg"],
     creator: "@BestarCCA",
   },

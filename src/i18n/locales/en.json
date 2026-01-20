@@ -21,7 +21,7 @@
     "about": "About Us",
     "news": "News",
     "contact": "Contact",
-    "fba": "FBA Last Mile",
+    "fba": "FBA",
     "truckFreight": "Truck Freight",
     "crossBorder": "Cross-Border Logistics",
     "amazonFba": "Amazon FBA",
@@ -34,7 +34,7 @@
     "title1": "Professional",
     "title2": "Cross-Border Logistics",
     "title3": "Solutions",
-    "subtitle": "Providing efficient and reliable FBA last-mile, dropshipping, and return processing services for cross-border e-commerce sellers.",
+    "subtitle": "Providing efficient and reliable FBA, dropshipping, and return processing services for cross-border e-commerce sellers.",
     "cta": "Get a Quote",
     "learnMore": "Learn More",
     "customers": "Customers Served",
@@ -56,8 +56,8 @@
     "pageTitle": "Our Services",
     "pageSubtitle": "Comprehensive cross-border logistics solutions to support your global business expansion. We provide one-stop services from warehousing, transportation to delivery.",
     "fba": {
-      "title": "FBA First-Mile",
-      "description": "Professional Amazon FBA last-mile logistics services with sea freight, air freight, and express delivery options, stable transit times, competitive prices.",
+      "title": "FBA",
+      "description": "Professional Amazon FBA logistics services with sea freight, air freight, and express delivery options, stable transit times, competitive prices.",
       "features": [
         "FCL/LCL Sea Freight",
         "Express Air Freight",
@@ -129,7 +129,7 @@
     },
     "efficient": {
       "title": "Efficient Processing",
-      "description": "50,000+ daily orders, fast dispatch"
+      "description": "2,000+ daily orders, fast dispatch"
     }
   },
   "cta": {
@@ -143,7 +143,7 @@
     "badge": "About Us",
     "description": "We are a professional cross-border logistics service provider committed to providing efficient, reliable, and cost-effective logistics solutions for global e-commerce sellers.",
     "intro": "Bestar SERVICE CCA was founded in 2024, headquartered in Calgary, Canada, and is a comprehensive service provider focused on cross-border e-commerce logistics.",
-    "introDetail": "We are dedicated to providing global cross-border e-commerce sellers with one-stop logistics solutions from warehousing, transportation to delivery, including core services such as FBA last-mile, dropshipping, return processing and warehouse management. With a professional team, advanced facilities, and excellent service, we have become the trusted choice for many cross-border e-commerce sellers.",
+    "introDetail": "We are dedicated to providing global cross-border e-commerce sellers with one-stop logistics solutions from warehousing, transportation to delivery, including core services such as FBA, dropshipping, return processing and warehouse management. With a professional team, advanced facilities, and excellent service, we have become the trusted choice for many cross-border e-commerce sellers.",
     "valuesTitle": "Our Mission & Vision",
     "mission": {
       "title": "Mission",
@@ -160,17 +160,17 @@
     "advantagesTitle": "Our Advantages",
     "advantagesSubtitle": "Over the years, we have continuously improved our service system to build core competitiveness and provide customers with the best logistics experience.",
     "advantages": [
-      "10 Years of Cross-border Logistics Experience",
+      "5 Years of Cross-border Logistics Experience",
       "100,000 sqm Modern Warehouse",
-      "50,000+ Daily Orders",
-      "2000+ Clients Served",
+      "2000+ Daily Orders",
+      "50+ Clients Served",
       "99.5% On-time Delivery Rate",
       "24/7 Customer Support"
     ],
     "historyTitle": "Our Journey",
     "milestones": [
       { "year": "2024", "event": "Company founded in Calgary" },
-      { "year": "2024", "event": "Launched FBA First-Mile service" },
+      { "year": "2024", "event": "Launched FBA service" },
       { "year": "2024", "event": "Warehouse space exceeded 20,000 sqm" },
       { "year": "2024", "event": "Daily orders exceeded 30,000" },
       { "year": "2024", "event": "Customer base exceeded 1,500" },
@@ -237,8 +237,8 @@
       },
       {
         "id": "3",
-        "title": "FBA First-Mile Service Fully Upgraded",
-        "excerpt": "We have fully upgraded our FBA last-mile service, adding multiple express channels, improving transit time by 20%, with more competitive pricing.",
+        "title": "FBA Service Fully Upgraded",
+        "excerpt": "We have fully upgraded our FBA service, adding multiple express channels, improving transit time by 20%, with more competitive pricing.",
         "date": "2024-01-05",
         "category": "service"
       },
@@ -522,7 +522,7 @@
     "submit": "Submit Quote",
     "required": "*",
     "optional": "(optional)",
-    "fbaService": "FBA First-Mile",
+    "fbaService": "FBA",
     "dropshippingService": "Dropshipping",
     "returnsService": "Returns & Relabeling",
     "otherService": "Other Services",
@@ -628,7 +628,7 @@
     "contactHint": "Any questions? Our professional team is ready to serve you",
     "otherSolutions": "Other Solutions",
     "fbaLastMile": {
-      "title": "FBA Last Mile",
+      "title": "FBA",
       "description": "Leveraging our extensive North American transportation network and pre-negotiated shipping discounts, we provide you with the most cost-effective small parcel shipping rates, saving transportation costs while enriching your small parcel shipping options.",
       "features": [
         "Discounted Parcel Rates",

@@ -29,7 +29,7 @@ export default function AboutPage() {
 
   const milestones = (t.about.milestones as Array<{ year: string; event: string }>) || [
     { year: "2024", event: "公司成立于卡尔加里" },
-    { year: "2024", event: "开通FBA尾程业务" },
+    { year: "2024", event: "开通FBA业务" },
     { year: "2024", event: "仓储面积突破1万平方米" },
     { year: "2025", event: "日处理订单突破3万单" },
     { year: "2025", event: "客户数量突破1500家" },
@@ -37,10 +37,10 @@ export default function AboutPage() {
   ];
 
   const advantages = (t.about.advantages as string[]) || [
-    "10年跨境物流经验",
+    "5年跨境物流经验",
     "10万平方米现代化仓库",
     "日处理订单5万+",
-    "2000+合作客户",
+    "50+合作客户",
     "99.5%准时交付率",
     "7x24小时客服支持",
   ];

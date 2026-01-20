@@ -21,7 +21,7 @@
     "about": "À propos",
     "news": "Actualités",
     "contact": "Contact",
-    "fba": "FBA Dernier Kilomètre",
+    "fba": "FBA",
     "truckFreight": "Fret Routier",
     "crossBorder": "Logistique Transfrontalière",
     "amazonFba": "Amazon FBA",
@@ -56,7 +56,7 @@
     "pageTitle": "Nos Services",
     "pageSubtitle": "Solutions logistiques complètes pour soutenir l'expansion de votre entreprise mondiale. Nous fournissons des services complets de l'entreposage au transport et à la livraison.",
     "fba": {
-      "title": "FBA Premier Mile",
+      "title": "FBA",
       "description": "Services logistiques professionnels Amazon FBA avec options de fret maritime, aérien et express, délais stables, prix compétitifs.",
       "features": [
         "Fret maritime FCL/LCL",
@@ -129,7 +129,7 @@
     },
     "efficient": {
       "title": "Traitement efficace",
-      "description": "Plus de 50 000 commandes quotidiennes, expédition rapide"
+      "description": "Plus de 2000 commandes quotidiennes, expédition rapide"
     }
   },
   "cta": {
@@ -143,7 +143,7 @@
     "badge": "À propos de nous",
     "description": "Nous sommes un fournisseur de services logistiques transfrontaliers professionnels engagés à fournir des solutions logistiques efficaces, fiables et rentables pour les vendeurs e-commerce mondiaux.",
     "intro": "Bestar SERVICE CCA a été fondée en 2024, basée à Calgary, Canada, et est un fournisseur de services complets axé sur la logistique e-commerce transfrontalière.",
-    "introDetail": "Nous nous consacrons à fournir aux vendeurs e-commerce transfrontaliers du monde entier des solutions logistiques complètes, de l'entreposage au transport et à la livraison, y compris des services de base tels que FBA premier mile, dropshipping, traitement des retours et gestion des stocks. Grâce à une équipe professionnelle, des installations avancées et un excellent service, nous sommes devenus le choix de confiance de nombreux vendeurs e-commerce.",
+    "introDetail": "Nous nous consacrons à fournir aux vendeurs e-commerce transfrontaliers du monde entier des solutions logistiques complètes, de l'entreposage au transport et à la livraison, y compris des services de base tels que FBA, dropshipping, traitement des retours et gestion des stocks. Grâce à une équipe professionnelle, des installations avancées et un excellent service, nous sommes devenus le choix de confiance de nombreux vendeurs e-commerce.",
     "valuesTitle": "Notre Mission et Vision",
     "mission": {
       "title": "Mission",
@@ -160,17 +160,17 @@
     "advantagesTitle": "Nos Avantages",
     "advantagesSubtitle": "Au fil des ans, nous avons continuellement amélioré notre système de service pour bâtir une compétitivité de base et offrir la meilleure expérience logistique.",
     "advantages": [
-      "10 ans d'expérience en logistique transfrontalière",
+      "5 ans d'expérience en logistique transfrontalière",
       "100 000 m² d'entrepôt moderne",
-      "Plus de 50 000 commandes quotidiennes",
-      "Plus de 2000 clients servis",
+      "Plus de 2000 commandes quotidiennes",
+      "Plus de 50 clients servis",
       "99,5% de taux de livraison à temps",
       "Support client 24/7"
     ],
     "historyTitle": "Notre Parcours",
     "milestones": [
       { "year": "2024", "event": "Entreprise fondée à Calgary" },
-      { "year": "2024", "event": "Lancement du service FBA Premier Mile" },
+      { "year": "2024", "event": "Lancement du service FBA" },
       { "year": "2024", "event": "Espace d'entrepôt dépassant 20 000 m²" },
       { "year": "2024", "event": "Commandes quotidiennes dépassant 30 000" },
       { "year": "2024", "event": "Base de clients dépassant 1 500" },
@@ -237,8 +237,8 @@
       },
       {
         "id": "3",
-        "title": "Service FBA Premier Mile entièrement mis à jour",
-        "excerpt": "Nous avons entièrement mis à jour notre service FBA premier mile, ajoutant plusieurs canaux express, améliorant le temps de transit de 20%, avec des prix plus compétitifs.",
+        "title": "Service FBA entièrement mis à jour",
+        "excerpt": "Nous avons entièrement mis à jour notre service FBA, ajoutant plusieurs canaux express, améliorant le temps de transit de 20%, avec des prix plus compétitifs.",
         "date": "2024-01-05",
         "category": "service"
       },
@@ -522,7 +522,7 @@
     "submit": "Soumettre le devis",
     "required": "*",
     "optional": "(optionnel)",
-    "fbaService": "FBA Premier Mile",
+    "fbaService": "FBA",
     "dropshippingService": "Dropshipping",
     "returnsService": "Retours et Réétiquetage",
     "otherService": "Autres services",
@@ -628,7 +628,7 @@
     "contactHint": "Des questions ? Notre équipe professionnelle est prête à vous servir",
     "otherSolutions": "Autres solutions",
     "fbaLastMile": {
-      "title": "FBA Dernier Kilometre",
+      "title": "FBA",
       "description": "En tirant parti de notre vaste réseau de transport nord-américain et de nos remises de transport prénégociées, nous vous offrons les tarifs d'expédition de petits colis les plus rentables.",
       "features": [
         "Tarifs colis réduits",
