@@ -172,8 +172,8 @@
       { "year": "2024", "event": "Company founded in Calgary" },
       { "year": "2024", "event": "Launched FBA service" },
       { "year": "2024", "event": "Warehouse space exceeded 20,000 sqm" },
-      { "year": "2024", "event": "Daily orders exceeded 30,000" },
-      { "year": "2024", "event": "Customer base exceeded 1,500" },
+      { "year": "2024", "event": "Daily orders exceeded 1,000" },
+      { "year": "2024", "event": "Customer base exceeded 1,000" },
       { "year": "2025", "event": "Warehouse space reached 100,000 sqm" }
     ]
   },

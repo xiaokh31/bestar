@@ -31,8 +31,8 @@ export default function AboutPage() {
     { year: "2024", event: "公司成立于卡尔加里" },
     { year: "2024", event: "开通FBA业务" },
     { year: "2024", event: "仓储面积突破1万平方米" },
-    { year: "2025", event: "日处理订单突破3万单" },
-    { year: "2025", event: "客户数量突破1500家" },
+    { year: "2025", event: "日处理订单突破1千单" },
+    { year: "2025", event: "客户数量突破1000家" },
     { year: "2025", event: "仓储面积达10万平方米" },
   ];
 
