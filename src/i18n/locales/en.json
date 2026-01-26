@@ -21,13 +21,15 @@
     "about": "About Us",
     "news": "News",
     "contact": "Contact",
-    "fba": "FBA",
-    "truckFreight": "Truck Freight",
+    "fba": "FBA Last Mile Service",
+    "truckFreight": "Canada Truck Freight",
     "crossBorder": "Cross-Border Logistics",
     "amazonFba": "Amazon FBA",
-    "dropshipping": "Dropshipping",
+    "dropshipping": "Calgary Dropshipping",
     "returns": "Returns & Relabeling",
-    "warehouse": "Warehouse Management"
+    "warehouse": "Warehouse Management System (WMS)",
+    "chinaToCanada": "China-Canada Consolidation",
+    "express": "Canada to China Express"
   },
   "hero": {
     "badge": "Professional Cross-Border Logistics",
@@ -56,27 +58,27 @@
     "pageTitle": "Our Services",
     "pageSubtitle": "Comprehensive cross-border logistics solutions to support your global business expansion. We provide one-stop services from warehousing, transportation to delivery.",
     "fba": {
-      "title": "FBA",
-      "description": "Professional Amazon FBA logistics services with sea freight, air freight, and express delivery options, stable transit times, competitive prices.",
+      "title": "FBA Last Mile Service",
+      "description": "One-stop last mile service from port/warehouse pickup, deconsolidation, sorting to scheduled delivery to Amazon FBA warehouses. Standardized operations, reliable transit times, full visibility.",
       "features": [
-        "FCL/LCL Sea Freight",
-        "Express Air Freight",
-        "All-in-One Customs Clearance",
-        "Warehouse Sorting Service",
-        "Real-time Cargo Tracking",
-        "Professional Customs Team"
+        "Port/Warehouse Pickup",
+        "Professional Deconsolidation",
+        "FBA Appointment Delivery",
+        "Standardized Operations",
+        "Reliable Transit Times",
+        "Full Shipment Tracking"
       ]
     },
     "dropshipping": {
-      "title": "Dropshipping",
-      "description": "Efficient one-piece dropshipping warehouse logistics services with multi-platform integration, automatic order sync, fast dispatch.",
+      "title": "Calgary Dropshipping Service",
+      "description": "Direct shipping from Calgary local warehouse, supporting dropshipping and fast dispatch, covering Canada and major North American regions. Full-service including warehousing, order processing, pick-pack, last mile delivery and returns.",
       "features": [
-        "Multi-platform API Integration",
-        "Automatic Order Sync",
-        "Smart Inventory Management",
-        "Next-day Delivery",
-        "Return Processing",
-        "Custom Packaging Service"
+        "Calgary Local Warehouse",
+        "Dropshipping Service",
+        "Order Integration",
+        "Pick & Pack Service",
+        "Returns Processing",
+        "Transparent Pricing"
       ]
     },
     "returns": {
@@ -92,15 +94,15 @@
       ]
     },
     "warehouse":{
-      "title": "Warehouse Management",
-      "description": "Professional warehouse management services with modern warehouse space and intelligent inventory management.",
+      "title": "Warehouse Management System (WMS)",
+      "description": "Intelligent warehouse management system supporting inbound, inventory, picking, outbound and order management. Real-time inventory visibility, efficient operations, multi-platform integration.",
       "features": [
-        "Modern Warehouse Space",
-        "Intelligent Inventory Management",
-        "24/7 Access",
-        "24/7 Customer Support",
-        "Cargo Insurance",
-        "Fast Delivery"
+        "Inbound Management",
+        "Real-time Inventory",
+        "Smart Picking System",
+        "Outbound Management",
+        "Multi-platform Integration",
+        "Data Analytics"
       ]
     }
   },
@@ -522,8 +524,8 @@
     "submit": "Submit Quote",
     "required": "*",
     "optional": "(optional)",
-    "fbaService": "FBA",
-    "dropshippingService": "Dropshipping",
+    "fbaService": "FBA Last Mile Service",
+    "dropshippingService": "Calgary Dropshipping",
     "returnsService": "Returns & Relabeling",
     "otherService": "Other Services",
     "selectServiceType": "Select service type",
@@ -628,27 +630,27 @@
     "contactHint": "Any questions? Our professional team is ready to serve you",
     "otherSolutions": "Other Solutions",
     "fbaLastMile": {
-      "title": "FBA",
-      "description": "Leveraging our extensive North American transportation network and pre-negotiated shipping discounts, we provide you with the most cost-effective small parcel shipping rates, saving transportation costs while enriching your small parcel shipping options.",
+      "title": "FBA Last Mile Service",
+      "description": "One-stop last mile service from port/warehouse pickup, deconsolidation, sorting to scheduled delivery to Amazon FBA warehouses. Standardized operations, reliable transit times, full visibility, helping your goods safely and efficiently enter the warehouse.",
       "features": [
-        "Discounted Parcel Rates",
-        "Extensive NA Network",
-        "Multiple Shipping Options",
-        "Cost Optimization",
-        "Real-time Tracking",
-        "Professional Support"
+        "Port/Warehouse Pickup",
+        "Professional Deconsolidation",
+        "FBA Appointment Delivery",
+        "Standardized Operations",
+        "Reliable Transit Times",
+        "Full Shipment Tracking"
       ]
     },
     "truckFreight": {
-      "title": "Truck Freight Service",
-      "description": "Integrating multiple renowned North American truck freight carriers into Bestar's one-stop logistics platform, providing real-time quoting, ordering, booking, tracking, and customs/tax handling, giving you complete control and visibility over every step of the process.",
+      "title": "Canada Truck Freight Service",
+      "description": "Truck delivery service covering major Canadian cities and Amazon FBA warehouses. Full truckload and LTL options, appointment delivery and last mile service. Stable routes, reliable transit times, suitable for heavy cargo and bulk warehouse deliveries.",
       "features": [
-        "Multi-Carrier Integration",
-        "Real-time Quoting",
-        "Online Booking",
-        "Full Shipment Tracking",
-        "Customs & Tax Support",
-        "One-Stop Service"
+        "Major Canadian Cities",
+        "FBA Warehouse Delivery",
+        "FTL & LTL Options",
+        "Stable Reliable Routes",
+        "Heavy Cargo Transport",
+        "Bulk Delivery Service"
       ]
     },
     "crossBorder": {
@@ -676,51 +678,51 @@
       ]
     },
     "chinaToCanada": {
-      "title": "China to Calgary Consolidation",
-      "description": "Professional China to Calgary consolidation services providing efficient, safe, and cost-effective shipping solutions for cross-border e-commerce sellers. We integrate multiple shipping methods including sea freight, air freight, and express delivery to offer the optimal solution based on your needs. Calgary's local store, you can buy and receive with more confidence! Domestically, we will help you receive the goods, pack them together, take photos for confirmation, and then send them to Calgary. The route is stable, the price is transparent, and there are no arbitrary charges. The entire package can be checked. You can buy both personal and commercial goods, save money and worry~ Relying on the 10 years of container shipping experience and reputation of the Vancouver headquarters, you can see the reliability.",
+      "title": "China-Canada Consolidation Service",
+      "description": "Bi-directional consolidation solutions between China and Canada, supporting multi-warehouse consolidation, combined packing, unified shipping and customs clearance delivery. Covering e-commerce and personal parcels, stable routes, transparent pricing, effectively reducing cross-border shipping costs.",
       "features": [
-        "Multiple Shipping Options",
-        "Professional Consolidation",
-        "Reliable Transit Times",
-        "Competitive Pricing",
-        "Full Shipment Tracking",
-        "Professional Customs Clearance"
+        "China-Canada Bi-directional",
+        "Multi-warehouse Consolidation",
+        "Combined Packing & Shipping",
+        "Customs Clearance Delivery",
+        "Stable Reliable Routes",
+        "Transparent Pricing"
       ]
     },
     "express": {
-      "title": "Express Service",
-      "description": "Fast and reliable North American express delivery services covering all of Canada and the United States. Whether small packages or documents, we provide time-efficient and cost-effective express solutions to keep your business running smoothly.",
+      "title": "Canada to China Express Service",
+      "description": "International express service from Canada direct to China, supporting documents and parcel delivery. Mature customs clearance process, stable transit times. Door pickup, full tracking and last mile delivery available, meeting personal and business needs.",
       "features": [
-        "Fast Delivery Times",
-        "Full US-Canada Coverage",
-        "Real-time Package Tracking",
-        "Competitive Rates",
-        "Multiple Service Options",
-        "Pickup Service Available"
+        "Canada to China Direct",
+        "Document & Parcel Delivery",
+        "Mature Customs Process",
+        "Reliable Transit Times",
+        "Door Pickup Service",
+        "Full Tracking & Delivery"
       ]
     },
     "warehouse": {
-      "title": "Warehouse Management",
-      "description": "Professional warehouse management services with modern facilities and intelligent inventory management systems, providing safe and efficient storage solutions for your goods.",
+      "title": "Warehouse Management System (WMS)",
+      "description": "Intelligent warehouse management system supporting inbound, inventory, picking, outbound and order management. Real-time inventory visibility, efficient and controllable operations. Multi-platform order integration, reducing errors, improving warehouse and fulfillment efficiency.",
       "features": [
-        "Modern Facilities",
-        "Smart Inventory System",
-        "24/7 Monitoring",
-        "Cargo Insurance",
-        "Fast Order Processing",
-        "Custom Solutions"
+        "Inbound Management",
+        "Real-time Inventory",
+        "Smart Picking System",
+        "Outbound Management",
+        "Multi-platform Integration",
+        "Data Analytics"
       ]
     },
     "dropshipping": {
-      "title": "Dropshipping",
-      "description": "Efficient dropshipping warehouse logistics services with multi-platform integration, automatic order synchronization, and fast dispatch to boost your e-commerce business.",
+      "title": "Calgary Dropshipping Service",
+      "description": "Direct shipping from Calgary local warehouse, supporting dropshipping and fast dispatch, covering Canada and major North American regions. Full-service including warehousing, order processing, pick-pack, last mile delivery and returns. Flexible operations, transparent pricing, reducing inventory and fulfillment costs.",
       "features": [
-        "Multi-Platform API",
-        "Auto Order Sync",
-        "Smart Inventory",
-        "Next-Day Delivery",
-        "Return Processing",
-        "Custom Packaging"
+        "Calgary Local Warehouse",
+        "Dropshipping Service",
+        "Canada & NA Coverage",
+        "Order Integration",
+        "Returns Processing",
+        "Transparent Pricing"
       ]
     },
     "returns": {

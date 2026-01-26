@@ -71,19 +71,19 @@ export default function QuotesManagePage() {
   const { t } = useLocale();
 
   const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-    PENDING: { label: "待处理", variant: "secondary" },
-    PROCESSING: { label: "处理中", variant: "default" },
-    QUOTED: { label: "已报价", variant: "default" },
-    ACCEPTED: { label: "已接受", variant: "default" },
-    REJECTED: { label: "已拒绝", variant: "destructive" },
-    CLOSED: { label: "已关闭", variant: "outline" },
+    PENDING: { label: t.admin?.pending || "待处理", variant: "secondary" },
+    PROCESSING: { label: t.admin?.processing || "处理中", variant: "default" },
+    QUOTED: { label: t.admin?.quoted || "已报价", variant: "default" },
+    ACCEPTED: { label: t.admin?.accepted || "已接受", variant: "default" },
+    REJECTED: { label: t.admin?.rejected || "已拒绝", variant: "destructive" },
+    CLOSED: { label: t.admin?.closed || "已关闭", variant: "outline" },
   };
 
   const serviceTypeMap: Record<string, string> = {
-    FBA: "FBA",
-    DROPSHIPPING: "一件代发",
-    RETURNS: "退货换标",
-    OTHER: "其他",
+    FBA: t.form?.fbaService || "FBA尾程提拆派服务",
+    DROPSHIPPING: t.form?.dropshippingService || "卡尔加里仓库一件代发",
+    RETURNS: t.form?.returnsService || "退货换标",
+    OTHER: t.form?.otherService || "其他",
   };
 
   // 获取询价列表

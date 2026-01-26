@@ -21,13 +21,15 @@
     "about": "À propos",
     "news": "Actualités",
     "contact": "Contact",
-    "fba": "FBA",
-    "truckFreight": "Fret Routier",
+    "fba": "Service FBA Last Mile",
+    "truckFreight": "Camionnage Canada",
     "crossBorder": "Logistique Transfrontalière",
     "amazonFba": "Amazon FBA",
-    "dropshipping": "Dropshipping",
+    "dropshipping": "Dropshipping Calgary",
     "returns": "Retours et Réétiquetage",
-    "warehouse": "Gestion de l'entrepôt"
+    "warehouse": "Système WMS",
+    "chinaToCanada": "Consolidation Chine-Canada",
+    "express": "Express Canada-Chine"
   },
   "hero": {
     "badge": "Logistique transfrontalière professionnelle",
@@ -56,27 +58,27 @@
     "pageTitle": "Nos Services",
     "pageSubtitle": "Solutions logistiques complètes pour soutenir l'expansion de votre entreprise mondiale. Nous fournissons des services complets de l'entreposage au transport et à la livraison.",
     "fba": {
-      "title": "FBA",
-      "description": "Services logistiques professionnels Amazon FBA avec options de fret maritime, aérien et express, délais stables, prix compétitifs.",
+      "title": "Service FBA Last Mile",
+      "description": "Service complet de dernière mile FBA incluant la collecte au port/entrepôt, le déchargement des conteneurs, le tri et la livraison planifiée aux entrepôts Amazon FBA.",
       "features": [
-        "Fret maritime FCL/LCL",
-        "Fret aérien express",
-        "Dédouanement tout-en-un",
-        "Service de tri en entrepôt",
-        "Suivi des marchandises en temps réel",
-        "Équipe douanière professionnelle"
+        "Collecte au port/entrepôt",
+        "Déchargement des conteneurs",
+        "Tri et inspection",
+        "Livraison planifiée FBA",
+        "Suivi en temps réel",
+        "Équipe professionnelle"
       ]
     },
     "dropshipping": {
-      "title": "Dropshipping",
-      "description": "Services de logistique d'entrepôt dropshipping efficaces avec intégration multi-plateforme, synchronisation automatique des commandes, expédition rapide.",
+      "title": "Dropshipping Calgary",
+      "description": "Service de dropshipping depuis l'entrepôt de Calgary avec expédition directe, support pour commandes unitaires, couverture Canada et Amérique du Nord.",
       "features": [
-        "Intégration API multi-plateforme",
-        "Synchronisation automatique des commandes",
-        "Gestion intelligente des stocks",
-        "Livraison le lendemain",
+        "Entrepôt local Calgary",
+        "Expédition directe",
+        "Préparation de commandes",
+        "Livraison dernière mile",
         "Traitement des retours",
-        "Service d'emballage personnalisé"
+        "Tarification transparente"
       ]
     },
     "returns": {
@@ -92,15 +94,15 @@
       ]
     },
     "warehouse":{
-      "title": "Entrepôt",
-      "description": "Services d'entrepôt professionnels avec espace d'entrepôt moderne et gestion intelligente des stocks.",
+      "title": "Système WMS",
+      "description": "Système de gestion d'entrepôt intelligent pour la réception, l'inventaire, la préparation, l'expédition et la gestion complète des commandes.",
       "features": [
-        "Espace d'entrepôt moderne",
-        "Gestion intelligente des stocks",
-        "Accès 24/7",
-        "Service client 24/7",
-        "Assurance des marchandises",
-        "Livraison rapide"
+        "Gestion d'entrepôt intelligente",
+        "Visibilité stock en temps réel",
+        "Intégration multi-plateforme",
+        "Opérations efficaces",
+        "Réduction des erreurs",
+        "Scalabilité de l'entreprise"
       ]
     }
   },
@@ -522,10 +524,14 @@
     "submit": "Soumettre le devis",
     "required": "*",
     "optional": "(optionnel)",
-    "fbaService": "FBA",
-    "dropshippingService": "Dropshipping",
+    "fbaService": "Service FBA Last Mile",
+    "dropshippingService": "Dropshipping Calgary",
     "returnsService": "Retours et Réétiquetage",
     "otherService": "Autres services",
+    "truckFreightService": "Camionnage Canada",
+    "warehouseService": "Système WMS",
+    "chinaToCanadaService": "Consolidation Chine-Canada",
+    "expressService": "Express Canada-Chine",
     "selectServiceType": "Sélectionner le type de service",
     "origin": "Origine",
     "originPlaceholder": "Entrez l'origine",
@@ -628,27 +634,27 @@
     "contactHint": "Des questions ? Notre équipe professionnelle est prête à vous servir",
     "otherSolutions": "Autres solutions",
     "fbaLastMile": {
-      "title": "FBA",
-      "description": "En tirant parti de notre vaste réseau de transport nord-américain et de nos remises de transport prénégociées, nous vous offrons les tarifs d'expédition de petits colis les plus rentables.",
+      "title": "Service FBA Last Mile",
+      "description": "Service complet de dernière mile FBA incluant la collecte au port/entrepôt, le déchargement des conteneurs, le tri et la livraison planifiée aux entrepôts Amazon FBA. Opérations standardisées, délais stables, contrôle total pour une entrée en entrepôt sûre et efficace.",
       "features": [
-        "Tarifs colis réduits",
-        "Réseau NA étendu",
-        "Options d'expédition multiples",
-        "Optimisation des coûts",
-        "Suivi en temps réel",
-        "Support professionnel"
+        "Collecte au port/entrepôt",
+        "Déchargement des conteneurs",
+        "Tri et inspection",
+        "Livraison planifiée FBA",
+        "Suivi complet",
+        "Entrée en entrepôt efficace"
       ]
     },
     "truckFreight": {
-      "title": "Service de camionnage",
-      "description": "Intégrant plusieurs transporteurs de fret routier nord-américains renommés dans la plateforme logistique unique de Bestar, offrant devis en temps réel, commande, réservation, suivi et gestion douanière/fiscale.",
+      "title": "Service de Camionnage Canada",
+      "description": "Service de camionnage couvrant les principales villes canadiennes et les entrepôts Amazon FBA, avec transport complet et partagé, livraison planifiée en entrepôt et distribution dernière mile. Lignes stables, délais contrôlés, idéal pour les envois volumineux et lourds.",
       "features": [
-        "Intégration multi-transporteurs",
-        "Devis en temps réel",
-        "Réservation en ligne",
-        "Suivi complet",
-        "Support douanes et taxes",
-        "Service unique"
+        "Couverture principales villes Canada",
+        "Transport complet/partagé",
+        "Livraison entrepôt planifiée",
+        "Distribution dernière mile",
+        "Délais stables",
+        "Idéal cargo volumineux"
       ]
     },
     "crossBorder": {
@@ -676,7 +682,7 @@
       ]
     },
     "chinaToCanada": {
-      "title": "Consolidation Chine-Calgary",
+      "title": "Consolidation Chine-Canada Bidirectionnelle",
       "description": "Services professionnels de consolidation de la Chine vers le Calgary, offrant des solutions d'expédition efficaces, sûres et économiques pour les vendeurs e-commerce transfrontaliers. Nous intégrons plusieurs méthodes d'expédition incluant le fret maritime, aérien et express. Magasin local de Calgary, vous pouvez acheter et recevoir en toute confiance ! Au niveau national, nous vous aiderons à recevoir les marchandises, à les emballer ensemble, à prendre des photos pour confirmation, puis à les envoyer à Calgary. L'itinéraire est stable, le prix est transparent et il n'y a pas de frais arbitraires. L'ensemble du colis peut être vérifié. Vous pouvez acheter des biens personnels et commerciaux, économiser de l'argent et vous inquiéter ~ En vous appuyant sur les 10 années d'expérience dans le transport de conteneurs et la réputation du siège social de Vancouver, vous pouvez constater la fiabilité.",
       "features": [
         "Options d'expédition multiples",
@@ -688,39 +694,39 @@
       ]
     },
     "express": {
-      "title": "Service Express",
-      "description": "Services de livraison express nord-américains rapides et fiables couvrant tout le Canada et les États-Unis. Que ce soit pour des petits colis ou des documents, nous offrons des solutions express efficaces et économiques.",
+      "title": "Express Canada-Chine",
+      "description": "Service de messagerie internationale du Canada vers la Chine pour documents et colis, avec dédouanement mature et délais stables. Collecte à domicile, suivi complet et livraison dernière mile disponibles pour besoins personnels et commerciaux.",
       "features": [
-        "Délais de livraison rapides",
-        "Couverture Canada-États-Unis",
-        "Suivi en temps réel",
-        "Tarifs compétitifs",
-        "Options de service multiples",
-        "Service de collecte disponible"
+        "Expédition directe vers la Chine",
+        "Documents et colis",
+        "Dédouanement mature",
+        "Collecte à domicile",
+        "Suivi complet",
+        "Livraison dernière mile"
       ]
     },
     "warehouse": {
-      "title": "Gestion d'entrepôt",
-      "description": "Services professionnels de gestion d'entrepôt avec installations modernes et systèmes de gestion des stocks intelligents.",
+      "title": "Système de Gestion d'Entrepôt (WMS)",
+      "description": "Système de gestion d'entrepôt intelligent pour la réception, l'inventaire, la préparation, l'expédition et la gestion complète des commandes. Visibilité stock en temps réel, opérations efficaces et contrôlées. Intégration multi-plateforme, réduction des erreurs, amélioration de l'efficacité.",
       "features": [
-        "Installations modernes",
-        "Système de stock intelligent",
-        "Surveillance 24/7",
-        "Assurance marchandises",
-        "Traitement rapide",
-        "Solutions personnalisées"
+        "Gestion d'entrepôt intelligente",
+        "Visibilité stock temps réel",
+        "Opérations efficaces",
+        "Intégration multi-plateforme",
+        "Réduction des erreurs",
+        "Efficacité et exécution"
       ]
     },
     "dropshipping": {
-      "title": "Dropshipping",
-      "description": "Services de logistique d'entrepôt dropshipping efficaces avec intégration multi-plateforme et synchronisation automatique des commandes.",
+      "title": "Dropshipping Entrepôt Calgary",
+      "description": "Service de dropshipping depuis l'entrepôt de Calgary avec expédition directe, support pour commandes unitaires et expédition rapide. Couverture Canada et Amérique du Nord avec stockage, intégration commandes, préparation, livraison dernière mile et retours.",
       "features": [
-        "API multi-plateforme",
-        "Sync auto commandes",
-        "Stock intelligent",
-        "Livraison lendemain",
-        "Traitement retours",
-        "Emballage personnalisé"
+        "Entrepôt local Calgary",
+        "Commande unitaire supportée",
+        "Expédition rapide",
+        "Couverture Canada/NA",
+        "Traitement des retours",
+        "Tarification transparente"
       ]
     },
     "returns": {

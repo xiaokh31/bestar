@@ -36,8 +36,8 @@ export default function AdminPage() {
   const [error, setError] = useState<string | null>(null);
 
   const serviceTypeMap: Record<string, string> = {
-    FBA: t.form?.fbaService || "FBA尾程",
-    DROPSHIPPING: t.form?.dropshippingService || "一件代发",
+    FBA: t.form?.fbaService || "FBA尾程提拆派服务",
+    DROPSHIPPING: t.form?.dropshippingService || "卡尔加里仓库一件代发",
     RETURNS: t.form?.returnsService || "退货换标",
     OTHER: t.form?.otherService || "其他",
   };
