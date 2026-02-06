@@ -29,14 +29,20 @@ import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "./language-switcher";
 import { useLocale } from "@/i18n/locale-context";
 import Image from "next/image";
+import { canAccessAdmin, UserRole } from "@/lib/permissions";
+
+
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useLocale();
   const { data: session, status } = useSession();
   const isLoggedIn = status === "authenticated";
+  // 检查是否有后台管理权限 - 使用统一的权限函数
+  const userRole = session?.user?.role as UserRole | undefined;
   // 检查是否是管理员 - 支持多种管理角色
-  const isAdmin = session?.user?.role === "ADMIN" || session?.user?.role === "STAFF";
+  const isAdmin = userRole ? canAccessAdmin(userRole) : false;
+  
   const siteConfig = getSiteConfig(t);
 
   // 使用 solutionConfigs 动态生成解决方案导航菜单
