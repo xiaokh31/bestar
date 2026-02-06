@@ -380,10 +380,10 @@
       "records": "条记录",
       "noContainers": "暂无柜号",
       "operator": "操作人",
-      "scanMode": "扫码模式",
-      "modeBox": "整箱 (自动+1)",
-      "modeLocate": "定位 (仅高亮)",
-      "importExcel": "导入清单",
+      "scanMode": "模式",
+      "modeBox": "整箱",
+      "modeLocate": "定位",
+      "importExcel": "导入",
       "export": "导出",
       "exportDiff": "差异",
       "lastScan": "最近扫描",
@@ -396,7 +396,11 @@
       "unknownSku": "未知SKU",
       "saveFailed": "保存失败",
       "noDifference": "无差异！",
-      "confirmDelete": "确定删除该柜号及所有扫码记录？"
+      "confirmDelete": "确定删除该柜号及所有扫码记录？",
+      "cameraScan": "手机/摄像头扫码",
+      "autoRefresh": "自动刷新",
+      "sync": "同步",
+            "autoSaved": "已自动保存"
     }
   },
   "user": {

@@ -38,9 +38,20 @@ import {
   CheckCircle,
   AlertCircle,
   Archive,
-  Loader2
+  Loader2,
+  RefreshCw,
+  Smartphone,
+  X,
+  Save
 } from "lucide-react";
 import * as XLSX from "xlsx";
+import dynamic from "next/dynamic";
+
+// 动态导入手机扫码组件（避免SSR问题）
+const Html5QrcodePlugin = dynamic(() => import("@/components/admin/html5-qrcode-plugin"), {
+  ssr: false,
+  loading: () => <div className="flex justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>
+});
 
 interface ScanContainer {
   id: string;
@@ -107,6 +118,86 @@ export default function SkuScanPage() {
   // 加载状态
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  
+  // 手机扫码状态
+  const [showCameraScanner, setShowCameraScanner] = useState(false);
+  
+  // 自动刷新（多人协作）
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // 自动保存状态
+  const [lastSaved, setLastSaved] = useState<string | null>(null);
+  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // localStorage键名
+  const getStorageKey = (containerId: string) => `sku-scan-data-${containerId}`;
+
+  // 保存数据到localStorage
+  const saveToLocalStorage = useCallback(() => {
+    if (!selectedContainer || !tableData.length) return;
+    
+    const dataToSave = {
+      originalHeaders,
+      tableData,
+      skuColumnKey,
+      qtyColumnKey,
+      timestamp: new Date().toISOString()
+    };
+    
+    try {
+      localStorage.setItem(getStorageKey(selectedContainer.id), JSON.stringify(dataToSave));
+      setLastSaved(new Date().toLocaleTimeString());
+    } catch (error) {
+      console.error('Failed to save to localStorage:', error);
+    }
+  }, [selectedContainer, tableData, originalHeaders, skuColumnKey, qtyColumnKey]);
+
+  // 从localStorage恢复数据
+  const loadFromLocalStorage = useCallback((containerId: string) => {
+    try {
+      const saved = localStorage.getItem(getStorageKey(containerId));
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (data.tableData && data.tableData.length > 0) {
+          setOriginalHeaders(data.originalHeaders || []);
+          setTableData(data.tableData);
+          setSkuColumnKey(data.skuColumnKey || '');
+          setQtyColumnKey(data.qtyColumnKey || '');
+          return true;
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load from localStorage:', error);
+    }
+    return false;
+  }, []);
+
+  // 清除localStorage数据
+  const clearLocalStorage = useCallback(() => {
+    if (!selectedContainer) return;
+    localStorage.removeItem(getStorageKey(selectedContainer.id));
+    setLastSaved(null);
+  }, [selectedContainer]);
+
+  // 自动保存：表格数据变化时自动保存
+  useEffect(() => {
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current);
+    }
+    
+    if (selectedContainer && tableData.length > 0) {
+      autoSaveTimerRef.current = setTimeout(() => {
+        saveToLocalStorage();
+      }, 2000); // 2秒后自动保存
+    }
+    
+    return () => {
+      if (autoSaveTimerRef.current) {
+        clearTimeout(autoSaveTimerRef.current);
+      }
+    };
+  }, [tableData, selectedContainer, saveToLocalStorage]);
 
   // 获取容器列表
   const fetchContainers = useCallback(async () => {
@@ -145,9 +236,33 @@ export default function SkuScanPage() {
 
   useEffect(() => {
     if (selectedContainer) {
+      // 尝试从localStorage恢复数据
+      const restored = loadFromLocalStorage(selectedContainer.id);
+      if (restored) {
+        setLastSaved('已恢复');
+      }
       fetchScans(selectedContainer.id);
+    } else {
+      // 清空状态
+      setTableData([]);
+      setOriginalHeaders([]);
+      setLastSaved(null);
     }
-  }, [selectedContainer, fetchScans]);
+  }, [selectedContainer, fetchScans, loadFromLocalStorage]);
+
+  // 多人协作：定时刷新扫码记录
+  useEffect(() => {
+    if (autoRefresh && selectedContainer) {
+      refreshIntervalRef.current = setInterval(() => {
+        fetchScans(selectedContainer.id);
+      }, 3000); // 每3秒刷新一次
+    }
+    return () => {
+      if (refreshIntervalRef.current) {
+        clearInterval(refreshIntervalRef.current);
+      }
+    };
+  }, [autoRefresh, selectedContainer, fetchScans]);
 
   // 设置默认操作人
   useEffect(() => {
@@ -236,6 +351,21 @@ export default function SkuScanPage() {
       setLastScannedInfo(`${skuScan.unknownSku || "未知SKU"}: ${code}`);
       playBeep("error");
     }
+  };
+
+  // 手机摄像头扫码回调
+  const onCameraScanSuccess = (decodedText: string) => {
+    processInput(decodedText);
+  };
+
+  // 手动修改扫码记录的Qty/Pallet/Box
+  const updateRowField = (rowIdx: number, field: 'scannedQtyDisplay' | 'palletDisplay' | 'boxDisplay', value: string | number) => {
+    setTableData(prev => prev.map((row, idx) => {
+      if (idx === rowIdx) {
+        return { ...row, [field]: value };
+      }
+      return row;
+    }));
   };
 
   // 重新计算表格显示
@@ -566,10 +696,10 @@ export default function SkuScanPage() {
           <CardContent className="pt-6">
             {selectedContainer ? (
               <div className="space-y-4">
-                {/* 操作栏 */}
-                <div className="grid grid-cols-2 md:grid-cols-6 gap-3 pb-4 border-b">
+                {/* 操作栏 - 优化响应式布局 */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 pb-4 border-b">
                   <div className="col-span-1">
-                    <label className="text-xs text-muted-foreground font-medium">
+                    <label className="text-xs text-muted-foreground font-medium block truncate">
                       1. {skuScan.containerNo || "柜号"}
                     </label>
                     <Input 
@@ -579,7 +709,7 @@ export default function SkuScanPage() {
                     />
                   </div>
                   <div className="col-span-1">
-                    <label className="text-xs text-muted-foreground font-medium">
+                    <label className="text-xs text-muted-foreground font-medium block truncate">
                       2. {skuScan.operator || "操作人"}
                     </label>
                     <Input 
@@ -589,42 +719,63 @@ export default function SkuScanPage() {
                     />
                   </div>
                   <div className="col-span-1">
-                    <label className="text-xs text-muted-foreground font-medium">
-                      3. {skuScan.scanMode || "扫码模式"}
+                    <label className="text-xs text-muted-foreground font-medium block truncate">
+                      3. {skuScan.scanMode || "模式"}
                     </label>
                     <Select value={scanMode} onValueChange={(v) => setScanMode(v as "box" | "locate")}>
-                      <SelectTrigger>
+                      <SelectTrigger className="text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="box">📦 {skuScan.modeBox || "整箱 (自动+1)"}</SelectItem>
-                        <SelectItem value="locate">🔍 {skuScan.modeLocate || "定位 (仅高亮)"}</SelectItem>
+                        <SelectItem value="box">📦 {skuScan.modeBox || "整箱"}</SelectItem>
+                        <SelectItem value="locate">🔍 {skuScan.modeLocate || "定位"}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="col-span-1 md:col-span-2">
-                    <label className="text-xs text-muted-foreground font-medium">
-                      4. {skuScan.importExcel || "导入清单"}
+                  <div className="col-span-2 sm:col-span-1 lg:col-span-2">
+                    <label className="text-xs text-muted-foreground font-medium block truncate">
+                      4. {skuScan.importExcel || "导入"}
                     </label>
-                    <div className="relative">
-                      <Input 
-                        type="file" 
-                        accept=".xlsx,.xls,.csv"
-                        onChange={handleFileUpload}
-                        className="text-xs"
-                      />
-                    </div>
+                    <Input 
+                      type="file" 
+                      accept=".xlsx,.xls,.csv"
+                      onChange={handleFileUpload}
+                      className="text-xs"
+                    />
                   </div>
-                  <div className="col-span-1 flex gap-1 items-end">
+                  <div className="col-span-2 sm:col-span-2 lg:col-span-2 flex gap-1 items-end">
+                    <Button onClick={() => setShowCameraScanner(!showCameraScanner)} size="sm" variant="outline" className="flex-none">
+                      <Smartphone className="h-4 w-4" />
+                    </Button>
                     <Button onClick={exportExcel} size="sm" className="flex-1" disabled={!tableData.length}>
-                      <Download className="h-4 w-4 mr-1" />
-                      {skuScan.export || "导出"}
+                      <Download className="h-4 w-4 sm:mr-1" />
+                      <span className="hidden sm:inline">{skuScan.export || "导出"}</span>
                     </Button>
                     <Button onClick={exportDiffExcel} size="sm" variant="destructive" className="flex-1" disabled={!tableData.length}>
-                      {skuScan.exportDiff || "差异"}
+                      <span>{skuScan.exportDiff || "差异"}</span>
                     </Button>
                   </div>
                 </div>
+
+                {/* 手机扫码区域 */}
+                {showCameraScanner && (
+                  <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-900">
+                    <div className="flex justify-between items-center mb-3">
+                      <h3 className="font-medium flex items-center gap-2">
+                        <Camera className="h-5 w-5" />
+                        {skuScan.cameraScan || "手机/摄像头扫码"}
+                      </h3>
+                      <Button size="sm" variant="ghost" onClick={() => setShowCameraScanner(false)}>
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <Html5QrcodePlugin
+                      fps={10}
+                      qrbox={{ width: 300, height: 150 }}
+                      qrCodeSuccessCallback={onCameraScanSuccess}
+                    />
+                  </div>
+                )}
 
                 {/* 状态栏 */}
                 <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-lg flex flex-col md:flex-row justify-between items-center gap-2">
@@ -632,8 +783,29 @@ export default function SkuScanPage() {
                     <span className="font-bold">{skuScan.lastScan || "最近扫描"}: </span>
                     <span className="font-bold text-red-600 text-lg">{lastScannedInfo}</span>
                     {saving && <Loader2 className="h-4 w-4 inline ml-2 animate-spin" />}
+                    {lastSaved && (
+                      <span className="ml-3 text-xs text-green-600 inline-flex items-center gap-1">
+                        <Save className="h-3 w-3" />
+                        {skuScan.autoSaved || "已自动保存"}: {lastSaved}
+                      </span>
+                    )}
+                    {autoRefresh && (
+                      <span className="ml-2 text-xs text-green-600 flex items-center gap-1 inline-flex">
+                        <RefreshCw className="h-3 w-3 animate-spin" />
+                        {skuScan.autoRefresh || "自动刷新"}
+                      </span>
+                    )}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap">
+                    <Button
+                      size="sm"
+                      variant={autoRefresh ? "default" : "outline"}
+                      onClick={() => setAutoRefresh(!autoRefresh)}
+                      className="text-xs"
+                    >
+                      <RefreshCw className={`h-3 w-3 mr-1 ${autoRefresh ? 'animate-spin' : ''}`} />
+                      {skuScan.sync || "同步"}
+                    </Button>
                     <Button
                       size="sm"
                       variant={selectedContainer.status === "ACTIVE" ? "default" : "outline"}
@@ -668,7 +840,7 @@ export default function SkuScanPage() {
                   </div>
                 </div>
 
-                {/* 数据表格 */}
+                {/* 数据表格 - Qty/Pallet/Box可编辑 */}
                 {tableData.length > 0 ? (
                   <div className="border rounded-lg overflow-x-auto max-h-[50vh] overflow-y-auto">
                     <Table>
@@ -695,9 +867,30 @@ export default function SkuScanPage() {
                               <TableCell key={h} className="whitespace-nowrap">{String(row[h] ?? "")}</TableCell>
                             ))}
                             <TableCell className="font-bold text-blue-700 dark:text-blue-300">{row.scannedSkuDisplay}</TableCell>
-                            <TableCell className="font-bold text-center text-xl text-blue-700 dark:text-blue-300">{row.scannedQtyDisplay || 0}</TableCell>
-                            <TableCell>{row.palletDisplay}</TableCell>
-                            <TableCell>{row.boxDisplay}</TableCell>
+                            <TableCell className="p-1">
+                              <Input
+                                type="number"
+                                value={row.scannedQtyDisplay || 0}
+                                onChange={(e) => updateRowField(idx, 'scannedQtyDisplay', parseInt(e.target.value) || 0)}
+                                className="w-16 text-center font-bold text-blue-700 dark:text-blue-300 h-8"
+                              />
+                            </TableCell>
+                            <TableCell className="p-1">
+                              <Input
+                                value={row.palletDisplay || ""}
+                                onChange={(e) => updateRowField(idx, 'palletDisplay', e.target.value)}
+                                placeholder="-"
+                                className="w-20 h-8 text-xs"
+                              />
+                            </TableCell>
+                            <TableCell className="p-1">
+                              <Input
+                                value={row.boxDisplay || ""}
+                                onChange={(e) => updateRowField(idx, 'boxDisplay', e.target.value)}
+                                placeholder="-"
+                                className="w-20 h-8 text-xs"
+                              />
+                            </TableCell>
                             <TableCell className="text-muted-foreground text-xs">{row.operatorDisplay}</TableCell>
                           </TableRow>
                         ))}
