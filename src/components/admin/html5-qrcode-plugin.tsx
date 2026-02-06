@@ -77,28 +77,36 @@ export default function Html5QrcodePlugin({
     setStatus('requesting');
     setErrorMessage(null);
 
-    // 申请摄像头权限
+    // 申请摄像头权限 - 先尝试后置摄像头，失败则使用默认摄像头
+    let cameraConstraints: MediaStreamConstraints['video'] = { facingMode: "environment" };
+    
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: "environment" } 
-      });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: cameraConstraints });
       stream.getTracks().forEach(track => track.stop());
-    } catch (mediaError: unknown) {
-      const err = mediaError as Error;
-      console.error('Camera permission error:', err);
-      if (!isMounted.current) return;
-      setStatus('error');
-      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-        setErrorMessage('摄像头权限被拒绝。请在浏览器地址栏旁点击摄像头图标允许访问。');
-      } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-        setErrorMessage('未检测到摄像头设备。');
-      } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
-        setErrorMessage('摄像头被其他应用占用，请关闭其他使用摄像头的应用。');
-      } else {
-        setErrorMessage(`无法访问摄像头: ${err.message}`);
+    } catch (firstError) {
+      // 后置摄像头失败，尝试默认摄像头（适用于 Mac 等桌面设备）
+      console.log('Back camera not available, trying default camera...');
+      cameraConstraints = true;
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        stream.getTracks().forEach(track => track.stop());
+      } catch (mediaError: unknown) {
+        const err = mediaError as Error;
+        console.error('Camera permission error:', err);
+        if (!isMounted.current) return;
+        setStatus('error');
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+          setErrorMessage('摄像头权限被拒绝。请在浏览器地址栏旁点击摄像头图标允许访问。');
+        } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+          setErrorMessage('未检测到摄像头设备。');
+        } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+          setErrorMessage('摄像头被其他应用占用，请关闭其他使用摄像头的应用。');
+        } else {
+          setErrorMessage(`无法访问摄像头: ${err.message}`);
+        }
+        hasStarted.current = false;
+        return;
       }
-      hasStarted.current = false;
-      return;
     }
 
     if (!isMounted.current) return;
@@ -119,8 +127,13 @@ export default function Html5QrcodePlugin({
       });
       scannerRef.current = html5QrCode;
 
+      // 根据之前的检测结果选择摄像头
+      const cameraConfig = cameraConstraints === true 
+        ? { facingMode: "user" }  // Mac/桌面使用前置摄像头
+        : { facingMode: "environment" };  // 移动设备使用后置摄像头
+
       await html5QrCode.start(
-        { facingMode: "environment" },
+        cameraConfig,
         { fps, qrbox, aspectRatio, disableFlip },
         (decodedText: string) => {
           const now = Date.now();

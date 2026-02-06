@@ -16,7 +16,8 @@ export default function AdminLayout({
     <AdminGuard>
       <div className="flex min-h-[calc(100vh-4rem)]">
         <AdminSidebar />
-        <main className="flex-1 p-8">{children}</main>
+        {/* 移动端全屏，桌面端有左侧边距 */}
+        <main className="flex-1 p-4 lg:p-8 w-full overflow-x-auto">{children}</main>
       </div>
     </AdminGuard>
   );
