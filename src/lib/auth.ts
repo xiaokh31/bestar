@@ -113,6 +113,24 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
+  events: {
+    // 登录成功时记录登录历史
+    async signIn({ user, account }) {
+      if (user?.id) {
+        try {
+          await (prisma as any).loginHistory.create({
+            data: {
+              userId: user.id,
+              status: 'SUCCESS',
+              device: account?.provider || 'credentials',
+            },
+          });
+        } catch (error) {
+          console.error('Failed to record login history:', error);
+        }
+      }
+    },
+  },
   pages: {
     signIn: "/login",
     error: "/login",

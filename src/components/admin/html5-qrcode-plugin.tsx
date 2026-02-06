@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useId } from "react";
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
 import { Loader2, Camera, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -39,76 +39,81 @@ export default function Html5QrcodePlugin({
   qrCodeSuccessCallback,
   qrCodeErrorCallback,
 }: Html5QrcodePluginProps) {
+  // 使用稳定的ID避免重新渲染问题
+  const uniqueId = useId();
+  const containerId = `qr-reader-${uniqueId.replace(/:/g, '-')}`;
+  
   const scannerRef = useRef<Html5Qrcode | null>(null);
-  const containerRef = useRef<string>(`html5qr-code-reader-${Date.now()}`);
   const isRunning = useRef(false);
+  const isMounted = useRef(true);
   const lastScanTime = useRef(0);
+  const hasStarted = useRef(false);
+  
   const [status, setStatus] = useState<'idle' | 'requesting' | 'running' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // 检查摄像头权限状态
-  const checkCameraPermission = async (): Promise<'granted' | 'denied' | 'prompt'> => {
-    try {
-      // 检查浏览器是否支持Permissions API
-      if (navigator.permissions && navigator.permissions.query) {
-        const result = await navigator.permissions.query({ name: 'camera' as PermissionName });
-        return result.state;
+  // 停止扫描器
+  const stopScanner = useCallback(async () => {
+    if (scannerRef.current) {
+      isRunning.current = false;
+      try {
+        await scannerRef.current.stop();
+        scannerRef.current.clear();
+      } catch (e) {
+        // 忽略停止错误
       }
-      // 如果不支持Permissions API，返回prompt让用户尝试
-      return 'prompt';
-    } catch {
-      return 'prompt';
+      scannerRef.current = null;
     }
-  };
+  }, []);
 
   // 启动扫描器
   const startScanner = useCallback(async () => {
+    // 防止重复启动
+    if (hasStarted.current || isRunning.current) return;
+    hasStarted.current = true;
+    
+    if (!isMounted.current) return;
+    
+    setStatus('requesting');
+    setErrorMessage(null);
+
+    // 申请摄像头权限
     try {
-      setStatus('requesting');
-      setErrorMessage(null);
-
-      // 先检查权限状态
-      const permission = await checkCameraPermission();
-      
-      if (permission === 'denied') {
-        setStatus('error');
-        setErrorMessage('摄像头权限被拒绝。请在浏览器设置中允许摄像头访问，然后点击“重试”按钮。');
-        return;
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: "environment" } 
+      });
+      stream.getTracks().forEach(track => track.stop());
+    } catch (mediaError: unknown) {
+      const err = mediaError as Error;
+      console.error('Camera permission error:', err);
+      if (!isMounted.current) return;
+      setStatus('error');
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        setErrorMessage('摄像头权限被拒绝。请在浏览器地址栏旁点击摄像头图标允许访问。');
+      } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+        setErrorMessage('未检测到摄像头设备。');
+      } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+        setErrorMessage('摄像头被其他应用占用，请关闭其他使用摄像头的应用。');
+      } else {
+        setErrorMessage(`无法访问摄像头: ${err.message}`);
       }
+      hasStarted.current = false;
+      return;
+    }
 
-      // 申请摄像头权限
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: "environment" } 
-        });
-        // 立即停止，让html5-qrcode来管理
-        stream.getTracks().forEach(track => track.stop());
-      } catch (mediaError: unknown) {
-        const err = mediaError as Error;
-        console.error('Camera permission error:', err);
-        setStatus('error');
-        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-          setErrorMessage('摄像头权限被拒绝。请在浏览器地址栏旁点击摄像头图标允许访问。');
-        } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-          setErrorMessage('未检测到摄像头设备。');
-        } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
-          setErrorMessage('摄像头被其他应用占用，请关闭其他使用摄像头的应用。');
-        } else {
-          setErrorMessage(`无法访问摄像头: ${err.message}`);
-        }
-        return;
-      }
+    if (!isMounted.current) return;
 
-      // 确保DOM元素存在
-      const element = document.getElementById(containerRef.current);
-      if (!element) {
-        setStatus('error');
-        setErrorMessage('扫描器容器未找到');
-        return;
-      }
+    // 等待DOM元素准备就绪
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    const element = document.getElementById(containerId);
+    if (!element || !isMounted.current) {
+      hasStarted.current = false;
+      return;
+    }
 
-      // 初始化扫描器
-      const html5QrCode = new Html5Qrcode(containerRef.current, {
+    try {
+      const html5QrCode = new Html5Qrcode(containerId, {
         formatsToSupport: SUPPORTED_FORMATS,
         verbose: false,
       });
@@ -124,53 +129,55 @@ export default function Html5QrcodePlugin({
             qrCodeSuccessCallback(decodedText);
           }
         },
-        (errorMessage: string) => {
+        (errorMsg: string) => {
           if (qrCodeErrorCallback) {
-            qrCodeErrorCallback(errorMessage);
+            qrCodeErrorCallback(errorMsg);
           }
         }
       );
+      
+      if (!isMounted.current) {
+        await stopScanner();
+        return;
+      }
       
       isRunning.current = true;
       setStatus('running');
     } catch (err) {
       console.error("Failed to start scanner:", err);
+      if (!isMounted.current) return;
       setStatus('error');
       setErrorMessage('启动扫描器失败，请刷新页面重试');
+      hasStarted.current = false;
     }
-  }, [fps, qrbox, aspectRatio, disableFlip, qrCodeSuccessCallback, qrCodeErrorCallback]);
+  }, [containerId, fps, qrbox, aspectRatio, disableFlip, qrCodeSuccessCallback, qrCodeErrorCallback, stopScanner]);
 
-  // 停止扫描器
-  const stopScanner = useCallback(async () => {
-    if (scannerRef.current && isRunning.current) {
-      isRunning.current = false;
-      try {
-        await scannerRef.current.stop();
-        scannerRef.current.clear();
-      } catch (e) {
-        console.error('Error stopping scanner:', e);
-      }
-    }
-  }, []);
-
-  // 组件加载时自动启动
+  // 组件加载/卸载管理
   useEffect(() => {
+    isMounted.current = true;
+    hasStarted.current = false;
+    
     const timer = setTimeout(() => {
-      startScanner();
-    }, 300);
+      if (isMounted.current) {
+        startScanner();
+      }
+    }, 500);
 
     return () => {
+      isMounted.current = false;
       clearTimeout(timer);
+      // 确保离开页面时关闭摄像头
       stopScanner();
     };
-  }, [startScanner, stopScanner]);
+  }, []); // 空依赖数组，只在挂载/卸载时执行
 
   // 重试按钮
-  const handleRetry = () => {
+  const handleRetry = useCallback(() => {
+    hasStarted.current = false;
     stopScanner().then(() => {
       startScanner();
     });
-  };
+  }, [stopScanner, startScanner]);
 
   return (
     <div className="w-full max-w-lg mx-auto">
@@ -197,9 +204,11 @@ export default function Html5QrcodePlugin({
         </div>
       )}
       
+      {/* 扫描器容器 - 始终渲染但根据状态隐藏 */}
       <div 
-        id={containerRef.current} 
-        className={`rounded-lg overflow-hidden ${status !== 'running' ? 'hidden' : ''}`} 
+        id={containerId} 
+        className={`rounded-lg overflow-hidden bg-black ${status === 'running' ? '' : 'hidden'}`}
+        style={{ minHeight: status === 'running' ? '200px' : '0' }}
       />
       
       {status === 'running' && (

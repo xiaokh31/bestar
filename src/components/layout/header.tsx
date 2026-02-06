@@ -249,16 +249,55 @@ export function Header() {
 
         {/* 移动端右侧按钮区域 */}
         <div className="flex md:hidden items-center gap-2">
-          {/* 移动端登录/用户入口 - 始终可见 */}
+          {/* 移动端登录/用户入口 - 下拉菜单 */}
           {isLoggedIn ? (
-            <Link href="/user">
-              <Avatar className="h-8 w-8 border-2 border-primary">
-                <AvatarImage src={session?.user?.image || undefined} />
-                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                  {session?.user?.name?.charAt(0)?.toUpperCase() || 'U'}
-                </AvatarFallback>
-              </Avatar>
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="focus:outline-none">
+                  <Avatar className="h-8 w-8 border-2 border-primary">
+                    <AvatarImage src={session?.user?.image || undefined} />
+                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                      {session?.user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuLabel>{session?.user?.name}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {isAdmin && (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link href="/admin" className="cursor-pointer">
+                        <Settings className="mr-2 h-4 w-4" />
+                        {t.admin.title}
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard" className="cursor-pointer">
+                    <BarChart3 className="mr-2 h-4 w-4" />
+                    {t.dashboard.title}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/user" className="cursor-pointer">
+                    <User className="mr-2 h-4 w-4" />
+                    {t.user.center}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="cursor-pointer text-red-600"
+                  onClick={() => signOut({ callbackUrl: '/' })}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  {t.user.logout}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <Button variant="outline" size="sm" asChild>
               <Link href="/login">
@@ -276,8 +315,8 @@ export function Header() {
                 <span className="sr-only">{t.common.openMenu}</span>
               </Button>
             </SheetTrigger>
-          <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-            <nav className="flex flex-col gap-4 mt-8">
+          <SheetContent side="right" className="w-[300px] sm:w-[400px] flex flex-col">
+            <nav className="flex flex-col gap-4 mt-8 flex-1 overflow-y-auto">
               {/* 移动端语言切换 */}
               <div className="flex items-center justify-between pb-4 border-b">
                 <span className="text-sm font-medium text-muted-foreground">语言 / Language</span>
