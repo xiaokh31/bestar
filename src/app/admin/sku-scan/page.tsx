@@ -279,8 +279,8 @@ export default function SkuScanPage() {
       if (!selectedContainer) return;
 
       const currTime = Date.now();
-      // 如果两次按键间隔超过100ms，视为新输入
-      if (currTime - lastGunTime.current > 100) {
+      // 如果两次按键间隔超过500ms，视为新输入
+      if (currTime - lastGunTime.current > 500) {
         gunBuffer.current = "";
       }
       lastGunTime.current = currTime;
@@ -359,10 +359,25 @@ export default function SkuScanPage() {
   };
 
   // 手动修改扫码记录的Qty/Pallet/Box
-  const updateRowField = (rowIdx: number, field: 'scannedQtyDisplay' | 'palletDisplay' | 'boxDisplay', value: string | number) => {
+  // 只允许输入数字，移除前导0
+  const updateRowField = (rowIdx: number, field: 'scannedQtyDisplay' | 'palletDisplay' | 'boxDisplay', value: string) => {
+    // 只保留数字
+    let numericValue = value.replace(/[^0-9]/g, '');
+    // 移除前导0（但保留单独的0）
+    if (numericValue.length > 1 && numericValue.startsWith('0')) {
+      numericValue = numericValue.replace(/^0+/, '');
+    }
+    // 如果为空，设为''而不是0
+    const finalValue = numericValue === '' ? '' : numericValue;
+    
     setTableData(prev => prev.map((row, idx) => {
       if (idx === rowIdx) {
-        return { ...row, [field]: value };
+        if (field === 'scannedQtyDisplay') {
+          return { ...row, [field]: finalValue === '' ? 0 : parseInt(finalValue) };
+        } else {
+          // Pallet和Box保存为字符串
+          return { ...row, [field]: finalValue };
+        }
       }
       return row;
     }));
@@ -395,17 +410,26 @@ export default function SkuScanPage() {
     setTableData(newData);
   };
 
-  // 高亮行
-  const highlightRow = (row: ExcelRow) => {
-    setTableData(prev => prev.map(r => ({
+  // 高亮行并滚动到可见位置
+  const highlightRow = useCallback((row: ExcelRow) => {
+    const rowIndex = tableData.findIndex(r => r._skuValue === row._skuValue);
+    
+    setTableData(prev => prev.map((r, idx) => ({
       ...r,
-      _isHighlighted: r === row
+      _isHighlighted: idx === rowIndex
     })));
     
-    const idx = tableData.indexOf(row);
-    const el = document.getElementById(`row-${idx}`);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
-  };
+    // 延迟滚动以确保状态更新完成
+    setTimeout(() => {
+      const el = document.getElementById(`row-${rowIndex}`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        // 添加闪烁效果
+        el.classList.add('animate-pulse');
+        setTimeout(() => el.classList.remove('animate-pulse'), 2000);
+      }
+    }, 100);
+  }, [tableData]);
 
   // 播放提示音
   const playBeep = (type: "success" | "error") => {
@@ -876,15 +900,20 @@ export default function SkuScanPage() {
                             <TableCell className="font-bold text-blue-700 dark:text-blue-300">{row.scannedSkuDisplay}</TableCell>
                             <TableCell className="p-1">
                               <Input
-                                type="number"
-                                value={row.scannedQtyDisplay || 0}
-                                onChange={(e) => updateRowField(idx, 'scannedQtyDisplay', parseInt(e.target.value) || 0)}
+                                type="text"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={row.scannedQtyDisplay || ''}
+                                onChange={(e) => updateRowField(idx, 'scannedQtyDisplay', e.target.value)}
                                 className="w-16 text-center font-bold text-blue-700 dark:text-blue-300 h-8"
                               />
                             </TableCell>
                             <TableCell className="p-1">
                               <Input
-                                value={row.palletDisplay || ""}
+                                type="text"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={row.palletDisplay || ''}
                                 onChange={(e) => updateRowField(idx, 'palletDisplay', e.target.value)}
                                 placeholder="-"
                                 className="w-20 h-8 text-xs"
@@ -892,7 +921,10 @@ export default function SkuScanPage() {
                             </TableCell>
                             <TableCell className="p-1">
                               <Input
-                                value={row.boxDisplay || ""}
+                                type="text"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={row.boxDisplay || ''}
                                 onChange={(e) => updateRowField(idx, 'boxDisplay', e.target.value)}
                                 placeholder="-"
                                 className="w-20 h-8 text-xs"

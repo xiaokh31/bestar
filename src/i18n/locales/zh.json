@@ -397,7 +397,7 @@
       "saveFailed": "保存失败",
       "noDifference": "无差异！",
       "confirmDelete": "确定删除该柜号及所有扫码记录？",
-      "cameraScan": "手机/摄像头扫码",
+      "cameraScan": "手机扫码",
       "autoRefresh": "自动刷新",
       "sync": "同步",
       "autoSaved": "已自动保存",
