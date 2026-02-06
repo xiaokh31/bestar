@@ -778,7 +778,7 @@ export default function SkuScanPage() {
                     </div>
                     <Html5QrcodePlugin
                       fps={10}
-                      qrbox={{ width: 300, height: 150 }}
+                      qrbox={{ width: 300, height: 300 }}
                       qrCodeSuccessCallback={onCameraScanSuccess}
                     />
                   </div>

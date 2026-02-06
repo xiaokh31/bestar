@@ -4,6 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { headers } from "next/headers";
 
 // 检查必需的环境变量
 const requiredEnvVars = [
@@ -17,6 +18,73 @@ if (process.env.NODE_ENV === "production") {
     if (!process.env[envVar]) {
       console.error(`Missing required environment variable: ${envVar}`);
     }
+  }
+}
+
+// 获取客户端IP地址
+async function getClientIP(): Promise<string> {
+  try {
+    const headersList = await headers();
+    // Vercel/Cloudflare 等平台的真实IP头
+    const forwardedFor = headersList.get('x-forwarded-for');
+    if (forwardedFor) {
+      return forwardedFor.split(',')[0].trim();
+    }
+    // 其他可能的IP头
+    const realIP = headersList.get('x-real-ip');
+    if (realIP) return realIP;
+    
+    const cfIP = headersList.get('cf-connecting-ip');
+    if (cfIP) return cfIP;
+    
+    return 'Unknown';
+  } catch {
+    return 'Unknown';
+  }
+}
+
+// 获取设备信息
+async function getDeviceInfo(): Promise<{ device: string; userAgent: string }> {
+  try {
+    const headersList = await headers();
+    const userAgent = headersList.get('user-agent') || 'Unknown';
+    
+    // 解析设备类型
+    let device = '桌面端';
+    const ua = userAgent.toLowerCase();
+    
+    if (ua.includes('iphone')) {
+      device = 'iPhone';
+    } else if (ua.includes('ipad')) {
+      device = 'iPad';
+    } else if (ua.includes('android')) {
+      if (ua.includes('mobile')) {
+        device = 'Android 手机';
+      } else {
+        device = 'Android 平板';
+      }
+    } else if (ua.includes('macintosh') || ua.includes('mac os')) {
+      device = 'Mac';
+    } else if (ua.includes('windows')) {
+      device = 'Windows PC';
+    } else if (ua.includes('linux')) {
+      device = 'Linux';
+    }
+    
+    // 添加浏览器信息
+    if (ua.includes('chrome') && !ua.includes('edg')) {
+      device += ' / Chrome';
+    } else if (ua.includes('safari') && !ua.includes('chrome')) {
+      device += ' / Safari';
+    } else if (ua.includes('firefox')) {
+      device += ' / Firefox';
+    } else if (ua.includes('edg')) {
+      device += ' / Edge';
+    }
+    
+    return { device, userAgent };
+  } catch {
+    return { device: 'Unknown', userAgent: 'Unknown' };
   }
 }
 
@@ -118,11 +186,24 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account }) {
       if (user?.id) {
         try {
+          const ip = await getClientIP();
+          const { device, userAgent } = await getDeviceInfo();
+          
+          // 获取登录方式的友好名称
+          let loginMethod = '邮箱密码登录';
+          if (account?.provider === 'google') {
+            loginMethod = 'Google 登录';
+          } else if (account?.provider === 'github') {
+            loginMethod = 'GitHub 登录';
+          }
+          
           await (prisma as any).loginHistory.create({
             data: {
               userId: user.id,
+              ip: ip,
+              userAgent: userAgent,
+              device: `${device} (${loginMethod})`,
               status: 'SUCCESS',
-              device: account?.provider || 'credentials',
             },
           });
         } catch (error) {
