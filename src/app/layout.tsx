@@ -6,8 +6,8 @@ import { CookieConsent } from "@/components/cookie-consent";
 import { getSiteConfig } from "@/config/site-config";
 import { LocaleProvider } from "@/i18n/locale-context";
 
-import { SessionProvider } from "next-auth/react";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 import Providers from './providers'
 
@@ -151,8 +151,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  //  获取服务端Session
-  const session = await getServerSession();
+  // 获取服务端Session（必须传入authOptions以正确解析自定义字段如role）
+  const session = await getServerSession(authOptions);
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <body
