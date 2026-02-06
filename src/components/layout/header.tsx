@@ -247,14 +247,35 @@ export function Header() {
           </Button>
         </div>
 
-        {/* Mobile Menu */}
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild className="md:hidden">
-            <Button variant="ghost" size="icon">
-              <Menu className="h-6 w-6" />
-              <span className="sr-only">{t.common.openMenu}</span>
+        {/* 移动端右侧按钮区域 */}
+        <div className="flex md:hidden items-center gap-2">
+          {/* 移动端登录/用户入口 - 始终可见 */}
+          {isLoggedIn ? (
+            <Link href="/user">
+              <Avatar className="h-8 w-8 border-2 border-primary">
+                <AvatarImage src={session?.user?.image || undefined} />
+                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                  {session?.user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
+          ) : (
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/login">
+                <User className="h-4 w-4 mr-1" />
+                {t.common.login}
+              </Link>
             </Button>
-          </SheetTrigger>
+          )}
+          
+          {/* 汉堡菜单按钮 */}
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">{t.common.openMenu}</span>
+              </Button>
+            </SheetTrigger>
           <SheetContent side="right" className="w-[300px] sm:w-[400px]">
             <nav className="flex flex-col gap-4 mt-8">
               {/* 移动端语言切换 */}
@@ -371,6 +392,7 @@ export function Header() {
             </nav>
           </SheetContent>
         </Sheet>
+        </div>
       </div>
     </header>
   );

@@ -400,7 +400,10 @@
       "cameraScan": "Camera Scan",
       "autoRefresh": "Auto Refresh",
       "sync": "Sync",
-            "autoSaved": "Auto-saved"
+      "autoSaved": "Auto-saved",
+      "restored": "Restored",
+      "createFailed": "Create failed",
+      "closeScanner": "Close Scanner"
     }
   },
   "user": {

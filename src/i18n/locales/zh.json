@@ -400,7 +400,10 @@
       "cameraScan": "手机/摄像头扫码",
       "autoRefresh": "自动刷新",
       "sync": "同步",
-            "autoSaved": "已自动保存"
+      "autoSaved": "已自动保存",
+      "restored": "已恢复",
+      "createFailed": "创建失败",
+      "closeScanner": "关闭扫码"
     }
   },
   "user": {

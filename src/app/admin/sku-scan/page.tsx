@@ -239,7 +239,7 @@ export default function SkuScanPage() {
       // 尝试从localStorage恢复数据
       const restored = loadFromLocalStorage(selectedContainer.id);
       if (restored) {
-        setLastSaved('已恢复');
+        setLastSaved(skuScan.restored || '已恢复');
       }
       fetchScans(selectedContainer.id);
     } else {
@@ -534,7 +534,7 @@ export default function SkuScanPage() {
         fetchContainers();
       } else {
         const data = await res.json();
-        alert(data.error || "创建失败");
+        alert(data.error || skuScan.createFailed || "创建失败");
       }
     } catch (error) {
       console.error("Failed to create container:", error);
@@ -743,15 +743,22 @@ export default function SkuScanPage() {
                       className="text-xs"
                     />
                   </div>
-                  <div className="col-span-2 sm:col-span-2 lg:col-span-2 flex gap-1 items-end">
-                    <Button onClick={() => setShowCameraScanner(!showCameraScanner)} size="sm" variant="outline" className="flex-none">
-                      <Smartphone className="h-4 w-4" />
+                  <div className="col-span-2 sm:col-span-3 lg:col-span-2 flex gap-1 items-end">
+                    {/* 手机扫码按钮 - 更明显的样式 */}
+                    <Button 
+                      onClick={() => setShowCameraScanner(!showCameraScanner)} 
+                      size="sm" 
+                      variant={showCameraScanner ? "default" : "secondary"}
+                      className={`flex-1 ${showCameraScanner ? 'bg-green-600 hover:bg-green-700' : 'bg-orange-500 hover:bg-orange-600 text-white'}`}
+                    >
+                      <Camera className="h-4 w-4 mr-1" />
+                      <span>{showCameraScanner ? (skuScan.closeScanner || "关闭扫码") : (skuScan.cameraScan || "手机扫码")}</span>
                     </Button>
-                    <Button onClick={exportExcel} size="sm" className="flex-1" disabled={!tableData.length}>
+                    <Button onClick={exportExcel} size="sm" variant="outline" className="flex-1" disabled={!tableData.length}>
                       <Download className="h-4 w-4 sm:mr-1" />
                       <span className="hidden sm:inline">{skuScan.export || "导出"}</span>
                     </Button>
-                    <Button onClick={exportDiffExcel} size="sm" variant="destructive" className="flex-1" disabled={!tableData.length}>
+                    <Button onClick={exportDiffExcel} size="sm" variant="destructive" className="flex-none" disabled={!tableData.length}>
                       <span>{skuScan.exportDiff || "差异"}</span>
                     </Button>
                   </div>
