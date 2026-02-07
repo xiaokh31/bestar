@@ -272,6 +272,8 @@ model ScanContainer {
   containerNo   String       @unique       // 柜号
   description   String?                    // 描述
   status        ScanStatus   @default(ACTIVE)
+  mode          ScanMode     @default(MANUAL)  // 工作模式
+  excelData     Json?                      // Excel模板数据(仅EXCEL模式)
   createdBy     String                     // 创建人
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
@@ -307,4 +309,9 @@ enum ScanStatus {
   ACTIVE        // 进行中
   COMPLETED     // 已完成
   ARCHIVED      // 已归档
+}
+
+enum ScanMode {
+  MANUAL        // 无Excel模式 - 直接扫码统计
+  EXCEL         // Excel对账模式 - 导入Excel对比
 }

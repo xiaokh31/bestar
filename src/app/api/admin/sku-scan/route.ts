@@ -79,6 +79,29 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    // 获取单个容器详情（包含Excel数据）
+    if (type === 'container' && containerId) {
+      const container = await prisma.scanContainer.findUnique({
+        where: { id: containerId },
+        include: {
+          _count: {
+            select: { scans: true }
+          }
+        }
+      });
+      
+      if (!container) {
+        return NextResponse.json({ error: "Container not found" }, { status: 404 });
+      }
+      
+      return NextResponse.json({
+        data: {
+          ...container,
+          scanCount: container._count.scans
+        }
+      });
+    }
+
     // 获取容器列表
     const whereClause: Record<string, unknown> = {};
     if (status && status !== 'ALL') {
@@ -127,7 +150,7 @@ export async function POST(request: NextRequest) {
 
     // 创建新容器
     if (type === 'container') {
-      const { containerNo, description } = body;
+      const { containerNo, description, mode } = body;
       
       if (!containerNo) {
         return NextResponse.json(
@@ -152,6 +175,7 @@ export async function POST(request: NextRequest) {
         data: {
           containerNo,
           description: description || null,
+          mode: mode || 'MANUAL',  // 默认为手动模式
           createdBy: auth.session.user.email!,
         }
       });
@@ -246,6 +270,8 @@ export async function PUT(request: NextRequest) {
     const updateData: Record<string, unknown> = {};
     if (status) updateData.status = status;
     if (description !== undefined) updateData.description = description;
+    if (body.mode) updateData.mode = body.mode;
+    if (body.excelData !== undefined) updateData.excelData = body.excelData;
 
     const container = await prisma.scanContainer.update({
       where: { id },

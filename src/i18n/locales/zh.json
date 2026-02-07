@@ -403,7 +403,26 @@
       "autoSaved": "已自动保存",
       "restored": "已恢复",
       "createFailed": "创建失败",
-      "closeScanner": "关闭扫码"
+      "closeScanner": "关闭扫码",
+      "workMode": "工作模式",
+      "modeManual": "直接扫码",
+      "modeManualDesc": "无需Excel，直接扫码统计",
+      "modeExcel": "Excel对账",
+      "modeExcelDesc": "导入Excel进行对比",
+      "manualScanHint": "扫码开始统计，SKU自动累加",
+      "noScanRecords": "暂无扫码记录",
+      "scannedSku": "Scanned SKU",
+      "scannedQty": "Scanned QTY",
+      "palletNo": "Pallet No",
+      "boxNo": "Box No",
+      "totalSkus": "共 {count} 个SKU",
+      "totalQty": "共 {count} 件",
+      "switchMode": "切换模式",
+      "switchModeConfirm": "切换模式将清除当前表格数据，确定继续吗？",
+      "deleteScan": "删除此记录",
+      "action": "操作",
+      "enterPallet": "输入托盘号",
+      "deleteScanConfirm": "确定删除该SKU的所有扫码记录吗？"
     }
   },
   "user": {

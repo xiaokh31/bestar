@@ -403,7 +403,26 @@
       "autoSaved": "Enregistré",
       "restored": "Restauré",
       "createFailed": "Échec de création",
-      "closeScanner": "Fermer scanner"
+      "closeScanner": "Fermer scanner",
+      "workMode": "Mode de travail",
+      "modeManual": "Scan direct",
+      "modeManualDesc": "Sans Excel, scannez directement",
+      "modeExcel": "Vérification Excel",
+      "modeExcelDesc": "Importez Excel pour comparer",
+      "manualScanHint": "Commencer à scanner, SKU s'accumule",
+      "noScanRecords": "Pas d'enregistrements",
+      "scannedSku": "SKU scanné",
+      "scannedQty": "QTÉ scannée",
+      "palletNo": "N° Palette",
+      "boxNo": "N° Boîte",
+      "totalSkus": "{count} SKUs",
+      "totalQty": "{count} articles",
+      "switchMode": "Changer mode",
+      "switchModeConfirm": "Changer de mode effacera les données. Continuer?",
+      "deleteScan": "Supprimer",
+      "action": "Action",
+      "enterPallet": "N° palette",
+      "deleteScanConfirm": "Supprimer tous les scans de ce SKU?"
     }
   },
   "user": {

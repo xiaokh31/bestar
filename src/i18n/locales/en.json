@@ -403,7 +403,26 @@
       "autoSaved": "Auto-saved",
       "restored": "Restored",
       "createFailed": "Create failed",
-      "closeScanner": "Close Scanner"
+      "closeScanner": "Close Scanner",
+      "workMode": "Work Mode",
+      "modeManual": "Direct Scan",
+      "modeManualDesc": "No Excel needed, scan directly",
+      "modeExcel": "Excel Verify",
+      "modeExcelDesc": "Import Excel to compare",
+      "manualScanHint": "Start scanning, SKU will auto-accumulate",
+      "noScanRecords": "No scan records yet",
+      "scannedSku": "Scanned SKU",
+      "scannedQty": "Scanned QTY",
+      "palletNo": "Pallet No",
+      "boxNo": "Box No",
+      "totalSkus": "{count} SKUs",
+      "totalQty": "{count} items",
+      "switchMode": "Switch Mode",
+      "switchModeConfirm": "Switching mode will clear current table data. Continue?",
+      "deleteScan": "Delete this record",
+      "action": "Action",
+      "enterPallet": "Enter pallet no",
+      "deleteScanConfirm": "Delete all scan records for this SKU?"
     }
   },
   "user": {

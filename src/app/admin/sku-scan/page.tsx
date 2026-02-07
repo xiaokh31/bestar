@@ -42,8 +42,13 @@ import {
   RefreshCw,
   Smartphone,
   X,
-  Save
+  Save,
+  ToggleLeft,
+  ToggleRight,
+  FileSpreadsheet,
+  ScanLine
 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import * as XLSX from "xlsx";
 import dynamic from "next/dynamic";
 
@@ -58,6 +63,8 @@ interface ScanContainer {
   containerNo: string;
   description: string | null;
   status: "ACTIVE" | "COMPLETED" | "ARCHIVED";
+  mode: "MANUAL" | "EXCEL";  // 工作模式
+  excelData?: unknown;  // Excel模板数据
   createdBy: string;
   createdAt: string;
   scanCount: number;
@@ -96,6 +103,7 @@ export default function SkuScanPage() {
   const [selectedContainer, setSelectedContainer] = useState<ScanContainer | null>(null);
   const [newContainerNo, setNewContainerNo] = useState("");
   const [newDescription, setNewDescription] = useState("");
+  const [newContainerMode, setNewContainerMode] = useState<"MANUAL" | "EXCEL">("MANUAL");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState("ALL");
   
@@ -236,10 +244,23 @@ export default function SkuScanPage() {
 
   useEffect(() => {
     if (selectedContainer) {
-      // 尝试从localStorage恢复数据
-      const restored = loadFromLocalStorage(selectedContainer.id);
-      if (restored) {
+      // EXCEL模式：从数据库加载Excel数据
+      if (selectedContainer.mode === 'EXCEL' && selectedContainer.excelData) {
+        const excelData = selectedContainer.excelData as {
+          headers: string[];
+          rows: ExcelRow[];
+          skuColumnKey: string;
+          qtyColumnKey: string;
+        };
+        setOriginalHeaders(excelData.headers);
+        setSkuColumnKey(excelData.skuColumnKey);
+        setQtyColumnKey(excelData.qtyColumnKey);
+        setTableData(excelData.rows);
         setLastSaved(skuScan.restored || '已恢复');
+      } else {
+        // 清空Excel状态
+        setTableData([]);
+        setOriginalHeaders([]);
       }
       fetchScans(selectedContainer.id);
     } else {
@@ -248,7 +269,7 @@ export default function SkuScanPage() {
       setOriginalHeaders([]);
       setLastSaved(null);
     }
-  }, [selectedContainer, fetchScans, loadFromLocalStorage]);
+  }, [selectedContainer, fetchScans]);
 
   // 多人协作：定时刷新扫码记录
   useEffect(() => {
@@ -302,12 +323,50 @@ export default function SkuScanPage() {
   // 处理扫码输入
   const processInput = async (code: string) => {
     if (!selectedContainer) return;
+    
+    code = code.trim();
+    if (!code) return;
+
+    // MANUAL模式：直接扫码统计，不需要Excel匹配
+    if (selectedContainer.mode === 'MANUAL') {
+      setLastScannedInfo(code);
+      playBeep("success");
+      
+      try {
+        setSaving(true);
+        const res = await fetch("/api/admin/sku-scan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "scan",
+            container_no: selectedContainer.containerNo,
+            sku: code,
+            raw_code: code,
+            qty: 1,
+            operator: operator
+          })
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          setScans(prev => [...prev, data.data]);
+          // 高亮并滚动到对应SKU
+          highlightManualRow(code);
+        }
+      } catch (error) {
+        alert(skuScan.saveFailed || "保存失败");
+      } finally {
+        setSaving(false);
+      }
+      return;
+    }
+
+    // EXCEL模式：需要匹配Excel中的SKU
     if (!tableData.length) {
       alert(skuScan.pleaseImportExcel || "请先导入Excel");
       return;
     }
 
-    code = code.trim();
     // 模糊匹配SKU
     const row = tableData.find(r => 
       r._skuValue && (code.includes(r._skuValue) || r._skuValue.includes(code))
@@ -410,7 +469,7 @@ export default function SkuScanPage() {
     setTableData(newData);
   };
 
-  // 高亮行并滚动到可见位置
+  // 高亮行并滚动到可见位置 (Excel模式)
   const highlightRow = useCallback((row: ExcelRow) => {
     const rowIndex = tableData.findIndex(r => r._skuValue === row._skuValue);
     
@@ -430,6 +489,20 @@ export default function SkuScanPage() {
       }
     }, 100);
   }, [tableData]);
+
+  // 高亮 MANUAL 模式的行 (SKU聚合表)
+  const highlightManualRow = useCallback((sku: string) => {
+    setTimeout(() => {
+      const el = document.getElementById(`manual-row-${sku}`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.classList.add('animate-pulse', 'bg-green-100', 'dark:bg-green-900');
+        setTimeout(() => {
+          el.classList.remove('animate-pulse', 'bg-green-100', 'dark:bg-green-900');
+        }, 2000);
+      }
+    }, 100);
+  }, []);
 
   // 播放提示音
   const playBeep = (type: "success" | "error") => {
@@ -453,12 +526,12 @@ export default function SkuScanPage() {
   };
 
   // 处理Excel上传
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || !selectedContainer) return;
 
     const reader = new FileReader();
-    reader.onload = (evt) => {
+    reader.onload = async (evt) => {
       const wb = XLSX.read(new Uint8Array(evt.target?.result as ArrayBuffer), { type: "array" });
       const json = XLSX.utils.sheet_to_json<(string | number)[]>(wb.Sheets[wb.SheetNames[0]], { header: 1 });
       
@@ -489,6 +562,36 @@ export default function SkuScanPage() {
 
         setTableData(data);
         if (scans.length) recalcTable(scans);
+        
+        // 保存Excel数据到数据库
+        try {
+          const excelDataToSave = {
+            headers,
+            rows: data,
+            skuColumnKey: skuCol,
+            qtyColumnKey: qtyCol || ""
+          };
+          
+          await fetch('/api/admin/sku-scan', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'container',
+              containerId: selectedContainer.id,
+              excelData: excelDataToSave
+            })
+          });
+          
+          // 更新本地状态
+          setSelectedContainer(prev => prev ? {
+            ...prev,
+            excelData: excelDataToSave
+          } : null);
+          
+          setLastSaved(skuScan.autoSaved || '已自动保存');
+        } catch (error) {
+          console.error('Failed to save Excel data:', error);
+        }
       }
     };
     reader.readAsArrayBuffer(file);
@@ -547,13 +650,15 @@ export default function SkuScanPage() {
         body: JSON.stringify({
           type: "container",
           containerNo: newContainerNo.trim(),
-          description: newDescription.trim() || null
+          description: newDescription.trim() || null,
+          mode: newContainerMode
         })
       });
       
       if (res.ok) {
         setNewContainerNo("");
         setNewDescription("");
+        setNewContainerMode("MANUAL");
         setIsCreateDialogOpen(false);
         fetchContainers();
       } else {
@@ -656,6 +761,46 @@ export default function SkuScanPage() {
                         placeholder={skuScan.optional || "可选"}
                       />
                     </div>
+                    {/* 工作模式选择 */}
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">{skuScan.workMode || "工作模式"}</label>
+                      <div className="grid grid-cols-2 gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setNewContainerMode('MANUAL')}
+                          className={`p-3 rounded-lg border-2 text-left transition-all ${
+                            newContainerMode === 'MANUAL' 
+                              ? 'border-primary bg-primary/5' 
+                              : 'border-muted hover:border-primary/50'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 mb-1">
+                            <ScanLine className="h-4 w-4 text-primary" />
+                            <span className="font-medium">{skuScan.modeManual || "直接扫码"}</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {skuScan.modeManualDesc || "无需Excel，直接扫码统计"}
+                          </p>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setNewContainerMode('EXCEL')}
+                          className={`p-3 rounded-lg border-2 text-left transition-all ${
+                            newContainerMode === 'EXCEL' 
+                              ? 'border-primary bg-primary/5' 
+                              : 'border-muted hover:border-primary/50'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 mb-1">
+                            <FileSpreadsheet className="h-4 w-4 text-green-600" />
+                            <span className="font-medium">{skuScan.modeExcel || "Excel对账"}</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {skuScan.modeExcelDesc || "导入Excel进行对比"}
+                          </p>
+                        </button>
+                      </div>
+                    </div>
                     <Button onClick={createContainer} className="w-full" disabled={saving}>
                       {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                       {skuScan.create || "创建"}
@@ -697,8 +842,25 @@ export default function SkuScanPage() {
                     <div className="flex justify-between items-start">
                       <div>
                         <div className="font-medium">{container.containerNo}</div>
-                        <div className={`text-xs ${selectedContainer?.id === container.id ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
-                          {container.scanCount} {skuScan.records || "条记录"}
+                        <div className={`text-xs flex items-center gap-2 ${selectedContainer?.id === container.id ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+                          <span>{container.scanCount} {skuScan.records || "条记录"}</span>
+                          {/* 模式标识 */}
+                          <Badge 
+                            variant="outline" 
+                            className={`text-[10px] px-1 py-0 ${
+                              selectedContainer?.id === container.id 
+                                ? 'border-primary-foreground/50 text-primary-foreground' 
+                                : container.mode === 'MANUAL' 
+                                  ? 'border-primary text-primary' 
+                                  : 'border-green-600 text-green-600'
+                            }`}
+                          >
+                            {container.mode === 'MANUAL' ? (
+                              <><ScanLine className="h-2.5 w-2.5 mr-0.5" />{skuScan.modeManual || '扫码'}</>
+                            ) : (
+                              <><FileSpreadsheet className="h-2.5 w-2.5 mr-0.5" />Excel</>
+                            )}
+                          </Badge>
                         </div>
                       </div>
                       {statusBadge(container.status)}
@@ -871,77 +1033,206 @@ export default function SkuScanPage() {
                   </div>
                 </div>
 
-                {/* 数据表格 - Qty/Pallet/Box可编辑 */}
-                {tableData.length > 0 ? (
-                  <div className="border rounded-lg overflow-x-auto max-h-[50vh] overflow-y-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          {originalHeaders.map(h => (
-                            <TableHead key={h} className="whitespace-nowrap">{h}</TableHead>
-                          ))}
-                          <TableHead className="bg-blue-100 dark:bg-blue-900 whitespace-nowrap">Scanned SKU</TableHead>
-                          <TableHead className="bg-blue-100 dark:bg-blue-900 whitespace-nowrap w-20">Qty</TableHead>
-                          <TableHead className="bg-blue-100 dark:bg-blue-900 whitespace-nowrap">Pallet</TableHead>
-                          <TableHead className="bg-blue-100 dark:bg-blue-900 whitespace-nowrap">Box</TableHead>
-                          <TableHead className="bg-blue-100 dark:bg-blue-900 whitespace-nowrap">Operator</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {tableData.map((row, idx) => (
-                          <TableRow 
-                            key={idx} 
-                            id={`row-${idx}`}
-                            className={row._isHighlighted ? "bg-green-100 dark:bg-green-900" : ""}
-                          >
-                            {originalHeaders.map(h => (
-                              <TableCell key={h} className="whitespace-nowrap">{String(row[h] ?? "")}</TableCell>
-                            ))}
-                            <TableCell className="font-bold text-blue-700 dark:text-blue-300">{row.scannedSkuDisplay}</TableCell>
-                            <TableCell className="p-1">
-                              <Input
-                                type="text"
-                                inputMode="numeric"
-                                pattern="[0-9]*"
-                                value={row.scannedQtyDisplay || ''}
-                                onChange={(e) => updateRowField(idx, 'scannedQtyDisplay', e.target.value)}
-                                className="w-16 text-center font-bold text-blue-700 dark:text-blue-300 h-8"
-                              />
-                            </TableCell>
-                            <TableCell className="p-1">
-                              <Input
-                                type="text"
-                                inputMode="numeric"
-                                pattern="[0-9]*"
-                                value={row.palletDisplay || ''}
-                                onChange={(e) => updateRowField(idx, 'palletDisplay', e.target.value)}
-                                placeholder="-"
-                                className="w-20 h-8 text-xs"
-                              />
-                            </TableCell>
-                            <TableCell className="p-1">
-                              <Input
-                                type="text"
-                                inputMode="numeric"
-                                pattern="[0-9]*"
-                                value={row.boxDisplay || ''}
-                                onChange={(e) => updateRowField(idx, 'boxDisplay', e.target.value)}
-                                placeholder="-"
-                                className="w-20 h-8 text-xs"
-                              />
-                            </TableCell>
-                            <TableCell className="text-muted-foreground text-xs">{row.operatorDisplay}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
+                {/* 数据表格 - 根据模式显示不同内容 */}
+                {selectedContainer.mode === 'MANUAL' ? (
+                  /* MANUAL模式：显示聚合的扫码统计表（3列） */
+                  (() => {
+                    // 聚合扫码记录：按SKU分组累计数量
+                    const aggregatedData = scans.reduce((acc, scan) => {
+                      const existing = acc.find(item => item.sku === scan.sku);
+                      if (existing) {
+                        existing.qty += scan.qty;
+                        // 保留最新的pallet_no
+                        if (scan.pallet_no) existing.pallet_no = scan.pallet_no;
+                      } else {
+                        acc.push({
+                          sku: scan.sku,
+                          qty: scan.qty,
+                          pallet_no: scan.pallet_no || ''
+                        });
+                      }
+                      return acc;
+                    }, [] as Array<{sku: string; qty: number; pallet_no: string}>);
+                    
+                    const totalSkus = aggregatedData.length;
+                    const totalQty = aggregatedData.reduce((sum, item) => sum + item.qty, 0);
+                    
+                    return (
+                      <div className="space-y-3">
+                        {/* 统计信息 */}
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <ScanLine className="h-4 w-4" />
+                            {(skuScan.totalSkus || "共 {count} 个SKU").replace('{count}', String(totalSkus))}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <CheckCircle className="h-4 w-4" />
+                            {(skuScan.totalQty || "共 {count} 件").replace('{count}', String(totalQty))}
+                          </span>
+                        </div>
+                        
+                        {aggregatedData.length > 0 ? (
+                          <div className="border rounded-lg overflow-x-auto max-h-[50vh] overflow-y-auto">
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead className="whitespace-nowrap">{skuScan.scannedSku || "Scanned SKU"}</TableHead>
+                                  <TableHead className="whitespace-nowrap text-center w-24">{skuScan.scannedQty || "Scanned QTY"}</TableHead>
+                                  <TableHead className="whitespace-nowrap w-32">{skuScan.palletNo || "Pallet No"}</TableHead>
+                                  <TableHead className="whitespace-nowrap w-16">{skuScan.action || "操作"}</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {aggregatedData.map((item, idx) => (
+                                  <TableRow 
+                                    key={item.sku} 
+                                    id={`manual-row-${item.sku}`}
+                                    className="transition-colors"
+                                  >
+                                    <TableCell className="font-mono font-semibold">{item.sku}</TableCell>
+                                    <TableCell className="text-center">
+                                      <Badge variant="secondary" className="text-lg font-bold">
+                                        {item.qty}
+                                      </Badge>
+                                    </TableCell>
+                                    <TableCell className="p-1">
+                                      <Input
+                                        type="text"
+                                        value={item.pallet_no}
+                                        onChange={async (e) => {
+                                          const newPallet = e.target.value;
+                                          // 更新所有该SKU的pallet_no
+                                          const skuScans = scans.filter(s => s.sku === item.sku);
+                                          for (const scan of skuScans) {
+                                            await fetch('/api/admin/sku-scan', {
+                                              method: 'PUT',
+                                              headers: { 'Content-Type': 'application/json' },
+                                              body: JSON.stringify({
+                                                type: 'updateScan',
+                                                scanId: scan.id,
+                                                pallet_no: newPallet
+                                              })
+                                            });
+                                          }
+                                          // 更新本地状态
+                                          setScans(prev => prev.map(s => 
+                                            s.sku === item.sku ? { ...s, pallet_no: newPallet } : s
+                                          ));
+                                        }}
+                                        placeholder={skuScan.enterPallet || "输入托盘号"}
+                                        className="w-28 h-8 text-sm"
+                                      />
+                                    </TableCell>
+                                    <TableCell className="p-1">
+                                      <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        className="h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                        onClick={async () => {
+                                          if (!confirm(skuScan.deleteScanConfirm || '确定删除该SKU的所有扫码记录吗？')) return;
+                                          // 删除所有该SKU的扫码记录
+                                          const skuScans = scans.filter(s => s.sku === item.sku);
+                                          for (const scan of skuScans) {
+                                            await fetch('/api/admin/sku-scan', {
+                                              method: 'DELETE',
+                                              headers: { 'Content-Type': 'application/json' },
+                                              body: JSON.stringify({ type: 'scan', id: scan.id })
+                                            });
+                                          }
+                                          setScans(prev => prev.filter(s => s.sku !== item.sku));
+                                        }}
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </div>
+                        ) : (
+                          <div className="border rounded-lg p-12 text-center text-muted-foreground">
+                            <ScanLine className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                            <p>{skuScan.manualScanHint || "扫码开始统计，SKU自动累加"}</p>
+                            <p className="text-xs mt-2">{skuScan.noScanRecords || "暂无扫码记录"}</p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()
                 ) : (
-                  <div className="border rounded-lg p-12 text-center text-muted-foreground">
-                    <Upload className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>{skuScan.uploadHint || "请上传Excel清单开始扫码对账"}</p>
-                    <p className="text-xs mt-2">{skuScan.uploadHint2 || "支持 .xlsx, .xls, .csv 格式"}</p>
-                  </div>
+                  /* EXCEL模式：显示原有的Excel对比表 */
+                  tableData.length > 0 ? (
+                    <div className="border rounded-lg overflow-x-auto max-h-[50vh] overflow-y-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            {originalHeaders.map(h => (
+                              <TableHead key={h} className="whitespace-nowrap">{h}</TableHead>
+                            ))}
+                            <TableHead className="bg-blue-100 dark:bg-blue-900 whitespace-nowrap">Scanned SKU</TableHead>
+                            <TableHead className="bg-blue-100 dark:bg-blue-900 whitespace-nowrap w-20">Qty</TableHead>
+                            <TableHead className="bg-blue-100 dark:bg-blue-900 whitespace-nowrap">Pallet</TableHead>
+                            <TableHead className="bg-blue-100 dark:bg-blue-900 whitespace-nowrap">Box</TableHead>
+                            <TableHead className="bg-blue-100 dark:bg-blue-900 whitespace-nowrap">Operator</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {tableData.map((row, idx) => (
+                            <TableRow 
+                              key={idx} 
+                              id={`row-${idx}`}
+                              className={row._isHighlighted ? "bg-green-100 dark:bg-green-900" : ""}
+                            >
+                              {originalHeaders.map(h => (
+                                <TableCell key={h} className="whitespace-nowrap">{String(row[h] ?? "")}</TableCell>
+                              ))}
+                              <TableCell className="font-bold text-blue-700 dark:text-blue-300">{row.scannedSkuDisplay}</TableCell>
+                              <TableCell className="p-1">
+                                <Input
+                                  type="text"
+                                  inputMode="numeric"
+                                  pattern="[0-9]*"
+                                  value={row.scannedQtyDisplay || ''}
+                                  onChange={(e) => updateRowField(idx, 'scannedQtyDisplay', e.target.value)}
+                                  className="w-16 text-center font-bold text-blue-700 dark:text-blue-300 h-8"
+                                />
+                              </TableCell>
+                              <TableCell className="p-1">
+                                <Input
+                                  type="text"
+                                  inputMode="numeric"
+                                  pattern="[0-9]*"
+                                  value={row.palletDisplay || ''}
+                                  onChange={(e) => updateRowField(idx, 'palletDisplay', e.target.value)}
+                                  placeholder="-"
+                                  className="w-20 h-8 text-xs"
+                                />
+                              </TableCell>
+                              <TableCell className="p-1">
+                                <Input
+                                  type="text"
+                                  inputMode="numeric"
+                                  pattern="[0-9]*"
+                                  value={row.boxDisplay || ''}
+                                  onChange={(e) => updateRowField(idx, 'boxDisplay', e.target.value)}
+                                  placeholder="-"
+                                  className="w-20 h-8 text-xs"
+                                />
+                              </TableCell>
+                              <TableCell className="text-muted-foreground text-xs">{row.operatorDisplay}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  ) : (
+                    <div className="border rounded-lg p-12 text-center text-muted-foreground">
+                      <Upload className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>{skuScan.uploadHint || "请上传Excel清单开始扫码对账"}</p>
+                      <p className="text-xs mt-2">{skuScan.uploadHint2 || "支持 .xlsx, .xls, .csv 格式"}</p>
+                    </div>
+                  )
                 )}
               </div>
             ) : (
