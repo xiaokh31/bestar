@@ -422,7 +422,8 @@
       "deleteScan": "Supprimer",
       "action": "Action",
       "enterPallet": "N° palette",
-      "deleteScanConfirm": "Supprimer tous les scans de ce SKU?"
+      "deleteScanConfirm": "Supprimer tous les scans de ce SKU?",
+      "confirmModifyQty": "Confirmer la modification manuelle?"
     }
   },
   "user": {

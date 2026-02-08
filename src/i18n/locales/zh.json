@@ -422,7 +422,8 @@
       "deleteScan": "删除此记录",
       "action": "操作",
       "enterPallet": "输入托盘号",
-      "deleteScanConfirm": "确定删除该SKU的所有扫码记录吗？"
+      "deleteScanConfirm": "确定删除该SKU的所有扫码记录吗？",
+      "confirmModifyQty": "确定手动修改数量吗？"
     }
   },
   "user": {

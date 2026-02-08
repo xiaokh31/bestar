@@ -258,9 +258,46 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json();
+    const { type } = body;
+
+    // 更新扫码记录（pallet_no, box_no, qty）
+    if (type === 'updateScan') {
+      const { scanId, pallet_no, box_no, qty } = body;
+      
+      if (!scanId) {
+        return NextResponse.json(
+          { error: "Scan ID is required" },
+          { status: 400 }
+        );
+      }
+
+      const updateData: Record<string, unknown> = {};
+      if (pallet_no !== undefined) updateData.palletNo = pallet_no;
+      if (box_no !== undefined) updateData.boxNo = box_no;
+      if (qty !== undefined) updateData.qty = parseInt(String(qty)) || 1;
+
+      const scan = await prisma.skuScan.update({
+        where: { id: scanId },
+        data: updateData
+      });
+
+      return NextResponse.json({ data: scan });
+    }
+
+    // 更新容器
     const { id, status, description } = body;
 
-    if (!id) {
+    if (!id && type !== 'container') {
+      return NextResponse.json(
+        { error: "Container ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // 支持 containerId 或 id
+    const containerId = body.containerId || id;
+    
+    if (!containerId) {
       return NextResponse.json(
         { error: "Container ID is required" },
         { status: 400 }
@@ -274,16 +311,16 @@ export async function PUT(request: NextRequest) {
     if (body.excelData !== undefined) updateData.excelData = body.excelData;
 
     const container = await prisma.scanContainer.update({
-      where: { id },
+      where: { id: containerId },
       data: updateData
     });
 
     return NextResponse.json({ data: container });
 
   } catch (error) {
-    console.error("Error updating container:", error);
+    console.error("Error updating:", error);
     return NextResponse.json(
-      { error: "Failed to update container" },
+      { error: "Failed to update" },
       { status: 500 }
     );
   }

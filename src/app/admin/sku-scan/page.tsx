@@ -82,10 +82,11 @@ interface ScanRecord {
 }
 
 interface ExcelRow {
-  [key: string]: string | number | boolean | null | undefined;
+  [key: string]: string | number | boolean | null | undefined | string[];
   _skuValue?: string;
   _originalQty?: number;
   _isHighlighted?: boolean;
+  _scanIds?: string[];  // 关联的扫码记录ID
   scannedSkuDisplay?: string;
   scannedQtyDisplay?: number;
   palletDisplay?: string;
@@ -133,6 +134,7 @@ export default function SkuScanPage() {
   // 自动刷新（多人协作）
   const [autoRefresh, setAutoRefresh] = useState(true);
   const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const isFetchingRef = useRef(false);  // 防止请求堆积
   
   // 自动保存状态
   const [lastSaved, setLastSaved] = useState<string | null>(null);
@@ -224,17 +226,54 @@ export default function SkuScanPage() {
     }
   }, [statusFilter]);
 
-  // 获取扫码记录
-  const fetchScans = useCallback(async (containerId: string) => {
+  // 获取扫码记录（带请求防堆积保护）
+  const fetchScans = useCallback(async (containerId: string, tableDataToUse?: ExcelRow[], isAutoRefresh = false) => {
+    // 自动刷新时，如果上一个请求还未完成，跳过本次
+    if (isAutoRefresh && isFetchingRef.current) {
+      return;
+    }
+    
     try {
+      isFetchingRef.current = true;
       const res = await fetch(`/api/admin/sku-scan?type=scans&containerId=${containerId}`);
       const data = await res.json();
       if (data.data) {
         setScans(data.data);
-        recalcTable(data.data);
+        // 如果提供了tableData，直接使用；否则依赖当前状态
+        if (tableDataToUse && tableDataToUse.length > 0) {
+          // 直接更新传入的数据
+          const newData = tableDataToUse.map(row => ({
+            ...row,
+            scannedQtyDisplay: 0,
+            scannedSkuDisplay: "",
+            palletDisplay: "",
+            boxDisplay: "",
+            operatorDisplay: "",
+            _scanIds: [] as string[]
+          }));
+          
+          data.data.forEach((scan: ScanRecord) => {
+            const row = newData.find(r => r._skuValue === scan.sku);
+            if (row) {
+              row.scannedSkuDisplay = scan.raw_code;
+              row.scannedQtyDisplay = (row.scannedQtyDisplay || 0) + (scan.qty || 1);
+              if (scan.pallet_no) row.palletDisplay = scan.pallet_no;
+              if (scan.box_no) row.boxDisplay = scan.box_no;
+              row.operatorDisplay = scan.operator;
+              if (!row._scanIds) row._scanIds = [];
+              (row._scanIds as string[]).push(scan.id);
+            }
+          });
+          
+          setTableData(newData);
+        } else {
+          recalcTable(data.data);
+        }
       }
     } catch (error) {
       console.error("Failed to fetch scans:", error);
+    } finally {
+      isFetchingRef.current = false;
     }
   }, []);
 
@@ -248,21 +287,50 @@ export default function SkuScanPage() {
       if (selectedContainer.mode === 'EXCEL' && selectedContainer.excelData) {
         const excelData = selectedContainer.excelData as {
           headers: string[];
-          rows: ExcelRow[];
+          rawRows?: Record<string, string | number | null | undefined>[];  // 新格式
+          rows?: ExcelRow[];  // 旧格式兼容
           skuColumnKey: string;
           qtyColumnKey: string;
         };
-        setOriginalHeaders(excelData.headers);
-        setSkuColumnKey(excelData.skuColumnKey);
-        setQtyColumnKey(excelData.qtyColumnKey);
-        setTableData(excelData.rows);
+        
+        const headers = excelData.headers;
+        const skuCol = excelData.skuColumnKey;
+        const qtyCol = excelData.qtyColumnKey;
+        
+        setOriginalHeaders(headers);
+        setSkuColumnKey(skuCol);
+        setQtyColumnKey(qtyCol);
+        
+        // 从原始数据重建表格数据
+        const sourceRows = excelData.rawRows || excelData.rows || [];
+        const data: ExcelRow[] = sourceRows.map((rawRow) => {
+          const obj: ExcelRow = {
+            _isHighlighted: false,
+            scannedSkuDisplay: "",
+            scannedQtyDisplay: 0,
+            palletDisplay: "",
+            boxDisplay: "",
+            operatorDisplay: ""
+          };
+          // 复制原始字段
+          headers.forEach(h => {
+            if (h in rawRow) obj[h] = rawRow[h];
+          });
+          obj._skuValue = String(obj[skuCol] || "").trim();
+          obj._originalQty = qtyCol ? (parseInt(String(obj[qtyCol])) || 0) : 0;
+          return obj;
+        });
+        
+        setTableData(data);
         setLastSaved(skuScan.restored || '已恢复');
+        // 传入构建好的tableData，避免竞态条件
+        fetchScans(selectedContainer.id, data);
       } else {
         // 清空Excel状态
         setTableData([]);
         setOriginalHeaders([]);
+        fetchScans(selectedContainer.id);
       }
-      fetchScans(selectedContainer.id);
     } else {
       // 清空状态
       setTableData([]);
@@ -271,19 +339,22 @@ export default function SkuScanPage() {
     }
   }, [selectedContainer, fetchScans]);
 
-  // 多人协作：定时刷新扫码记录
+  // 多人协作：定时刷新扫码记录（带防堆积保护）
   useEffect(() => {
     if (autoRefresh && selectedContainer) {
+      // 根据记录数量动态调整刷新频率
+      const refreshInterval = scans.length > 100 ? 5000 : 3000; // 记录多时减少刷新频率
+      
       refreshIntervalRef.current = setInterval(() => {
-        fetchScans(selectedContainer.id);
-      }, 3000); // 每3秒刷新一次
+        fetchScans(selectedContainer.id, undefined, true); // 标记为自动刷新
+      }, refreshInterval);
     }
     return () => {
       if (refreshIntervalRef.current) {
         clearInterval(refreshIntervalRef.current);
       }
     };
-  }, [autoRefresh, selectedContainer, fetchScans]);
+  }, [autoRefresh, selectedContainer, fetchScans, scans.length]);
 
   // 设置默认操作人
   useEffect(() => {
@@ -419,7 +490,7 @@ export default function SkuScanPage() {
 
   // 手动修改扫码记录的Qty/Pallet/Box
   // 只允许输入数字，移除前导0
-  const updateRowField = (rowIdx: number, field: 'scannedQtyDisplay' | 'palletDisplay' | 'boxDisplay', value: string) => {
+  const updateRowField = async (rowIdx: number, field: 'scannedQtyDisplay' | 'palletDisplay' | 'boxDisplay', value: string) => {
     // 只保留数字
     let numericValue = value.replace(/[^0-9]/g, '');
     // 移除前导0（但保留单独的0）
@@ -429,17 +500,44 @@ export default function SkuScanPage() {
     // 如果为空，设为''而不是0
     const finalValue = numericValue === '' ? '' : numericValue;
     
-    setTableData(prev => prev.map((row, idx) => {
+    const row = tableData[rowIdx];
+    const scanIds = row?._scanIds || [];
+    
+    // 更新本地状态
+    setTableData(prev => prev.map((r, idx) => {
       if (idx === rowIdx) {
         if (field === 'scannedQtyDisplay') {
-          return { ...row, [field]: finalValue === '' ? 0 : parseInt(finalValue) };
+          return { ...r, [field]: finalValue === '' ? 0 : parseInt(finalValue) };
         } else {
           // Pallet和Box保存为字符串
-          return { ...row, [field]: finalValue };
+          return { ...r, [field]: finalValue };
         }
       }
-      return row;
+      return r;
     }));
+    
+    // 保存Pallet/Box到数据库
+    if ((field === 'palletDisplay' || field === 'boxDisplay') && scanIds.length > 0) {
+      const apiField = field === 'palletDisplay' ? 'pallet_no' : 'box_no';
+      // 更新所有关联的扫码记录
+      for (const scanId of scanIds) {
+        await fetch('/api/admin/sku-scan', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'updateScan',
+            scanId,
+            [apiField]: finalValue
+          })
+        });
+      }
+      // 同步更新scans状态
+      setScans(prev => prev.map(s => 
+        scanIds.includes(s.id) 
+          ? { ...s, [field === 'palletDisplay' ? 'pallet_no' : 'box_no']: finalValue } 
+          : s
+      ));
+    }
   };
 
   // 重新计算表格显示
@@ -452,17 +550,22 @@ export default function SkuScanPage() {
       scannedSkuDisplay: "",
       palletDisplay: "",
       boxDisplay: "",
-      operatorDisplay: ""
+      operatorDisplay: "",
+      _scanIds: [] as string[]  // 保存关联的扫码记录ID
     }));
 
     currentScans.forEach(scan => {
       const row = newData.find(r => r._skuValue === scan.sku);
       if (row) {
-        row.scannedSkuDisplay = scan.sku;
+        // 使用raw_code显示完整扫码内容
+        row.scannedSkuDisplay = scan.raw_code;
         row.scannedQtyDisplay = (row.scannedQtyDisplay || 0) + (scan.qty || 1);
         if (scan.pallet_no) row.palletDisplay = scan.pallet_no;
         if (scan.box_no) row.boxDisplay = scan.box_no;
         row.operatorDisplay = scan.operator;
+        // 保存扫码记录ID用于后续更新
+        if (!row._scanIds) row._scanIds = [];
+        (row._scanIds as string[]).push(scan.id);
       }
     });
 
@@ -563,13 +666,21 @@ export default function SkuScanPage() {
         setTableData(data);
         if (scans.length) recalcTable(scans);
         
-        // 保存Excel数据到数据库
+        // 保存Excel数据到数据库（只保存原始数据，不保存显示状态）
         try {
+          // 只保存原始Excel行数据，不包含显示状态字段
+          const rawRows = json.slice(1).map((rowArr: (string | number)[]) => {
+            const obj: Record<string, string | number | null | undefined> = {};
+            headers.forEach((h, i) => obj[h] = rowArr[i]);
+            return obj;
+          });
+          
           const excelDataToSave = {
             headers,
-            rows: data,
+            rawRows,  // 只保存原始行数据
             skuColumnKey: skuCol,
-            qtyColumnKey: qtyCol || ""
+            qtyColumnKey: qtyCol || "",
+            fileName: file.name  // 保存文件名
           };
           
           await fetch('/api/admin/sku-scan', {
@@ -587,6 +698,11 @@ export default function SkuScanPage() {
             ...prev,
             excelData: excelDataToSave
           } : null);
+          
+          // 更新containers列表中的对应项
+          setContainers(prev => prev.map(c => 
+            c.id === selectedContainer.id ? { ...c, excelData: excelDataToSave } : c
+          ));
           
           setLastSaved(skuScan.autoSaved || '已自动保存');
         } catch (error) {
@@ -922,12 +1038,31 @@ export default function SkuScanPage() {
                     <label className="text-xs text-muted-foreground font-medium block truncate">
                       4. {skuScan.importExcel || "导入"}
                     </label>
-                    <Input 
-                      type="file" 
-                      accept=".xlsx,.xls,.csv"
-                      onChange={handleFileUpload}
-                      className="text-xs"
-                    />
+                    {/* EXCEL模式：显示导入状态 */}
+                    {selectedContainer.mode === 'EXCEL' && (selectedContainer.excelData as { fileName?: string })?.fileName ? (
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 px-3 py-2 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-md text-xs truncate">
+                          <span className="text-green-600 dark:text-green-400">✓</span>
+                          <span className="ml-1 text-muted-foreground">{(selectedContainer.excelData as { fileName?: string }).fileName}</span>
+                        </div>
+                        <label className="cursor-pointer">
+                          <Input 
+                            type="file" 
+                            accept=".xlsx,.xls,.csv"
+                            onChange={handleFileUpload}
+                            className="hidden"
+                          />
+                          <RefreshCw className="h-4 w-4 text-muted-foreground hover:text-primary" />
+                        </label>
+                      </div>
+                    ) : (
+                      <Input 
+                        type="file" 
+                        accept=".xlsx,.xls,.csv"
+                        onChange={handleFileUpload}
+                        className="text-xs"
+                      />
+                    )}
                   </div>
                   <div className="col-span-2 sm:col-span-3 lg:col-span-2 flex gap-1 items-end">
                     {/* 手机扫码按钮 - 更明显的样式 */}
@@ -1037,38 +1172,61 @@ export default function SkuScanPage() {
                 {selectedContainer.mode === 'MANUAL' ? (
                   /* MANUAL模式：显示聚合的扫码统计表（3列） */
                   (() => {
-                    // 聚合扫码记录：按SKU分组累计数量
+                    // 聚合扫码记录：按SKU分组累计数量，同时保存关联的scanIds
                     const aggregatedData = scans.reduce((acc, scan) => {
                       const existing = acc.find(item => item.sku === scan.sku);
                       if (existing) {
                         existing.qty += scan.qty;
+                        existing.scanIds.push(scan.id);
                         // 保留最新的pallet_no
                         if (scan.pallet_no) existing.pallet_no = scan.pallet_no;
                       } else {
                         acc.push({
                           sku: scan.sku,
                           qty: scan.qty,
-                          pallet_no: scan.pallet_no || ''
+                          pallet_no: scan.pallet_no || '',
+                          scanIds: [scan.id]
                         });
                       }
                       return acc;
-                    }, [] as Array<{sku: string; qty: number; pallet_no: string}>);
+                    }, [] as Array<{sku: string; qty: number; pallet_no: string; scanIds: string[]}>);
                     
                     const totalSkus = aggregatedData.length;
                     const totalQty = aggregatedData.reduce((sum, item) => sum + item.qty, 0);
                     
+                    // MANUAL模式导出功能
+                    const exportManualExcel = () => {
+                      const data = aggregatedData.map(item => ({
+                        'Scanned SKU': item.sku,
+                        'Scanned QTY': item.qty,
+                        'Pallet No': item.pallet_no
+                      }));
+                      const ws = XLSX.utils.json_to_sheet(data);
+                      const wb = XLSX.utils.book_new();
+                      XLSX.utils.book_append_sheet(wb, ws, 'ScanResult');
+                      XLSX.writeFile(wb, `${selectedContainer.containerNo}_Manual_Result.xlsx`);
+                    };
+                    
                     return (
                       <div className="space-y-3">
-                        {/* 统计信息 */}
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <ScanLine className="h-4 w-4" />
-                            {(skuScan.totalSkus || "共 {count} 个SKU").replace('{count}', String(totalSkus))}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <CheckCircle className="h-4 w-4" />
-                            {(skuScan.totalQty || "共 {count} 件").replace('{count}', String(totalQty))}
-                          </span>
+                        {/* 统计信息 + 导出按钮 */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <ScanLine className="h-4 w-4" />
+                              {(skuScan.totalSkus || "共 {count} 个SKU").replace('{count}', String(totalSkus))}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <CheckCircle className="h-4 w-4" />
+                              {(skuScan.totalQty || "共 {count} 件").replace('{count}', String(totalQty))}
+                            </span>
+                          </div>
+                          {aggregatedData.length > 0 && (
+                            <Button size="sm" variant="outline" onClick={exportManualExcel}>
+                              <Download className="h-4 w-4 mr-1" />
+                              {skuScan.export || "导出"}
+                            </Button>
+                          )}
                         </div>
                         
                         {aggregatedData.length > 0 ? (
@@ -1090,18 +1248,62 @@ export default function SkuScanPage() {
                                     className="transition-colors"
                                   >
                                     <TableCell className="font-mono font-semibold">{item.sku}</TableCell>
-                                    <TableCell className="text-center">
-                                      <Badge variant="secondary" className="text-lg font-bold">
-                                        {item.qty}
-                                      </Badge>
+                                    <TableCell className="text-center p-1">
+                                      <Input
+                                        type="text"
+                                        inputMode="numeric"
+                                        pattern="[0-9]*"
+                                        value={item.qty}
+                                        onChange={async (e) => {
+                                          const newValue = e.target.value.replace(/[^0-9]/g, '');
+                                          const newQty = parseInt(newValue) || 0;
+                                          if (newQty === item.qty) return;
+                                          
+                                          // 确认弹窗
+                                          if (!confirm(skuScan.confirmModifyQty || `确定将数量从 ${item.qty} 修改为 ${newQty} 吗？`)) {
+                                            return;
+                                          }
+                                          
+                                          // 计算差值，只更新第一条记录的qty
+                                          const skuScans = scans.filter(s => s.sku === item.sku);
+                                          if (skuScans.length > 0) {
+                                            const firstScan = skuScans[0];
+                                            const otherScansQty = skuScans.slice(1).reduce((sum, s) => sum + s.qty, 0);
+                                            const newFirstQty = newQty - otherScansQty;
+                                            
+                                            await fetch('/api/admin/sku-scan', {
+                                              method: 'PUT',
+                                              headers: { 'Content-Type': 'application/json' },
+                                              body: JSON.stringify({
+                                                type: 'updateScan',
+                                                scanId: firstScan.id,
+                                                qty: Math.max(1, newFirstQty)
+                                              })
+                                            });
+                                            
+                                            // 更新本地状态
+                                            setScans(prev => prev.map(s => 
+                                              s.id === firstScan.id ? { ...s, qty: Math.max(1, newFirstQty) } : s
+                                            ));
+                                          }
+                                        }}
+                                        className="w-16 h-8 text-center font-bold text-lg"
+                                      />
                                     </TableCell>
                                     <TableCell className="p-1">
                                       <Input
                                         type="text"
-                                        value={item.pallet_no}
-                                        onChange={async (e) => {
+                                        defaultValue={item.pallet_no}
+                                        onChange={(e) => {
+                                          // 只更新本地状态，不发送API
                                           const newPallet = e.target.value;
-                                          // 更新所有该SKU的pallet_no
+                                          setScans(prev => prev.map(s => 
+                                            s.sku === item.sku ? { ...s, pallet_no: newPallet } : s
+                                          ));
+                                        }}
+                                        onBlur={async (e) => {
+                                          // 失焦时保存到数据库
+                                          const newPallet = e.target.value;
                                           const skuScans = scans.filter(s => s.sku === item.sku);
                                           for (const scan of skuScans) {
                                             await fetch('/api/admin/sku-scan', {
@@ -1114,10 +1316,6 @@ export default function SkuScanPage() {
                                               })
                                             });
                                           }
-                                          // 更新本地状态
-                                          setScans(prev => prev.map(s => 
-                                            s.sku === item.sku ? { ...s, pallet_no: newPallet } : s
-                                          ));
                                         }}
                                         placeholder={skuScan.enterPallet || "输入托盘号"}
                                         className="w-28 h-8 text-sm"
