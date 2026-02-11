@@ -294,6 +294,7 @@ model SkuScan {
   qty           Int            @default(1) // 数量
   palletNo      String?                    // 托盘号
   boxNo         String?                    // 箱子编号
+  dockNo        String?                    // 门号(DOCK)
   operator      String                     // 操作人
   createdAt     DateTime       @default(now())
 

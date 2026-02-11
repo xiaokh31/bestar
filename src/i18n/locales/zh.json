@@ -427,7 +427,8 @@
       "totalScannedQty": "已扫总数",
       "currentMaxPallet": "当前最大Pallet",
       "palletHint": "多个用逗号分隔，如 1,2,5",
-      "originalTotalQty": "原始数量总数"
+      "originalTotalQty": "原始数量总数",
+      "dockNo": "门号"
     }
   },
   "user": {

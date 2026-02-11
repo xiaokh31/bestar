@@ -427,7 +427,8 @@
       "totalScannedQty": "Total Scanned",
       "currentMaxPallet": "Current Max Pallet",
       "palletHint": "Separate with commas, e.g. 1,2,5",
-      "originalTotalQty": "Original Total QTY"
+      "originalTotalQty": "Original Total QTY",
+      "dockNo": "DOCK No."
     }
   },
   "user": {
