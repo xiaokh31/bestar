@@ -1233,7 +1233,8 @@ export default function SkuScanPage() {
                         </div>
                         
                         {aggregatedData.length > 0 ? (
-                          <div className="border rounded-lg overflow-x-auto max-h-[50vh] overflow-y-auto">
+                          <div className="border rounded-lg overflow-x-auto">
+                            <div className="max-h-[50vh] overflow-y-auto">
                             <Table className="min-w-[600px]">
                               <TableHeader>
                                 <TableRow>
@@ -1350,6 +1351,7 @@ export default function SkuScanPage() {
                                 ))}
                               </TableBody>
                             </Table>
+                            </div>
                           </div>
                         ) : (
                           <div className="border rounded-lg p-12 text-center text-muted-foreground">
@@ -1364,7 +1366,8 @@ export default function SkuScanPage() {
                 ) : (
                   /* EXCEL模式：显示原有的Excel对比表 */
                   tableData.length > 0 ? (
-                    <div className="border rounded-lg overflow-x-auto max-h-[50vh] overflow-y-auto">
+                    <div className="border rounded-lg overflow-x-auto">
+                      <div className="max-h-[50vh] overflow-y-auto">
                       <Table className="min-w-[900px]">
                         <TableHeader>
                           <TableRow>
@@ -1424,6 +1427,7 @@ export default function SkuScanPage() {
                           ))}
                         </TableBody>
                       </Table>
+                      </div>
                     </div>
                   ) : (
                     <div className="border rounded-lg p-12 text-center text-muted-foreground">
