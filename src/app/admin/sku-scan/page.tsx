@@ -475,7 +475,38 @@ export default function SkuScanPage() {
           setSaving(false);
         }
       } else {
+        // Locate模式：定位 + 创建记录（如果该SKU还没有扫码记录），方便用户手动输入qty
         setLastScannedInfo(`${row._skuValue} (${skuScan.locateSuccess || "定位成功"})`);
+        
+        // 检查该SKU是否已有扫码记录，没有则创建一条
+        const existingScan = scans.find(s => s.sku === row._skuValue);
+        if (!existingScan) {
+          try {
+            setSaving(true);
+            const res = await fetch("/api/admin/sku-scan", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                type: "scan",
+                container_no: selectedContainer.containerNo,
+                sku: row._skuValue,
+                raw_code: code,
+                qty: 1,
+                operator: operator
+              })
+            });
+            
+            if (res.ok) {
+              const data = await res.json();
+              setScans(prev => [...prev, data.data]);
+              recalcTable([...scans, data.data]);
+            }
+          } catch (error) {
+            console.error("Failed to create locate scan:", error);
+          } finally {
+            setSaving(false);
+          }
+        }
       }
     } else {
       setLastScannedInfo(`${skuScan.unknownSku || "未知SKU"}: ${code}`);
@@ -539,6 +570,30 @@ export default function SkuScanPage() {
         scanIds.includes(s.id) 
           ? { ...s, [field === 'palletDisplay' ? 'pallet_no' : 'box_no']: finalValue } 
           : s
+      ));
+    }
+    
+    // 保存Qty到数据库（调整第一条记录的qty使总数匹配）
+    if (field === 'scannedQtyDisplay' && scanIds.length > 0) {
+      const newTotal = finalValue === '' ? 0 : parseInt(String(finalValue));
+      const firstScanId = scanIds[0];
+      const otherScansQty = scans
+        .filter(s => scanIds.includes(s.id) && s.id !== firstScanId)
+        .reduce((sum, s) => sum + (s.qty || 1), 0);
+      const newFirstQty = Math.max(0, newTotal - otherScansQty);
+      
+      await fetch('/api/admin/sku-scan', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'updateScan',
+          scanId: firstScanId,
+          qty: newFirstQty
+        })
+      });
+      // 同步更新scans状态
+      setScans(prev => prev.map(s => 
+        s.id === firstScanId ? { ...s, qty: newFirstQty } : s
       ));
     }
   };
@@ -1234,7 +1289,7 @@ export default function SkuScanPage() {
                         
                         {aggregatedData.length > 0 ? (
                           <div className="border rounded-lg overflow-x-auto">
-                            <div className="max-h-[50vh] overflow-y-auto">
+                            <div className="max-h-[50vh] overflow-y-auto min-w-max">
                             <Table className="min-w-[600px]">
                               <TableHeader>
                                 <TableRow>
@@ -1367,7 +1422,7 @@ export default function SkuScanPage() {
                   /* EXCEL模式：显示原有的Excel对比表 */
                   tableData.length > 0 ? (
                     <div className="border rounded-lg overflow-x-auto">
-                      <div className="max-h-[50vh] overflow-y-auto">
+                      <div className="max-h-[50vh] overflow-y-auto min-w-max">
                       <Table className="min-w-[900px]">
                         <TableHeader>
                           <TableRow>
