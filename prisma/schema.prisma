@@ -271,6 +271,7 @@ model ScanContainer {
   id            String       @id @default(cuid())
   containerNo   String       @unique       // 柜号
   description   String?                    // 描述
+  dockNo        String?                    // 门号(DOCK) - 柜子在哪个门
   status        ScanStatus   @default(ACTIVE)
   mode          ScanMode     @default(MANUAL)  // 工作模式
   excelData     Json?                      // Excel模板数据(仅EXCEL模式)

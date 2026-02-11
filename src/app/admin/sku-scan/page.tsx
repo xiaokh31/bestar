@@ -62,6 +62,7 @@ interface ScanContainer {
   id: string;
   containerNo: string;
   description: string | null;
+  dockNo: string | null;  // 门号(DOCK) - 柜子在哪个门
   status: "ACTIVE" | "COMPLETED" | "ARCHIVED";
   mode: "MANUAL" | "EXCEL";  // 工作模式
   excelData?: unknown;  // Excel模板数据
@@ -113,7 +114,7 @@ export default function SkuScanPage() {
   // 扫码状态
   const [scanMode, setScanMode] = useState<"box" | "locate">("box");
   const [operator, setOperator] = useState("");
-  const [dockNo, setDockNo] = useState("");  // DOCK No.
+  // dockNo现在从ScanContainer读取，不再是独立状态
   const [scans, setScans] = useState<ScanRecord[]>([]);
   const [lastScannedInfo, setLastScannedInfo] = useState("...");
   
@@ -418,7 +419,7 @@ export default function SkuScanPage() {
             sku: code,
             raw_code: code,
             qty: 1,
-            dock_no: dockNo || undefined,
+            dock_no: selectedContainer?.dockNo || undefined,
             operator: operator
           })
         });
@@ -472,7 +473,7 @@ export default function SkuScanPage() {
             sku: row._skuValue,
             raw_code: code,
             qty: 1,
-            dock_no: dockNo || undefined,
+            dock_no: selectedContainer?.dockNo || undefined,
             operator: operator
           })
         });
@@ -582,6 +583,68 @@ export default function SkuScanPage() {
       setScans(prev => prev.map(s => 
         s.id === firstScanId ? { ...s, qty: newFirstQty } : s
       ));
+    }
+  };
+
+  // 手动输入SKU（数据丢失时手动补充）
+  const handleManualSkuInput = async (rowIdx: number, inputSku: string) => {
+    if (!selectedContainer || !inputSku.trim()) return;
+    
+    const row = tableData[rowIdx];
+    const originalSku = String(row._skuValue || '');
+    const existingDisplay = row.scannedSkuDisplay;
+    
+    // 如果输入的SKU与当前显示相同，不做任何操作
+    if (inputSku === existingDisplay) return;
+    
+    // Double check 确认弹窗
+    const confirmMsg = skuScan.confirmManualSku 
+      ? skuScan.confirmManualSku.replace('{originalSku}', originalSku).replace('{inputSku}', inputSku)
+      : `❗ 手动输入模式\n\n您正在手动输入扫码记录，请确认：\n原始SKU: ${originalSku}\n输入SKU: ${inputSku}\n\n确定要将此SKU记录到数据库吗？`;
+    
+    if (!confirm(confirmMsg)) {
+      // 用户取消，恢复原值
+      setTableData(prev => [...prev]); // 触发重新渲染
+      return;
+    }
+    
+    try {
+      setSaving(true);
+      
+      // 调用API创建/更新扫码记录
+      const res = await fetch("/api/admin/sku-scan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "scan",
+          container_no: selectedContainer.containerNo,
+          sku: originalSku,  // 使用原始SKU作为关联
+          raw_code: inputSku,  // 记录手动输入的内容
+          qty: 1,
+          dock_no: selectedContainer?.dockNo || undefined,
+          operator: operator
+        })
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        let newScans: ScanRecord[];
+        if (data.data.isUpdate) {
+          newScans = scans.map(s => s.id === data.data.id ? data.data : s);
+        } else {
+          newScans = [...scans, data.data];
+        }
+        setScans(newScans);
+        recalcTable(newScans);
+        
+        // 显示成功提示
+        setLastScannedInfo(`✅ ${skuScan.manualInputSuccess || "手动输入成功"}: ${inputSku}`);
+        playBeep("success");
+      }
+    } catch (error) {
+      alert(skuScan.saveFailed || "保存失败");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -868,6 +931,29 @@ export default function SkuScanPage() {
     }
   };
 
+  // 更新容器的dockNo
+  const updateContainerDockNo = async (dockNoValue: string) => {
+    if (!selectedContainer) return;
+    
+    try {
+      await fetch("/api/admin/sku-scan", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          id: selectedContainer.id, 
+          dockNo: dockNoValue 
+        })
+      });
+      // 更新本地状态
+      setSelectedContainer(prev => prev ? { ...prev, dockNo: dockNoValue } : null);
+      setContainers(prev => prev.map(c => 
+        c.id === selectedContainer.id ? { ...c, dockNo: dockNoValue } : c
+      ));
+    } catch (error) {
+      console.error("Failed to update dockNo:", error);
+    }
+  };
+
   // 状态徽章
   const statusBadge = (status: string) => {
     switch (status) {
@@ -1073,8 +1159,9 @@ export default function SkuScanPage() {
                       3. {skuScan.dockNo || "DOCK No."}
                     </label>
                     <Input 
-                      value={dockNo}
-                      onChange={(e) => setDockNo(e.target.value)}
+                      defaultValue={selectedContainer?.dockNo || ''}
+                      key={selectedContainer?.id}  // 切换container时重置输入框
+                      onBlur={(e) => updateContainerDockNo(e.target.value)}
                       placeholder="e.g. D1"
                       className="bg-orange-50"
                     />
@@ -1450,7 +1537,20 @@ export default function SkuScanPage() {
                               {originalHeaders.map(h => (
                                 <TableCell key={h} className="whitespace-nowrap">{String(row[h] ?? "")}</TableCell>
                               ))}
-                              <TableCell className="font-bold text-blue-700 dark:text-blue-300">{row.scannedSkuDisplay}</TableCell>
+                              <TableCell className="p-1">
+                                <Input
+                                  type="text"
+                                  defaultValue={row.scannedSkuDisplay || ''}
+                                  onBlur={(e) => {
+                                    const newValue = e.target.value.trim();
+                                    if (newValue && newValue !== row.scannedSkuDisplay) {
+                                      handleManualSkuInput(idx, newValue);
+                                    }
+                                  }}
+                                  placeholder="手动输入"
+                                  className="min-w-[120px] font-bold text-blue-700 dark:text-blue-300 h-8"
+                                />
+                              </TableCell>
                               <TableCell className="p-1">
                                 <Input
                                   type="text"

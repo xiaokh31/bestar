@@ -347,6 +347,7 @@ export async function PUT(request: NextRequest) {
     if (description !== undefined) updateData.description = description;
     if (body.mode) updateData.mode = body.mode;
     if (body.excelData !== undefined) updateData.excelData = body.excelData;
+    if (body.dockNo !== undefined) updateData.dockNo = body.dockNo;  // 支持更新dockNo
 
     const container = await prisma.scanContainer.update({
       where: { id: containerId },

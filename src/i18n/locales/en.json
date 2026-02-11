@@ -428,7 +428,9 @@
       "currentMaxPallet": "Current Max Pallet",
       "palletHint": "Separate with commas, e.g. 1,2,5",
       "originalTotalQty": "Original Total QTY",
-      "dockNo": "DOCK No."
+      "dockNo": "DOCK No.",
+      "confirmManualSku": "❗ Manual Input Mode\n\nYou are manually entering a scan record, please confirm:\nOriginal SKU: {originalSku}\nInput SKU: {inputSku}\n\nAre you sure to save this SKU to database?",
+      "manualInputSuccess": "Manual input success"
     }
   },
   "user": {

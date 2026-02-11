@@ -428,7 +428,9 @@
       "currentMaxPallet": "Palette max actuelle",
       "palletHint": "Séparer par virgules, ex. 1,2,5",
       "originalTotalQty": "QTÉ totale d'origine",
-      "dockNo": "N° de quai"
+      "dockNo": "N° de quai",
+      "confirmManualSku": "❗ Mode saisie manuelle\n\nVous entrez manuellement un enregistrement, veuillez confirmer:\nSKU original: {originalSku}\nSKU saisi: {inputSku}\n\nÊtes-vous sûr de vouloir enregistrer ce SKU dans la base de données?",
+      "manualInputSuccess": "Saisie manuelle réussie"
     }
   },
   "user": {

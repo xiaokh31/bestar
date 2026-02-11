@@ -428,7 +428,9 @@
       "currentMaxPallet": "当前最大Pallet",
       "palletHint": "多个用逗号分隔，如 1,2,5",
       "originalTotalQty": "原始数量总数",
-      "dockNo": "门号"
+      "dockNo": "门号",
+      "confirmManualSku": "❗ 手动输入模式\n\n您正在手动输入扫码记录，请确认：\n原始SKU: {originalSku}\n输入SKU: {inputSku}\n\n确定要将此SKU记录到数据库吗？",
+      "manualInputSuccess": "手动输入成功"
     }
   },
   "user": {
