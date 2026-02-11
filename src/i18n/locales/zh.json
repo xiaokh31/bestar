@@ -394,6 +394,7 @@
       "pleaseImportExcel": "请先导入Excel",
       "locateSuccess": "定位成功",
       "unknownSku": "未知SKU",
+      "newSku": "新SKU",
       "saveFailed": "保存失败",
       "noDifference": "无差异！",
       "confirmDelete": "确定删除该柜号及所有扫码记录？",

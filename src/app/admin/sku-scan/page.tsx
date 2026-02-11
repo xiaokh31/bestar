@@ -497,8 +497,82 @@ export default function SkuScanPage() {
         setSaving(false);
       }
     } else {
-      setLastScannedInfo(`${skuScan.unknownSku || "未知SKU"}: ${code}`);
-      playBeep("error");
+      // 未在Excel中找到匹配，在表格末尾生成一条新记录
+      setLastScannedInfo(`${skuScan.newSku || "新SKU"}: ${code}`);
+      playBeep("success");  // 改为成功提示音
+      
+      try {
+        setSaving(true);
+        const res = await fetch("/api/admin/sku-scan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "scan",
+            container_no: selectedContainer.containerNo,
+            sku: code,  // 使用扫到的代码作为SKU
+            raw_code: code,
+            qty: 1,
+            dock_no: selectedContainer?.dockNo || undefined,
+            operator: operator
+          })
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          let newScans: ScanRecord[];
+          if (data.data.isUpdate) {
+            newScans = scans.map(s => s.id === data.data.id ? data.data : s);
+          } else {
+            newScans = [...scans, data.data];
+          }
+          setScans(newScans);
+          
+          // 在表格末尾添加新行（如果这个SKU还没有对应的行）
+          const existingRowIdx = tableData.findIndex(r => r._skuValue === code);
+          if (existingRowIdx === -1) {
+            // 创建新行
+            const newRow: ExcelRow = {
+              _skuValue: code,
+              _originalQty: 0,
+              _isHighlighted: true,
+              _scanIds: [data.data.id],
+              scannedSkuDisplay: code,
+              scannedQtyDisplay: data.data.qty,
+              palletDisplay: data.data.pallet_no || '',
+              boxDisplay: data.data.box_no || '',
+              dockDisplay: data.data.dock_no || '',
+              operatorDisplay: data.data.operator || ''
+            };
+            // 将SKU列添加到新行
+            if (skuColumnKey) {
+              newRow[skuColumnKey] = code;
+            }
+            setTableData(prev => [...prev, newRow]);
+            
+            // 高亮新行并滚动到底部
+            setTimeout(() => {
+              const lastRowIdx = tableData.length;  // 新行的索引
+              const rowEl = document.getElementById(`row-${lastRowIdx}`);
+              if (rowEl) {
+                rowEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+              // 移除高亮
+              setTimeout(() => {
+                setTableData(prev => prev.map((r, idx) => 
+                  idx === prev.length - 1 ? { ...r, _isHighlighted: false } : r
+                ));
+              }, 1500);
+            }, 100);
+          } else {
+            // 已存在的行，重新计算
+            recalcTable(newScans);
+          }
+        }
+      } catch (error) {
+        alert(skuScan.saveFailed || "保存失败");
+      } finally {
+        setSaving(false);
+      }
     }
   };
 

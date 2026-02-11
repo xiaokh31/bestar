@@ -394,6 +394,7 @@
       "pleaseImportExcel": "Please import Excel first",
       "locateSuccess": "Located",
       "unknownSku": "Unknown SKU",
+      "newSku": "New SKU",
       "saveFailed": "Save failed",
       "noDifference": "No differences!",
       "confirmDelete": "Delete this container and all records?",

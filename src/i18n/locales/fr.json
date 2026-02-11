@@ -394,6 +394,7 @@
       "pleaseImportExcel": "Importez d'abord Excel",
       "locateSuccess": "Localisé",
       "unknownSku": "SKU inconnu",
+      "newSku": "Nouveau SKU",
       "saveFailed": "Échec",
       "noDifference": "Aucune différence!",
       "confirmDelete": "Supprimer ce conteneur et tous les enregistrements?",
