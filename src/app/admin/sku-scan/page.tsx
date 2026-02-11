@@ -460,8 +460,24 @@ export default function SkuScanPage() {
       setLastScannedInfo(row._skuValue || "");
       highlightRow(row);
       playBeep("success");
+      
+      // 找到匹配行的索引
+      const rowIdx = tableData.findIndex(r => r._skuValue === row._skuValue);
 
-      // Box和Locate模式统一处理，API层会自动upsert（相同SKU更新qty）
+      // Locate模式：只定位+回填scanned sku，不计数
+      if (scanMode === 'locate') {
+        // 直接更新表格显示，不调用API
+        setTableData(prev => prev.map((r, idx) => 
+          idx === rowIdx ? { 
+            ...r, 
+            scannedSkuDisplay: code,  // 回填scanned sku
+            operatorDisplay: operator || r.operatorDisplay
+          } : r
+        ));
+        return;
+      }
+
+      // Box模式：调用API累加qty
       try {
         setSaving(true);
         const res = await fetch("/api/admin/sku-scan", {
@@ -489,7 +505,20 @@ export default function SkuScanPage() {
             newScans = [...scans, data.data];
           }
           setScans(newScans);
-          recalcTable(newScans);
+          
+          // 确保当前行的scannedSkuDisplay被正确设置（解决模糊匹配时的回填问题）
+          setTableData(prev => {
+            const updated = prev.map((r, idx) => 
+              idx === rowIdx ? { 
+                ...r, 
+                scannedSkuDisplay: code,
+                scannedQtyDisplay: (r.scannedQtyDisplay || 0) + 1,
+                operatorDisplay: operator || r.operatorDisplay,
+                _scanIds: [...(r._scanIds || []), data.data.id]
+              } : r
+            );
+            return updated;
+          });
         }
       } catch (error) {
         alert(skuScan.saveFailed || "保存失败");
@@ -635,28 +664,61 @@ export default function SkuScanPage() {
       ));
     }
     
-    // 保存Qty到数据库（调整第一条记录的qty使总数匹配）
-    if (field === 'scannedQtyDisplay' && scanIds.length > 0) {
+    // 保存Qty到数据库
+    if (field === 'scannedQtyDisplay') {
       const newTotal = finalValue === '' ? 0 : parseInt(String(finalValue));
-      const firstScanId = scanIds[0];
-      const otherScansQty = scans
-        .filter(s => scanIds.includes(s.id) && s.id !== firstScanId)
-        .reduce((sum, s) => sum + (s.qty || 1), 0);
-      const newFirstQty = Math.max(0, newTotal - otherScansQty);
       
-      await fetch('/api/admin/sku-scan', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'updateScan',
-          scanId: firstScanId,
-          qty: newFirstQty
-        })
-      });
-      // 同步更新scans状态
-      setScans(prev => prev.map(s => 
-        s.id === firstScanId ? { ...s, qty: newFirstQty } : s
-      ));
+      if (scanIds.length > 0) {
+        // 已有记录：调整第一条记录的qty使总数匹配
+        const firstScanId = scanIds[0];
+        const otherScansQty = scans
+          .filter(s => scanIds.includes(s.id) && s.id !== firstScanId)
+          .reduce((sum, s) => sum + (s.qty || 1), 0);
+        const newFirstQty = Math.max(0, newTotal - otherScansQty);
+        
+        await fetch('/api/admin/sku-scan', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'updateScan',
+            scanId: firstScanId,
+            qty: newFirstQty
+          })
+        });
+        // 同步更新scans状态
+        setScans(prev => prev.map(s => 
+          s.id === firstScanId ? { ...s, qty: newFirstQty } : s
+        ));
+      } else if (row.scannedSkuDisplay && selectedContainer && newTotal > 0) {
+        // Locate模式：没有记录但已扫码定位过，需要创建新记录
+        try {
+          const res = await fetch('/api/admin/sku-scan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'scan',
+              container_no: selectedContainer.containerNo,
+              sku: row._skuValue,
+              raw_code: row.scannedSkuDisplay,
+              qty: newTotal,
+              dock_no: selectedContainer?.dockNo || undefined,
+              operator: operator
+            })
+          });
+          
+          if (res.ok) {
+            const data = await res.json();
+            // 更新scans状态
+            setScans(prev => [...prev, data.data]);
+            // 更新当前行的_scanIds
+            setTableData(prev => prev.map((r, idx) => 
+              idx === rowIdx ? { ...r, _scanIds: [data.data.id] } : r
+            ));
+          }
+        } catch (error) {
+          console.error('Failed to create scan record:', error);
+        }
+      }
     }
   };
 
