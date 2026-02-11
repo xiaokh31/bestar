@@ -489,16 +489,20 @@ export default function SkuScanPage() {
   };
 
   // 手动修改扫码记录的Qty/Pallet/Box
-  // 只允许输入数字，移除前导0
   const updateRowField = async (rowIdx: number, field: 'scannedQtyDisplay' | 'palletDisplay' | 'boxDisplay', value: string) => {
-    // 只保留数字
-    let numericValue = value.replace(/[^0-9]/g, '');
-    // 移除前导0（但保留单独的0）
-    if (numericValue.length > 1 && numericValue.startsWith('0')) {
-      numericValue = numericValue.replace(/^0+/, '');
+    let finalValue: string | number = value;
+    
+    if (field === 'palletDisplay') {
+      // Pallet支持字符串输入（如 "1,2,5"），不做过滤
+      finalValue = value;
+    } else {
+      // Qty和Box只允许数字，移除前导0
+      let numericValue = value.replace(/[^0-9]/g, '');
+      if (numericValue.length > 1 && numericValue.startsWith('0')) {
+        numericValue = numericValue.replace(/^0+/, '');
+      }
+      finalValue = numericValue === '' ? '' : numericValue;
     }
-    // 如果为空，设为''而不是0
-    const finalValue = numericValue === '' ? '' : numericValue;
     
     const row = tableData[rowIdx];
     const scanIds = row?._scanIds || [];
@@ -507,9 +511,8 @@ export default function SkuScanPage() {
     setTableData(prev => prev.map((r, idx) => {
       if (idx === rowIdx) {
         if (field === 'scannedQtyDisplay') {
-          return { ...r, [field]: finalValue === '' ? 0 : parseInt(finalValue) };
+          return { ...r, [field]: finalValue === '' ? 0 : parseInt(String(finalValue)) };
         } else {
-          // Pallet和Box保存为字符串
           return { ...r, [field]: finalValue };
         }
       }
@@ -990,6 +993,42 @@ export default function SkuScanPage() {
                 )}
               </div>
             )}
+
+            {/* 选中容器时显示统计信息 */}
+            {selectedContainer && scans.length > 0 && (
+              <div className="mt-3 pt-3 border-t space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{skuScan.totalScannedQty || "已扫总数"}</span>
+                  <span className="font-bold text-blue-600 text-lg">
+                    {scans.reduce((sum, s) => sum + (s.qty || 1), 0)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{skuScan.currentMaxPallet || "当前最大Pallet"}</span>
+                  <span className="font-bold text-orange-600 text-lg">
+                    {(() => {
+                      let maxNum = 0;
+                      const allPallets = new Set<string>();
+                      scans.forEach(s => {
+                        if (!s.pallet_no) return;
+                        const parts = s.pallet_no.split(/[,/;、\s]+/).filter(Boolean);
+                        parts.forEach(p => {
+                          const trimmed = p.trim();
+                          if (trimmed) {
+                            allPallets.add(trimmed);
+                            const num = parseInt(trimmed);
+                            if (!isNaN(num) && num > maxNum) maxNum = num;
+                          }
+                        });
+                      });
+                      if (maxNum > 0) return String(maxNum);
+                      if (allPallets.size > 0) return Array.from(allPallets).pop() || '-';
+                      return '-';
+                    })()}
+                  </span>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -1231,7 +1270,7 @@ export default function SkuScanPage() {
                         
                         {aggregatedData.length > 0 ? (
                           <div className="border rounded-lg overflow-x-auto max-h-[50vh] overflow-y-auto">
-                            <Table>
+                            <Table className="min-w-[600px]">
                               <TableHeader>
                                 <TableRow>
                                   <TableHead className="whitespace-nowrap">{skuScan.scannedSku || "Scanned SKU"}</TableHead>
@@ -1317,7 +1356,7 @@ export default function SkuScanPage() {
                                             });
                                           }
                                         }}
-                                        placeholder={skuScan.enterPallet || "输入托盘号"}
+                                        placeholder={skuScan.palletHint || "1,2,3"}
                                         className="w-28 h-8 text-sm"
                                       />
                                     </TableCell>
@@ -1362,7 +1401,7 @@ export default function SkuScanPage() {
                   /* EXCEL模式：显示原有的Excel对比表 */
                   tableData.length > 0 ? (
                     <div className="border rounded-lg overflow-x-auto max-h-[50vh] overflow-y-auto">
-                      <Table>
+                      <Table className="min-w-[900px]">
                         <TableHeader>
                           <TableRow>
                             {originalHeaders.map(h => (

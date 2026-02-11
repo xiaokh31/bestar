@@ -423,7 +423,10 @@
       "action": "Action",
       "enterPallet": "Enter pallet no",
       "deleteScanConfirm": "Delete all scan records for this SKU?",
-      "confirmModifyQty": "Confirm manual quantity change?"
+      "confirmModifyQty": "Confirm manual quantity change?",
+      "totalScannedQty": "Total Scanned",
+      "currentMaxPallet": "Current Max Pallet",
+      "palletHint": "Separate with commas, e.g. 1,2,5"
     }
   },
   "user": {

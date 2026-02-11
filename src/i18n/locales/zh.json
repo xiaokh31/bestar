@@ -423,7 +423,10 @@
       "action": "操作",
       "enterPallet": "输入托盘号",
       "deleteScanConfirm": "确定删除该SKU的所有扫码记录吗？",
-      "confirmModifyQty": "确定手动修改数量吗？"
+      "confirmModifyQty": "确定手动修改数量吗？",
+      "totalScannedQty": "已扫总数",
+      "currentMaxPallet": "当前最大Pallet",
+      "palletHint": "多个用逗号分隔，如 1,2,5"
     }
   },
   "user": {
