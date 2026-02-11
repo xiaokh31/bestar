@@ -1399,8 +1399,6 @@ export default function SkuScanPage() {
                               <TableCell className="p-1">
                                 <Input
                                   type="text"
-                                  inputMode="numeric"
-                                  pattern="[0-9]*"
                                   value={row.palletDisplay || ''}
                                   onChange={(e) => updateRowField(idx, 'palletDisplay', e.target.value)}
                                   placeholder="-"
