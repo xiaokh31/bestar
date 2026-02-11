@@ -426,7 +426,8 @@
       "confirmModifyQty": "确定手动修改数量吗？",
       "totalScannedQty": "已扫总数",
       "currentMaxPallet": "当前最大Pallet",
-      "palletHint": "多个用逗号分隔，如 1,2,5"
+      "palletHint": "多个用逗号分隔，如 1,2,5",
+      "originalTotalQty": "原始数量总数"
     }
   },
   "user": {

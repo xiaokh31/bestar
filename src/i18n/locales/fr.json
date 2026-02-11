@@ -426,7 +426,8 @@
       "confirmModifyQty": "Confirmer la modification manuelle?",
       "totalScannedQty": "Total scann\u00e9",
       "currentMaxPallet": "Palette max actuelle",
-      "palletHint": "S\u00e9parer par virgules, ex. 1,2,5"
+      "palletHint": "S\u00e9parer par virgules, ex. 1,2,5",
+      "originalTotalQty": "QT\u00c9 totale d'origine"
     }
   },
   "user": {

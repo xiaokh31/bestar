@@ -993,42 +993,6 @@ export default function SkuScanPage() {
                 )}
               </div>
             )}
-
-            {/* 选中容器时显示统计信息 */}
-            {selectedContainer && scans.length > 0 && (
-              <div className="mt-3 pt-3 border-t space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">{skuScan.totalScannedQty || "已扫总数"}</span>
-                  <span className="font-bold text-blue-600 text-lg">
-                    {scans.reduce((sum, s) => sum + (s.qty || 1), 0)}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">{skuScan.currentMaxPallet || "当前最大Pallet"}</span>
-                  <span className="font-bold text-orange-600 text-lg">
-                    {(() => {
-                      let maxNum = 0;
-                      const allPallets = new Set<string>();
-                      scans.forEach(s => {
-                        if (!s.pallet_no) return;
-                        const parts = s.pallet_no.split(/[,/;、\s]+/).filter(Boolean);
-                        parts.forEach(p => {
-                          const trimmed = p.trim();
-                          if (trimmed) {
-                            allPallets.add(trimmed);
-                            const num = parseInt(trimmed);
-                            if (!isNaN(num) && num > maxNum) maxNum = num;
-                          }
-                        });
-                      });
-                      if (maxNum > 0) return String(maxNum);
-                      if (allPallets.size > 0) return Array.from(allPallets).pop() || '-';
-                      return '-';
-                    })()}
-                  </span>
-                </div>
-              </div>
-            )}
           </CardContent>
         </Card>
 
@@ -1467,7 +1431,65 @@ export default function SkuScanPage() {
                       <p>{skuScan.uploadHint || "请上传Excel清单开始扫码对账"}</p>
                       <p className="text-xs mt-2">{skuScan.uploadHint2 || "支持 .xlsx, .xls, .csv 格式"}</p>
                     </div>
-                  )
+                  )  
+                )}
+
+                {/* 底部统计栏 */}
+                {scans.length > 0 && (
+                  <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3 grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
+                    {/* 已扫总数 */}
+                    <div className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-md px-3 py-2 border">
+                      <span className="text-muted-foreground text-xs">{skuScan.totalScannedQty || "已扫总数"}</span>
+                      <span className="font-bold text-blue-600 text-lg ml-2">
+                        {scans.reduce((sum, s) => sum + (s.qty || 1), 0)}
+                      </span>
+                    </div>
+                    {/* 当前最大Pallet */}
+                    <div className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-md px-3 py-2 border">
+                      <span className="text-muted-foreground text-xs">{skuScan.currentMaxPallet || "当前最大Pallet"}</span>
+                      <span className="font-bold text-orange-600 text-lg ml-2">
+                        {(() => {
+                          let maxNum = 0;
+                          const allPallets = new Set<string>();
+                          scans.forEach(s => {
+                            if (!s.pallet_no) return;
+                            const parts = s.pallet_no.split(/[,/;、\s]+/).filter(Boolean);
+                            parts.forEach(p => {
+                              const trimmed = p.trim();
+                              if (trimmed) {
+                                allPallets.add(trimmed);
+                                const num = parseInt(trimmed);
+                                if (!isNaN(num) && num > maxNum) maxNum = num;
+                              }
+                            });
+                          });
+                          if (maxNum > 0) return String(maxNum);
+                          if (allPallets.size > 0) return Array.from(allPallets).pop() || '-';
+                          return '-';
+                        })()}
+                      </span>
+                    </div>
+                    {/* 原始数量总数 */}
+                    <div className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-md px-3 py-2 border">
+                      <span className="text-muted-foreground text-xs">{skuScan.originalTotalQty || "原始数量总数"}</span>
+                      <span className="font-bold text-green-600 text-lg ml-2">
+                        {(() => {
+                          if (selectedContainer?.mode === 'EXCEL' && tableData.length > 0 && originalHeaders.length > 0) {
+                            const qtyColKey = originalHeaders.find(h => 
+                              /qty|quantity|数量/i.test(h)
+                            );
+                            if (qtyColKey) {
+                              return tableData.reduce((sum, row) => {
+                                const val = parseInt(String(row[qtyColKey] ?? 0));
+                                return sum + (isNaN(val) ? 0 : val);
+                              }, 0);
+                            }
+                          }
+                          return '-';
+                        })()}
+                      </span>
+                    </div>
+                  </div>
                 )}
               </div>
             ) : (

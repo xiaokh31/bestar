@@ -426,7 +426,8 @@
       "confirmModifyQty": "Confirm manual quantity change?",
       "totalScannedQty": "Total Scanned",
       "currentMaxPallet": "Current Max Pallet",
-      "palletHint": "Separate with commas, e.g. 1,2,5"
+      "palletHint": "Separate with commas, e.g. 1,2,5",
+      "originalTotalQty": "Original Total QTY"
     }
   },
   "user": {
