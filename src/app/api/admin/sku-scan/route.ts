@@ -72,8 +72,6 @@ export async function GET(request: NextRequest) {
           qty: scan.qty,
           pallet_no: scan.palletNo,
           box_no: scan.boxNo,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          dock_no: (scan as any).dockNo || null,
           operator: scan.operator,
           createdAt: scan.createdAt,
           containerNo: scan.container.containerNo
@@ -187,7 +185,7 @@ export async function POST(request: NextRequest) {
 
     // 创建或更新扫码记录（相同SKU只保留一条记录，更新qty）
     if (type === 'scan') {
-      const { container_no, sku, raw_code, qty, pallet_no, box_no, dock_no, operator } = body;
+      const { container_no, sku, raw_code, qty, pallet_no, box_no, operator } = body;
 
       if (!container_no || !sku) {
         return NextResponse.json(
@@ -221,15 +219,13 @@ export async function POST(request: NextRequest) {
       let scan;
       if (existingScan) {
         // 已存在：更新qty（累加）
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const updateData: any = {
+        const updateData: Record<string, unknown> = {
           qty: existingScan.qty + (qty || 1),
           rawCode: raw_code || existingScan.rawCode,
           operator: operator || existingScan.operator,
         };
         if (pallet_no !== undefined) updateData.palletNo = pallet_no;
         if (box_no !== undefined) updateData.boxNo = box_no;
-        if (dock_no !== undefined) updateData.dockNo = dock_no;
         
         scan = await prisma.skuScan.update({
           where: { id: existingScan.id },
@@ -237,20 +233,16 @@ export async function POST(request: NextRequest) {
         });
       } else {
         // 不存在：创建新记录
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const createData: any = {
-          containerId: container.id,
-          sku,
-          rawCode: raw_code || sku,
-          qty: qty || 1,
-          palletNo: pallet_no || null,
-          boxNo: box_no || null,
-          operator: operator || auth.session.user.name || auth.session.user.email!,
-        };
-        if (dock_no) createData.dockNo = dock_no;
-        
         scan = await prisma.skuScan.create({
-          data: createData
+          data: {
+            containerId: container.id,
+            sku,
+            rawCode: raw_code || sku,
+            qty: qty || 1,
+            palletNo: pallet_no || null,
+            boxNo: box_no || null,
+            operator: operator || auth.session.user.name || auth.session.user.email!,
+          }
         });
       }
 
@@ -262,8 +254,6 @@ export async function POST(request: NextRequest) {
           qty: scan.qty,
           pallet_no: scan.palletNo,
           box_no: scan.boxNo,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          dock_no: (scan as any).dockNo || null,
           operator: scan.operator,
           createdAt: scan.createdAt,
           containerNo: container.containerNo,
@@ -297,9 +287,9 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     const { type } = body;
 
-    // 更新扫码记录（pallet_no, box_no, dock_no, qty）
+    // 更新扫码记录（pallet_no, box_no, qty）
     if (type === 'updateScan') {
-      const { scanId, pallet_no, box_no, dock_no, qty } = body;
+      const { scanId, pallet_no, box_no, qty } = body;
       
       if (!scanId) {
         return NextResponse.json(
@@ -311,7 +301,6 @@ export async function PUT(request: NextRequest) {
       const updateData: Record<string, unknown> = {};
       if (pallet_no !== undefined) updateData.palletNo = pallet_no;
       if (box_no !== undefined) updateData.boxNo = box_no;
-      if (dock_no !== undefined) updateData.dockNo = dock_no;
       if (qty !== undefined) updateData.qty = parseInt(String(qty)) || 1;
 
       const scan = await prisma.skuScan.update({

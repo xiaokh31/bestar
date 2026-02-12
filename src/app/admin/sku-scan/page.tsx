@@ -78,7 +78,6 @@ interface ScanRecord {
   qty: number;
   pallet_no: string | null;
   box_no: string | null;
-  dock_no: string | null;
   operator: string;
   createdAt: string;
 }
@@ -419,7 +418,6 @@ export default function SkuScanPage() {
             sku: code,
             raw_code: code,
             qty: 1,
-            dock_no: selectedContainer?.dockNo || undefined,
             operator: operator
           })
         });
@@ -489,7 +487,6 @@ export default function SkuScanPage() {
             sku: row._skuValue,
             raw_code: code,
             qty: 1,
-            dock_no: selectedContainer?.dockNo || undefined,
             operator: operator
           })
         });
@@ -541,7 +538,6 @@ export default function SkuScanPage() {
             sku: code,  // 使用扫到的代码作为SKU
             raw_code: code,
             qty: 1,
-            dock_no: selectedContainer?.dockNo || undefined,
             operator: operator
           })
         });
@@ -569,7 +565,7 @@ export default function SkuScanPage() {
               scannedQtyDisplay: data.data.qty,
               palletDisplay: data.data.pallet_no || '',
               boxDisplay: data.data.box_no || '',
-              dockDisplay: data.data.dock_no || '',
+              dockDisplay: '',  // dockNo是container级别属性
               operatorDisplay: data.data.operator || ''
             };
             // 将SKU列添加到新行
@@ -701,7 +697,6 @@ export default function SkuScanPage() {
               sku: row._skuValue,
               raw_code: row.scannedSkuDisplay,
               qty: newTotal,
-              dock_no: selectedContainer?.dockNo || undefined,
               operator: operator
             })
           });
@@ -757,7 +752,6 @@ export default function SkuScanPage() {
           sku: originalSku,  // 使用原始SKU作为关联
           raw_code: inputSku,  // 记录手动输入的内容
           qty: 1,
-          dock_no: selectedContainer?.dockNo || undefined,
           operator: operator
         })
       });
@@ -807,7 +801,7 @@ export default function SkuScanPage() {
         row.scannedQtyDisplay = (row.scannedQtyDisplay || 0) + (scan.qty || 1);
         if (scan.pallet_no) row.palletDisplay = scan.pallet_no;
         if (scan.box_no) row.boxDisplay = scan.box_no;
-        if (scan.dock_no) row.dockDisplay = scan.dock_no;
+        // dockNo现在是container级别的属性，不在scan中
         row.operatorDisplay = scan.operator;
         // 保存扫码记录ID用于后续更新
         if (!row._scanIds) row._scanIds = [];
@@ -960,7 +954,7 @@ export default function SkuScanPage() {
     e.target.value = "";
   };
 
-  // 导出结果
+  // 导出结果（使用container的dockNo）
   const exportExcel = () => {
     const data = tableData.map(row => {
       const obj: Record<string, unknown> = {};
@@ -969,7 +963,7 @@ export default function SkuScanPage() {
       obj["Scanned Qty"] = row.scannedQtyDisplay;
       obj["Pallet No."] = row.palletDisplay;
       obj["Box No."] = row.boxDisplay;
-      obj["DOCK No."] = row.dockDisplay;
+      obj["DOCK No."] = selectedContainer?.dockNo || '';
       obj["Operator"] = row.operatorDisplay;
       return obj;
     });
@@ -1460,31 +1454,29 @@ export default function SkuScanPage() {
                       if (existing) {
                         existing.qty += scan.qty;
                         existing.scanIds.push(scan.id);
-                        // 保留最新的pallet_no和dock_no
+                        // 保留最新的pallet_no
                         if (scan.pallet_no) existing.pallet_no = scan.pallet_no;
-                        if (scan.dock_no) existing.dock_no = scan.dock_no;
                       } else {
                         acc.push({
                           sku: scan.sku,
                           qty: scan.qty,
                           pallet_no: scan.pallet_no || '',
-                          dock_no: scan.dock_no || '',
                           scanIds: [scan.id]
                         });
                       }
                       return acc;
-                    }, [] as Array<{sku: string; qty: number; pallet_no: string; dock_no: string; scanIds: string[]}>);
+                    }, [] as Array<{sku: string; qty: number; pallet_no: string; scanIds: string[]}>);
                     
                     const totalSkus = aggregatedData.length;
                     const totalQty = aggregatedData.reduce((sum, item) => sum + item.qty, 0);
                     
-                    // MANUAL模式导出功能
+                    // MANUAL模式导出功能（使用container的dockNo）
                     const exportManualExcel = () => {
                       const data = aggregatedData.map(item => ({
                         'Scanned SKU': item.sku,
                         'Scanned QTY': item.qty,
                         'Pallet No': item.pallet_no,
-                        'DOCK No.': item.dock_no
+                        'DOCK No.': selectedContainer?.dockNo || ''
                       }));
                       const ws = XLSX.utils.json_to_sheet(data);
                       const wb = XLSX.utils.book_new();
