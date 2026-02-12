@@ -956,18 +956,30 @@ export default function SkuScanPage() {
 
   // 导出结果（使用container的dockNo）
   const exportExcel = () => {
-    const data = tableData.map(row => {
-      const obj: Record<string, unknown> = {};
-      originalHeaders.forEach(h => obj[h] = row[h]);
-      obj["Scanned SKU"] = row.scannedSkuDisplay;
-      obj["Scanned Qty"] = row.scannedQtyDisplay;
-      obj["Pallet No."] = row.palletDisplay;
-      obj["Box No."] = row.boxDisplay;
-      obj["DOCK No."] = selectedContainer?.dockNo || '';
-      obj["Operator"] = row.operatorDisplay;
-      return obj;
+    // 构建表头（原始表头 + 扫码相关列）
+    const headers = [...originalHeaders, 'Scanned SKU', 'Scanned Qty', 'Pallet No.', 'Box No.', 'Operator'];
+    
+    // 构建数据行
+    const rows = tableData.map(row => {
+      const rowData: unknown[] = [];
+      originalHeaders.forEach(h => rowData.push(row[h]));
+      rowData.push(row.scannedSkuDisplay);
+      rowData.push(row.scannedQtyDisplay);
+      rowData.push(row.palletDisplay);
+      rowData.push(row.boxDisplay);
+      rowData.push(row.operatorDisplay);
+      return rowData;
     });
-    const ws = XLSX.utils.json_to_sheet(data);
+    
+    // 构建完整的数组：DOCK No.行 + 空行 + 表头 + 数据
+    const aoa = [
+      ['DOCK No.', selectedContainer?.dockNo || ''],
+      [], // 空行
+      headers,
+      ...rows
+    ];
+    
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Result");
     XLSX.writeFile(wb, `${selectedContainer?.containerNo || "scan"}_Result.xlsx`);
@@ -1223,7 +1235,7 @@ export default function SkuScanPage() {
                       <div>
                         <div className="font-medium">{container.containerNo}</div>
                         <div className={`text-xs flex items-center gap-2 ${selectedContainer?.id === container.id ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
-                          <span>{container.scanCount} {skuScan.records || "条记录"}</span>
+                          <span>{container.scanCount} {skuScan.skuTypes || "种SKU"}</span>
                           {/* 模式标识 */}
                           <Badge 
                             variant="outline" 
@@ -1472,13 +1484,25 @@ export default function SkuScanPage() {
                     
                     // MANUAL模式导出功能（使用container的dockNo）
                     const exportManualExcel = () => {
-                      const data = aggregatedData.map(item => ({
-                        'Scanned SKU': item.sku,
-                        'Scanned QTY': item.qty,
-                        'Pallet No': item.pallet_no,
-                        'DOCK No.': selectedContainer?.dockNo || ''
-                      }));
-                      const ws = XLSX.utils.json_to_sheet(data);
+                      // 构建表头
+                      const headers = ['Scanned SKU', 'Scanned QTY', 'Pallet No'];
+                      
+                      // 构建数据行
+                      const rows = aggregatedData.map(item => [
+                        item.sku,
+                        item.qty,
+                        item.pallet_no
+                      ]);
+                      
+                      // 构建完整的数组：DOCK No.行 + 空行 + 表头 + 数据
+                      const aoa = [
+                        ['DOCK No.', selectedContainer?.dockNo || ''],
+                        [], // 空行
+                        headers,
+                        ...rows
+                      ];
+                      
+                      const ws = XLSX.utils.aoa_to_sheet(aoa);
                       const wb = XLSX.utils.book_new();
                       XLSX.utils.book_append_sheet(wb, ws, 'ScanResult');
                       XLSX.writeFile(wb, `${selectedContainer.containerNo}_Manual_Result.xlsx`);

@@ -82,22 +82,23 @@ export async function GET(request: NextRequest) {
     // 获取单个容器详情（包含Excel数据）
     if (type === 'container' && containerId) {
       const container = await prisma.scanContainer.findUnique({
-        where: { id: containerId },
-        include: {
-          _count: {
-            select: { scans: true }
-          }
-        }
+        where: { id: containerId }
       });
       
       if (!container) {
         return NextResponse.json({ error: "Container not found" }, { status: 404 });
       }
       
+      // 计算去重SKU种类数
+      const skuCount = await prisma.skuScan.groupBy({
+        by: ['sku'],
+        where: { containerId }
+      });
+      
       return NextResponse.json({
         data: {
           ...container,
-          scanCount: container._count.scans
+          scanCount: skuCount.length  // SKU种类数
         }
       });
     }
@@ -113,18 +114,27 @@ export async function GET(request: NextRequest) {
 
     const containers = await prisma.scanContainer.findMany({
       where: whereClause,
-      orderBy: { createdAt: 'desc' },
-      include: {
-        _count: {
-          select: { scans: true }
-        }
-      }
+      orderBy: { createdAt: 'desc' }
+    });
+
+    // 批量获取每个容器的去重SKU种类数
+    const containerIds = containers.map(c => c.id);
+    const skuCounts = await prisma.skuScan.groupBy({
+      by: ['containerId', 'sku'],
+      where: { containerId: { in: containerIds } }
+    });
+    
+    // 统计每个容器的SKU种类数
+    const countMap = new Map<string, number>();
+    skuCounts.forEach(item => {
+      const current = countMap.get(item.containerId) || 0;
+      countMap.set(item.containerId, current + 1);
     });
 
     return NextResponse.json({ 
       data: containers.map(c => ({
         ...c,
-        scanCount: c._count.scans
+        scanCount: countMap.get(c.id) || 0  // SKU种类数
       }))
     });
 

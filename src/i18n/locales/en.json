@@ -378,6 +378,7 @@
       "statusCompleted": "Completed",
       "statusArchived": "Archived",
       "records": "records",
+      "skuTypes": "SKU types",
       "noContainers": "No containers yet",
       "operator": "Operator",
       "scanMode": "Mode",
