@@ -377,7 +377,7 @@
       "statusActive": "进行中",
       "statusCompleted": "已完成",
       "statusArchived": "已归档",
-      "records": "条记录",
+      "skuTypes_prefix": "已扫",
       "skuTypes": "种SKU",
       "noContainers": "暂无柜号",
       "operator": "操作人",

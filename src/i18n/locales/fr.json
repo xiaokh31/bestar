@@ -377,7 +377,7 @@
       "statusActive": "Actif",
       "statusCompleted": "Terminé",
       "statusArchived": "Archivé",
-      "records": "enreg.",
+      "skuTypes_prefix": "Scanné",
       "skuTypes": "types SKU",
       "noContainers": "Aucun conteneur",
       "operator": "Opérateur",

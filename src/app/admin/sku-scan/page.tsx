@@ -1235,7 +1235,7 @@ export default function SkuScanPage() {
                       <div>
                         <div className="font-medium">{container.containerNo}</div>
                         <div className={`text-xs flex items-center gap-2 ${selectedContainer?.id === container.id ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
-                          <span>{container.scanCount} {skuScan.skuTypes || "种SKU"}</span>
+                          <span>{skuScan.skuTypes_prefix || "已扫"} {container.scanCount} {skuScan.skuTypes || "种SKU"}</span>
                           {/* 模式标识 */}
                           <Badge 
                             variant="outline" 
