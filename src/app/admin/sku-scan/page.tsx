@@ -256,6 +256,9 @@ export default function SkuScanPage() {
             _scanIds: [] as string[]
           }));
           
+          // 收集未匹配的扫码记录（按SKU分组聚合）
+          const unmatchedScans = new Map<string, { scan: ScanRecord; totalQty: number; scanIds: string[] }>();
+          
           data.data.forEach((scan: ScanRecord) => {
             const row = newData.find(r => r._skuValue === scan.sku);
             if (row) {
@@ -266,7 +269,42 @@ export default function SkuScanPage() {
               row.operatorDisplay = scan.operator;
               if (!row._scanIds) row._scanIds = [];
               (row._scanIds as string[]).push(scan.id);
+            } else {
+              // 未匹配的SKU，收集起来准备新增行
+              const existing = unmatchedScans.get(scan.sku);
+              if (existing) {
+                existing.totalQty += (scan.qty || 1);
+                existing.scanIds.push(scan.id);
+              } else {
+                unmatchedScans.set(scan.sku, {
+                  scan,
+                  totalQty: scan.qty || 1,
+                  scanIds: [scan.id]
+                });
+              }
             }
+          });
+          
+          // 为未匹配的SKU创建新行
+          unmatchedScans.forEach(({ scan, totalQty, scanIds }, sku) => {
+            const newRow = {
+              _skuValue: sku,
+              _originalQty: 0,
+              _isHighlighted: false,
+              _scanIds: scanIds,
+              _isNewRow: true,  // 标记为新增行
+              scannedSkuDisplay: scan.raw_code,
+              scannedQtyDisplay: totalQty,
+              palletDisplay: scan.pallet_no || '',
+              boxDisplay: scan.box_no || '',
+              dockDisplay: '',
+              operatorDisplay: scan.operator || ''
+            } as ExcelRow;
+            // 将SKU填充到SKU列
+            if (skuColumnKey) {
+              newRow[skuColumnKey] = sku;
+            }
+            newData.push(newRow as typeof newData[0]);
           });
           
           setTableData(newData);
@@ -793,6 +831,9 @@ export default function SkuScanPage() {
       _scanIds: [] as string[]  // 保存关联的扫码记录ID
     }));
 
+    // 收集未匹配的扫码记录（按SKU分组聚合）
+    const unmatchedScans = new Map<string, { scan: ScanRecord; totalQty: number; scanIds: string[] }>();
+
     currentScans.forEach(scan => {
       const row = newData.find(r => r._skuValue === scan.sku);
       if (row) {
@@ -806,7 +847,41 @@ export default function SkuScanPage() {
         // 保存扫码记录ID用于后续更新
         if (!row._scanIds) row._scanIds = [];
         (row._scanIds as string[]).push(scan.id);
+      } else {
+        // 未匹配的SKU，收集起来准备新增行
+        const existing = unmatchedScans.get(scan.sku);
+        if (existing) {
+          existing.totalQty += (scan.qty || 1);
+          existing.scanIds.push(scan.id);
+        } else {
+          unmatchedScans.set(scan.sku, {
+            scan,
+            totalQty: scan.qty || 1,
+            scanIds: [scan.id]
+          });
+        }
       }
+    });
+
+    // 为未匹配的SKU创建新行
+    unmatchedScans.forEach(({ scan, totalQty, scanIds }, sku) => {
+      const newRow = {
+        _skuValue: sku,
+        _originalQty: 0,
+        _isHighlighted: false,
+        _scanIds: scanIds,
+        _isNewRow: true,
+        scannedSkuDisplay: scan.raw_code,
+        scannedQtyDisplay: totalQty,
+        palletDisplay: scan.pallet_no || '',
+        boxDisplay: scan.box_no || '',
+        dockDisplay: '',
+        operatorDisplay: scan.operator || ''
+      } as ExcelRow;
+      if (skuColumnKey) {
+        newRow[skuColumnKey] = sku;
+      }
+      newData.push(newRow as typeof newData[0]);
     });
 
     setTableData(newData);
@@ -1695,7 +1770,16 @@ export default function SkuScanPage() {
                                   defaultValue={row.scannedSkuDisplay || ''}
                                   onBlur={(e) => {
                                     const newValue = e.target.value.trim();
-                                    if (newValue && newValue !== row.scannedSkuDisplay) {
+                                    const originalValue = row.scannedSkuDisplay || '';
+                                    
+                                    // 保护：已填充的SKU不允许删除为空
+                                    if (originalValue && !newValue) {
+                                      alert(skuScan.cannotClearSku || "❗ 无法清空已扫码的SKU\n\n如需修改，请输入新的SKU值");
+                                      e.target.value = originalValue;  // 恢复原值
+                                      return;
+                                    }
+                                    
+                                    if (newValue && newValue !== originalValue) {
                                       handleManualSkuInput(idx, newValue);
                                     }
                                   }}
