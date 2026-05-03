@@ -144,7 +144,7 @@ export function getStatsConfig(t: any) {
     {
       label: t.stats.warehouse,
       value: "100000",
-      suffix: "㎡",
+      suffix: "sq ft",
       description: t.about.advantages?.[1] || t.stats.warehouse,
     },
     {
