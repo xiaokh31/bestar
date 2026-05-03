@@ -163,7 +163,7 @@
     "advantagesSubtitle": "Over the years, we have continuously improved our service system to build core competitiveness and provide customers with the best logistics experience.",
     "advantages": [
       "5 Years of Cross-border Logistics Experience",
-      "100,000 sqm Modern Warehouse",
+      "100,000 sq ft Modern Warehouse",
       "2000+ Daily Orders",
       "50+ Clients Served",
       "99.5% On-time Delivery Rate",
@@ -173,10 +173,10 @@
     "milestones": [
       { "year": "2024", "event": "Company founded in Calgary" },
       { "year": "2024", "event": "Launched FBA service" },
-      { "year": "2024", "event": "Warehouse space exceeded 20,000 sqm" },
+      { "year": "2024", "event": "Warehouse space exceeded 20,000 sq ft" },
       { "year": "2024", "event": "Daily orders exceeded 1,000" },
       { "year": "2024", "event": "Customer base exceeded 1,000" },
-      { "year": "2025", "event": "Warehouse space reached 100,000 sqm" }
+      { "year": "2025", "event": "Warehouse space reached 100,000 sq ft" }
     ]
   },
   "contact": {
@@ -226,7 +226,7 @@
       {
         "id": "1",
         "title": "Bestar Logistics New Warehouse Now Open",
-        "excerpt": "Our new warehouse in Toronto is now operational, with storage space expanded to 100,000 square meters, providing more efficient services for our clients.",
+        "excerpt": "Our new warehouse in Toronto is now operational, with storage space expanded to 100,000 square feet, providing more efficient services for our clients.",
         "date": "2024-01-15",
         "category": "company"
       },

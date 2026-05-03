@@ -163,7 +163,7 @@
     "advantagesSubtitle": "Au fil des ans, nous avons continuellement amélioré notre système de service pour bâtir une compétitivité de base et offrir la meilleure expérience logistique.",
     "advantages": [
       "5 ans d'expérience en logistique transfrontalière",
-      "100 000 m² d'entrepôt moderne",
+      "100 000 pieds carrés d'entrepôt moderne",
       "Plus de 2000 commandes quotidiennes",
       "Plus de 50 clients servis",
       "99,5% de taux de livraison à temps",
@@ -173,10 +173,10 @@
     "milestones": [
       { "year": "2024", "event": "Entreprise fondée à Calgary" },
       { "year": "2024", "event": "Lancement du service FBA" },
-      { "year": "2024", "event": "Espace d'entrepôt dépassant 20 000 m²" },
+      { "year": "2024", "event": "Espace d'entrepôt dépassant 20 000 pieds carrés" },
       { "year": "2024", "event": "Commandes quotidiennes dépassant 1 000" },
       { "year": "2024", "event": "Base de clients dépassant 1 000" },
-      { "year": "2025", "event": "Espace d'entrepôt atteignant 100 000 m²" }
+      { "year": "2025", "event": "Espace d'entrepôt atteignant 100 000 pieds carrés" }
     ]
   },
   "contact": {
@@ -226,7 +226,7 @@
       {
         "id": "1",
         "title": "Nouvel entrepôt Bestar Logistics maintenant ouvert",
-        "excerpt": "Notre nouvel entrepôt à Toronto est maintenant opérationnel, avec un espace de stockage étendu à 100 000 m², offrant des services plus efficaces à nos clients.",
+        "excerpt": "Notre nouvel entrepôt à Toronto est maintenant opérationnel, avec un espace de stockage étendu à 100 000 pieds carrés, offrant des services plus efficaces à nos clients.",
         "date": "2024-01-15",
         "category": "company"
       },
