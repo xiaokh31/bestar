@@ -61,7 +61,7 @@ export default function PrivacyPage() {
 <h3>Use of Information</h3>
 <p>We use the information we collect to provide, maintain, and improve our services.</p>
 <h3>Contact Us</h3>
-<p>If you have any questions about this Privacy Policy, please contact us at manage.bestar@gmail.com</p>`;
+<p>If you have any questions about this Privacy Policy, please contact us at info@bestarcca.com</p>`;
     }
     if (locale === "fr") {
       return `<h2>Politique de Confidentialité</h2>
@@ -71,7 +71,7 @@ export default function PrivacyPage() {
 <h3>Utilisation des Informations</h3>
 <p>Nous utilisons les informations collectées pour fournir, maintenir et améliorer nos services.</p>
 <h3>Contactez-nous</h3>
-<p>Si vous avez des questions concernant cette politique de confidentialité, veuillez nous contacter à manage.bestar@gmail.com</p>`;
+<p>Si vous avez des questions concernant cette politique de confidentialité, veuillez nous contacter à info@bestarcca.com</p>`;
     }
     return `<h2>隐私政策</h2>
 <p>欢迎使用 Bestar Service CCA。我们尊重您的隐私，并致力于保护您的个人信息。</p>
@@ -80,7 +80,7 @@ export default function PrivacyPage() {
 <h3>信息使用</h3>
 <p>我们使用收集的信息来提供、维护和改进我们的服务。</p>
 <h3>联系我们</h3>
-<p>如果您对本隐私政策有任何疑问，请通过 manage.bestar@gmail.com 联系我们。</p>`;
+<p>如果您对本隐私政策有任何疑问，请通过 info@bestarcca.com 联系我们。</p>`;
   };
 
   if (loading) {

@@ -4,9 +4,9 @@
 
 // 站点联系信息
 export const siteLinks = {
-  email: "manage.bestar@gmail.com",
+  email: "info@bestarcca.com",
   phone: "+1(587)437 2088",
-  address: "7405 108 Ave SE Unit150, Calgary, AB T2C 4N7",
+  address: "5505 72 Ave SE Unit23, Calgary, AB T2C 3C4",
 };
 
 // 站点基本信息

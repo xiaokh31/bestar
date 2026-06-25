@@ -63,7 +63,7 @@ export default function TermsPage() {
 <h3>Limitation of Liability</h3>
 <p>Our liability is limited to the extent permitted by applicable law.</p>
 <h3>Contact Us</h3>
-<p>If you have any questions about these Terms, please contact us at manage.bestar@gmail.com</p>`;
+<p>If you have any questions about these Terms, please contact us at info@bestarcca.com</p>`;
     }
     if (locale === "fr") {
       return `<h2>Conditions d'Utilisation</h2>
@@ -75,7 +75,7 @@ export default function TermsPage() {
 <h3>Limitation de Responsabilité</h3>
 <p>Notre responsabilité est limitée dans la mesure permise par la loi applicable.</p>
 <h3>Contactez-nous</h3>
-<p>Si vous avez des questions concernant ces conditions, veuillez nous contacter à manage.bestar@gmail.com</p>`;
+<p>Si vous avez des questions concernant ces conditions, veuillez nous contacter à info@bestarcca.com</p>`;
     }
     return `<h2>服务条款</h2>
 <p>欢迎使用 Bestar Service CCA。使用我们的服务即表示您同意以下条款。</p>
@@ -86,7 +86,7 @@ export default function TermsPage() {
 <h3>责任限制</h3>
 <p>我们的责任以适用法律允许的范围为限。</p>
 <h3>联系我们</h3>
-<p>如果您对本服务条款有任何疑问，请通过 manage.bestar@gmail.com 联系我们。</p>`;
+<p>如果您对本服务条款有任何疑问，请通过 info@bestarcca.com 联系我们。</p>`;
   };
 
   if (loading) {

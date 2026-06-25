@@ -7,9 +7,9 @@ import { prisma } from '@/lib/prisma';
 // 默认设置值
 const defaultSettings: Record<string, string> = {
   siteName: 'Bestar Logistics',
-  siteUrl: 'https://bestarlogistics.com',
+  siteUrl: 'https://bestarcca.com',
   siteDescription: '专业的跨境物流解决方案提供商',
-  contactEmail: 'info@bestarlogistics.com',
+  contactEmail: 'info@bestarcca.com',
   contactPhone: '+1 (888) 888-8888',
   contactAddress: '123 Logistics Way, Toronto, ON M5V 1A1, Canada',
   sessionTimeout: '30',
